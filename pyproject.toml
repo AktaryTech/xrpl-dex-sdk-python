@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
 packages = [
-    { include = "xrpl_dex_sdk_python" },
+    { include = "xrpl_dex_sdk" },
 ]
 
 [tool.poetry.dependencies]

@@ -1,6 +1,6 @@
-import xrpl_dex_sdk_python
+import xrpl_dex_sdk
 
-client = xrpl_dex_sdk_python.Client(xrpl_dex_sdk_python.testnet)
+client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
 
 print(client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib").text)
 print(client.fetch_status().text)

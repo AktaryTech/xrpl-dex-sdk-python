@@ -1,14 +1,14 @@
 import json
 
-import xrpl_dex_sdk_python
+import xrpl_dex_sdk
 
 
 def test_version() -> None:
-    assert xrpl_dex_sdk_python.__version__ == "0.1.0"
+    assert xrpl_dex_sdk.__version__ == "0.1.0"
 
 
 def test_fetch_balance() -> None:
-    client = xrpl_dex_sdk_python.Client(xrpl_dex_sdk_python.testnet)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
     result = json.loads(client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib").text)
     assert "result" in result
     result_1 = result.get("result")
