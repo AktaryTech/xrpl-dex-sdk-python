@@ -1,3 +1,6 @@
+import json
+from typing import Dict
+
 import requests
 
 # import websockets
@@ -10,46 +13,49 @@ mainnet = "https://xrplcluster.com"
 class Client:
     """A json-rpc client class"""
 
+    def json_rpc(self, payload: Dict) -> Dict:
+        return json.loads(requests.post(self._url, json=payload).text)
+
     def __init__(self, url: str = mainnet) -> None:
         self._url = url
 
     def get_url(self) -> str:
         return self._url
 
-    def fetch_balance(self, account: str) -> requests.Response:
+    def fetch_balance(self, account: str) -> Dict:
         # gateway_balances
         payload = {"method": "gateway_balances", "params": [{"account": account}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_status(self) -> requests.Response:
+    def fetch_status(self) -> Dict:
         # server_state
         payload = {"method": "server_state", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_fees(self) -> requests.Response:
+    def fetch_fees(self) -> Dict:
         # fee
         payload = {"method": "fee", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_trading_fee(self) -> requests.Response:
+    def fetch_trading_fee(self) -> Dict:
         # fee
         payload = {"method": "fee", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_trading_fees(self) -> requests.Response:
+    def fetch_trading_fees(self) -> Dict:
         # fee
         payload = {"method": "fee", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_transaction_fee(self) -> requests.Response:
+    def fetch_transaction_fee(self) -> Dict:
         # fee
         payload = {"method": "fee", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_transaction_fees(self) -> requests.Response:
+    def fetch_transaction_fees(self) -> Dict:
         # fee
         payload = {"method": "fee", "params": [{}]}
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
     def create_order(self) -> None:
         # offer_create
@@ -59,7 +65,7 @@ class Client:
         # offer_cancel
         print("cancel_order")
 
-    def fetch_order_book(self, issuer: str) -> requests.Response:
+    def fetch_order_book(self, issuer: str) -> Dict:
         # book_offers
         payload = {
             "method": "book_offers",
@@ -70,9 +76,9 @@ class Client:
                 }
             ],
         }
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
 
-    def fetch_trades(self, issuer: str) -> requests.Response:
+    def fetch_trades(self, issuer: str) -> Dict:
         # book_offers
         payload = {
             "method": "book_offers",
@@ -83,4 +89,4 @@ class Client:
                 }
             ],
         }
-        return requests.post(self._url, json=payload)
+        return self.json_rpc(payload)
