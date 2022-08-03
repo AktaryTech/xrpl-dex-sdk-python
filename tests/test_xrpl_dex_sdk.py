@@ -7,6 +7,16 @@ def test_version() -> None:
     assert xrpl_dex_sdk.__version__ == "0.1.0"
 
 
+def test_fetch_status() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
+    result = client.fetch_status()
+    assert "status" in result
+    assert result.get("status") == "success"
+    assert "updated" in result
+    assert "eta" in result
+    assert "url" in result
+
+
 def test_fetch_balance() -> None:
     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
     result = client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib")

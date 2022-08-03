@@ -1,5 +1,6 @@
+import datetime
 import json
-from typing import Dict
+from typing import Any, Dict
 
 import requests
 
@@ -13,23 +14,38 @@ mainnet = "https://xrplcluster.com"
 class Client:
     """A json-rpc client class"""
 
-    def json_rpc(self, payload: Dict) -> Dict:
-        return json.loads(requests.post(self._url, json=payload).text)
-
     def __init__(self, url: str = mainnet) -> None:
+        """Return client instant, pass in network, defaults to mainnet"""
         self._url = url
 
-    def get_url(self) -> str:
-        return self._url
-
-    def fetch_balance(self, account: str) -> Dict:
-        # gateway_balances
-        payload = {"method": "gateway_balances", "params": [{"account": account}]}
-        return self.json_rpc(payload)
+    def json_rpc(self, payload: Any) -> Any:
+        """calls the json_rpc api with requests returning json dict"""
+        return json.loads(requests.post(self._url, json=payload).text)
 
     def fetch_status(self) -> Dict:
         # server_state
         payload = {"method": "server_state", "params": [{}]}
+        result = self.json_rpc(payload).get("result")
+        status = result.get("status")
+        state = result.get("state")
+        if state.get("server_state") == "disconnected":
+            status = "shutdown"
+        updated = int(
+            datetime.datetime.strptime(state.get("time"), "%Y-%b-%d %H:%M:%S.%f %Z").timestamp()
+            * 1000
+        )
+        return {"status": status, "updated": updated, "eta": "", "url": ""}
+
+    # def create_order(
+    #     self, symbol: str, side: str, type: str, amount: str, price: str, params
+    # ) -> Dict:
+    #     # gateway_balances
+    #     payload = {"method": "gateway_balances", "params": [{"account": account}]}
+    #     return self.json_rpc(payload)
+
+    def fetch_balance(self, account: str) -> Dict:
+        # gateway_balances
+        payload = {"method": "gateway_balances", "params": [{"account": account}]}
         return self.json_rpc(payload)
 
     def fetch_fees(self) -> Dict:
