@@ -1,0 +1,61 @@
+{
+    "result": {
+        "state": {
+            "build_version": "1.9.1",
+            "complete_ledgers": "27887240-30027271",
+            "initial_sync_duration_us": "124119708",
+            "io_latency_ms": 1,
+            "jq_trans_overflow": "0",
+            "last_close": {
+                "converge_time": 2000,
+                "proposers": 6
+            },
+            "load_base": 256,
+            "load_factor": 256,
+            "load_factor_fee_escalation": 256,
+            "load_factor_fee_queue": 256,
+            "load_factor_fee_reference": 256,
+            "load_factor_server": 256,
+            "peer_disconnects": "66041",
+            "peer_disconnects_resources": "2760",
+            "peers": 65,
+            "pubkey_node": "n9KgFbFqq5E6dbkfTrMhmAi1DYrWfteZsw379SuxdazL1MEi2aFV",
+            "server_state": "full",
+            "server_state_duration_us": "6137379528819",
+            "state_accounting": {
+                "connected": {
+                    "duration_us": "120082189",
+                    "transitions": "2"
+                },
+                "disconnected": {
+                    "duration_us": "1029302",
+                    "transitions": "2"
+                },
+                "full": {
+                    "duration_us": "6137379528819",
+                    "transitions": "1"
+                },
+                "syncing": {
+                    "duration_us": "3008184",
+                    "transitions": "1"
+                },
+                "tracking": {
+                    "duration_us": "31",
+                    "transitions": "1"
+                }
+            },
+            "time": "2022-Aug-03 20:25:24.871328 UTC",
+            "uptime": 6137503,
+            "validated_ledger": {
+                "base_fee": 10,
+                "close_time": 712873522,
+                "hash": "383211C779F0AC76CB7E4404646AC64EE19BF12D7C9970204C4728B5850E55AB",
+                "reserve_base": 10000000,
+                "reserve_inc": 2000000,
+                "seq": 30027271
+            },
+            "validation_quorum": 5
+        },
+        "status": "success"
+    }
+}
