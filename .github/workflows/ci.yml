@@ -15,5 +15,15 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
+
       - name: Install Poetry
-        uses: dschep/install-poetry-action@v1.2
+        run: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+
+      - name: Install Dependencies
+        run: poetry install
+
+      - name: Code Quality
+        run: poetry run black . --check
+
+      - name: Test with pytest
+        run: poetry run pytest
