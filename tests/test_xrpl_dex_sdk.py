@@ -8,7 +8,7 @@ def test_version() -> None:
 
 
 def test_fetch_status() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
     result = client.fetch_status()
     assert "status" in result
     assert result.get("status") == "success"
@@ -17,8 +17,22 @@ def test_fetch_status() -> None:
     assert "url" in result
 
 
+def test_fetch_currencies() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    result = client.fetch_currencies()
+    assert "BTC" in result
+    result_1: Any = result.get("BTC")
+    assert "code" in result_1
+    assert "issuers" in result_1
+    result = client.fetch_currencies({"limit": 20})
+    assert "BTC" in result
+    result_2: Any = result.get("BTC")
+    assert "code" in result_2
+    assert "issuers" in result_2
+
+
 def test_fetch_balance() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
     result = client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib")
     assert "result" in result
     result_1: Any = result.get("result")
