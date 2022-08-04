@@ -53,7 +53,7 @@ class Client:
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
-    def fetch_currencies(self, params: Dict) -> Dict:
+    def fetch_currencies(self, params: Dict = {}) -> Dict:
         limit = int(params.get("limit", LIMIT))
         iteration = 0
         currencies: Any = {}
