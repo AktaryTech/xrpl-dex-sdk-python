@@ -19,11 +19,16 @@ def test_fetch_status() -> None:
 
 def test_fetch_currencies() -> None:
     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
-    result = client.fetch_currencies({"limit": 20})
+    result = client.fetch_currencies()
     assert "BTC" in result
     result_1: Any = result.get("BTC")
     assert "code" in result_1
     assert "issuers" in result_1
+    result = client.fetch_currencies({"limit": 20})
+    assert "BTC" in result
+    result_2: Any = result.get("BTC")
+    assert "code" in result_2
+    assert "issuers" in result_2
 
 
 def test_fetch_balance() -> None:
