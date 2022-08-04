@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 from typing import Any, Dict
 
 import requests
@@ -7,14 +8,30 @@ import requests
 # import websockets
 
 __version__ = "0.1.0"
-testnet = "https://s.altnet.rippletest.net:51234/"
-mainnet = "https://xrplcluster.com"
+
+# const
+LIMIT = int(os.getenv("RIPPLE_DEFAULT_LIMIT", 20))
+
+TESTNET = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
+DEVNET = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
+MAINNET = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
+
+RPC_TESTNET = "https://" + TESTNET + ":51234/"
+RPC_DEVNET = "https://" + DEVNET + ":51234/"
+RPC_MAINNET = "https://" + MAINNET + ":51234/"
+
+WS_TESTNET = "wss://" + TESTNET + ":51233/"
+WS_DEVNET = "wss://" + DEVNET + ":51233/"
+WS_MAINNET = "wss://" + MAINNET + "/"
+
+REFERENCE_TX_COST = 10
+ACCOUNT_DELETE_TX_COST = 2000000
 
 
 class Client:
     """A json-rpc client class"""
 
-    def __init__(self, url: str = mainnet) -> None:
+    def __init__(self, url: str = RPC_MAINNET) -> None:
         """Return client instant, pass in network, defaults to mainnet"""
         self._url = url
 
@@ -36,12 +53,55 @@ class Client:
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
-    # def create_order(
-    #     self, symbol: str, side: str, type: str, amount: str, price: str, params
-    # ) -> Dict:
-    #     # gateway_balances
-    #     payload = {"method": "gateway_balances", "params": [{"account": account}]}
-    #     return self.json_rpc(payload)
+    def fetch_currencies(self, params: Dict) -> Dict:
+        limit = int(params.get("limit", LIMIT))
+        iteration = 0
+        currencies: Any = {}
+        marker = False
+        has_next_page = True
+        while iteration <= 5 and has_next_page:
+            if marker is False:
+                payload = {
+                    "method": "ledger_data",
+                    "params": [{"ledger_index": "validated", "binary": False, "limit": limit}],
+                }
+            else:
+                payload = {
+                    "method": "ledger_data",
+                    "params": [
+                        {
+                            "ledger_index": "validated",
+                            "binary": False,
+                            "limit": limit,
+                            "marker": marker,
+                        }
+                    ],
+                }
+
+            result = self.json_rpc(payload)
+            state = result.get("result").get("state")
+            state_count = len(state)
+            if state_count < limit:
+                has_next_page = False
+            else:
+                marker = result.get("result").get("marker")
+            iteration += 1
+            for item in state:
+                if item.get("LedgerEntryType") == "RippleState":
+                    balance = float(item.get("Balance").get("value", 0))
+                    if balance == 0:
+                        continue
+                    elif balance > 0:
+                        issuer = item.get("LowLimit").get("issuer")
+                    elif balance < 0:
+                        issuer = item.get("HighLimit").get("issuer")
+                    currency = item.get("Balance").get("currency")
+                    if currency not in currencies:
+                        currencies[currency] = {"code": currency, "issuers": [issuer]}
+                    else:
+                        issuers_list: list = currencies[currency].get("issuers")
+                        issuers_list.append(issuer)
+        return currencies
 
     def fetch_balance(self, account: str) -> Dict:
         # gateway_balances

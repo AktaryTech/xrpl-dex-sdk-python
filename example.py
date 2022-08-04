@@ -1,8 +1,10 @@
 import xrpl_dex_sdk
 
-client = xrpl_dex_sdk.Client(xrpl_dex_sdk.testnet)
+client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
 
-print(client.fetch_status())
+# print(client.fetch_status())
+print(client.fetch_currencies({"limit": 20}))
+
 # print(client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"))
 # print(client.fetch_fees())
 # print(client.fetch_trading_fee())
