@@ -22,13 +22,32 @@ def test_fetch_currencies() -> None:
     result = client.fetch_currencies()
     assert "BTC" in result
     result_1: Any = result.get("BTC")
-    assert "code" in result_1
-    assert "issuers" in result_1
-    result = client.fetch_currencies({"limit": 20})
-    assert "BTC" in result
-    result_2: Any = result.get("BTC")
-    assert "code" in result_2
-    assert "issuers" in result_2
+    assert len(result_1) == 2
+
+
+def test_fetch_markets() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    result = client.fetch_markets()
+    assert "XRP/ETH" in result
+    result_1: Any = result.get("XRP/ETH")
+    assert "id" in result_1
+    assert "symbol" in result_1
+    assert "base" in result_1
+    assert "quote" in result_1
+    assert "quoteIssuer" in result_1
+    assert result_1.get("quote") == "ETH"
+
+
+def test_fetch_issuers() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    result = client.fetch_issuers()
+    assert "Coreum" in result
+    result_1: Any = result.get("Coreum")
+    assert "name" in result_1
+    assert "trusted" in result_1
+    assert "website" in result_1
+    assert "currencies" in result_1
+    assert result_1.get("website") == "https://coreum.com"
 
 
 def test_fetch_balance() -> None:

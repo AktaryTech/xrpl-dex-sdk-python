@@ -39,6 +39,13 @@ class Client:
         """calls the json_rpc api with requests returning json dict"""
         return json.loads(requests.post(self._url, json=payload).text)
 
+    def load_data(self, name: str) -> Dict:
+        path = os.path.dirname(os.path.realpath(__file__)) + os.sep + "data" + os.sep + name
+        f = open(path, "r")
+        data = f.read()
+        f.close()
+        return json.loads(data)
+
     def fetch_status(self) -> Dict:
         # server_state
         payload = {"method": "server_state", "params": [{}]}
@@ -53,55 +60,14 @@ class Client:
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
-    def fetch_currencies(self, params: Dict = {}) -> Dict:
-        limit = int(params.get("limit", LIMIT))
-        iteration = 0
-        currencies: Any = {}
-        marker = False
-        has_next_page = True
-        while iteration <= 5 and has_next_page:
-            if marker is False:
-                payload = {
-                    "method": "ledger_data",
-                    "params": [{"ledger_index": "validated", "binary": False, "limit": limit}],
-                }
-            else:
-                payload = {
-                    "method": "ledger_data",
-                    "params": [
-                        {
-                            "ledger_index": "validated",
-                            "binary": False,
-                            "limit": limit,
-                            "marker": marker,
-                        }
-                    ],
-                }
+    def fetch_currencies(self) -> Dict:
+        return self.load_data("currencies.json")
 
-            result = self.json_rpc(payload)
-            state = result.get("result").get("state")
-            state_count = len(state)
-            if state_count < limit:
-                has_next_page = False
-            else:
-                marker = result.get("result").get("marker")
-            iteration += 1
-            for item in state:
-                if item.get("LedgerEntryType") == "RippleState":
-                    balance = float(item.get("Balance").get("value", 0))
-                    if balance == 0:
-                        continue
-                    elif balance > 0:
-                        issuer = item.get("LowLimit").get("issuer")
-                    elif balance < 0:
-                        issuer = item.get("HighLimit").get("issuer")
-                    currency = item.get("Balance").get("currency")
-                    if currency not in currencies:
-                        currencies[currency] = {"code": currency, "issuers": [issuer]}
-                    else:
-                        issuers_list: list = currencies[currency].get("issuers")
-                        issuers_list.append(issuer)
-        return currencies
+    def fetch_markets(self) -> Dict:
+        return self.load_data("markets.json")
+
+    def fetch_issuers(self) -> Dict:
+        return self.load_data("issuers.json")
 
     def fetch_balance(self, account: str) -> Dict:
         # gateway_balances
