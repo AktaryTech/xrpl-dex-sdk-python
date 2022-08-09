@@ -107,18 +107,72 @@ class Client:
         # offer_cancel
         print("cancel_order")
 
-    def fetch_order_book(self, issuer: str) -> Dict:
+    def fetch_order_books(self, symbols: list, limit: float = LIMIT, params: Any = {}) -> Dict:
+        order_books: Any = {}
+        for symbol in symbols:
+            order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
+        return order_books
+
+    def fetch_order_book(self, symbol: str, limit: float = LIMIT, params: Any = {}) -> Dict:
+        [base, quote] = symbol.split("/")
+        taker_pays = {
+            "currency": quote,
+        }
+        if "taker_pays_issuer" in params:
+            taker_pays["issuer"] = params.get("taker_pays_issuer")
+
+        taker_gets = {
+            "currency": base,
+        }
+        if "taker_gets_issuer" in params:
+            taker_gets["issuer"] = params.get("taker_gets_issuer")
+
         # book_offers
-        payload = {
+        payload: Any = {
             "method": "book_offers",
             "params": [
                 {
-                    "taker_gets": {"currency": "XRP"},
-                    "taker_pays": {"currency": "USD", "issuer": issuer},
+                    "taker_gets": taker_gets,
+                    "taker_pays": taker_pays,
+                    "limit": limit,
                 }
             ],
         }
-        return self.json_rpc(payload)
+
+        if "ledger_index" in params:
+            payload.get("params")[0]["ledger_index"] = params.get("ledger_index")
+
+        if "ledger_hash" in params:
+            payload.get("params")[0]["ledger_hash"] = params.get("ledger_hash")
+
+        if "taker" in params:
+            payload.get("params")[0]["taker"] = params.get("taker")
+
+        result = self.json_rpc(payload)
+
+        offers = result.get("result").get("offers")
+        bids: Any = []
+        asks: Any = []
+        nonce = offers[-1].get("Sequence")
+
+        for offer in offers:
+            if offer.get("Flags") & 131072 == 0:
+                if "value" in offer.get("TakerGets"):
+                    bids.append([offer.get("quality"), offer.get("TakerGets").get("value")])
+                else:
+                    bids.append([offer.get("quality"), float(offer.get("TakerGets"))])
+            else:
+                if "value" in offer.get("TakerGets"):
+                    asks.append([offer.get("quality"), offer.get("TakerGets").get("value")])
+                else:
+                    asks.append([offer.get("quality"), float(offer.get("TakerGets"))])
+
+        return {
+            "symbol": symbol,
+            "nonce": nonce,
+            "bids": bids,
+            "asks": asks,
+        }
 
     def fetch_trades(self, issuer: str) -> Dict:
         # book_offers
