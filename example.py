@@ -31,7 +31,8 @@ client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 #         },
 #     )
 # )
-print(client.fetch_trading_fee("XRP/USD"))
+# print(client.fetch_trading_fee("XRP/USD"))
+print(client.fetch_trading_fees())
 
 # raw xrpl fee output
 # print(client.fetch_fees())
