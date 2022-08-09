@@ -25,6 +25,7 @@ client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 #         },
 #     )
 # )
+
 # print(
 #     client.fetch_order_books(
 #         ["XRP/USD"],
