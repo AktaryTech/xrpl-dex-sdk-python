@@ -1,0 +1,76 @@
+{
+    "result": {
+        "ledger_hash": "57135960569E6312E355EC77CA8D309CDAB17D388FC50399B9A3C0543E5AAA2D",
+        "ledger_index": 73583012,
+        "offers": [
+            {
+                "Account": "rXTZ5g8X7mrAYEe7iFeM9fiS4ccueyurG",
+                "BookDirectory": "DFA3B6DDAB58C7E8E5D944E736DA4B7046C30E4F460FD9DE4E0CFB58AD142400",
+                "BookNode": "0",
+                "Flags": 131072,
+                "LedgerEntryType": "Offer",
+                "OwnerNode": "0",
+                "PreviousTxnID": "9E60DF0972AB78300516C22BF7E1547E7B741F6EAB3ABCE5CD1DD146CD60309D",
+                "PreviousTxnLgrSeq": 73583011,
+                "Sequence": 81574222,
+                "TakerGets": "1000000000",
+                "TakerPays": {
+                    "currency": "USD",
+                    "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+                    "value": "365.4058"
+                },
+                "index": "88F9D11565360516EAB913AC1C5F4E5719DC07CCF7D4CCF271628216A0D82F2F",
+                "owner_funds": "13013261142",
+                "quality": "0.0000003654058"
+            },
+            {
+                "Account": "rXTZ5g8X7mrAYEe7iFeM9fiS4ccueyurG",
+                "BookDirectory": "DFA3B6DDAB58C7E8E5D944E736DA4B7046C30E4F460FD9DE4E0CFEA8102EEF90",
+                "BookNode": "0",
+                "Flags": 131072,
+                "LedgerEntryType": "Offer",
+                "OwnerNode": "0",
+                "PreviousTxnID": "F9090E7785C12137264FD9CC5C2E278633A4C5EC291D3BF7D78BDE21F3C82E1B",
+                "PreviousTxnLgrSeq": 73583011,
+                "Sequence": 81574224,
+                "TakerGets": "11984261322",
+                "TakerPays": {
+                    "currency": "USD",
+                    "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+                    "value": "4383.480267682783"
+                },
+                "index": "EB42824BF52AB17FCCC0E11F1DB46A8300D216D609B1CCF78E89FDD2FD40385C",
+                "quality": "0.0000003657697500000144"
+            },
+            {
+                "Account": "rnKiczmiQkZFiDES8THYyLA2pQohC5C6EF",
+                "BookDirectory": "DFA3B6DDAB58C7E8E5D944E736DA4B7046C30E4F460FD9DE4E0D08BE8062A844",
+                "BookNode": "0",
+                "Expiration": 713385176,
+                "Flags": 0,
+                "LedgerEntryType": "Offer",
+                "OwnerNode": "0",
+                "PreviousTxnID": "221F0AC353118DDC40997731E24D6916AEEF61A84B14B2E74923AAA7CE50C820",
+                "PreviousTxnLgrSeq": 73582975,
+                "Sequence": 63853979,
+                "TakerGets": "5257267639",
+                "TakerPays": {
+                    "currency": "USD",
+                    "issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+                    "value": "1928.780562091213"
+                },
+                "index": "B0243CB6F31633FE952B993A494855C0957EB883F6EFA1C5732101227E544033",
+                "owner_funds": "23315264689",
+                "quality": "0.0000003668788987996228"
+            }
+        ],
+        "status": "success",
+        "validated": true,
+        "warnings": [
+            {
+                "id": 1004,
+                "message": "This is a reporting server.  The default behavior of a reporting server is to only return validated data. If you are looking for not yet validated data, include \"ledger_index : current\" in your request, which will cause this server to forward the request to a p2p node. If the forward is successful the response will include \"forwarded\" : \"true\""
+            }
+        ]
+    }
+}

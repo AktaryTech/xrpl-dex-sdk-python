@@ -60,3 +60,39 @@ def test_fetch_balance() -> None:
     assert result_1.get("account") == "r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"
     assert result_1.get("status") == "success"
     assert "ledger_current_index" in result_1
+
+
+def test_fetch_order_book() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    result = client.fetch_order_book(
+        "XRP/USD",
+        3,
+        {
+            "taker": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+            "taker_pays_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+        },
+    )
+    assert "symbol" in result
+    assert "nonce" in result
+    assert "bids" in result
+    assert "asks" in result
+
+
+def test_fetch_order_books() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    result = client.fetch_order_books(
+        ["XRP/USD"],
+        3,
+        {
+            "XRP/USD": {
+                "taker": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
+                "taker_pays_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
+            },
+        },
+    )
+    assert "XRP/USD" in result
+    result_1: Any = result.get("XRP/USD")
+    assert "symbol" in result_1
+    assert "nonce" in result_1
+    assert "bids" in result_1
+    assert "asks" in result_1
