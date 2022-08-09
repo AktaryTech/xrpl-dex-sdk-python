@@ -109,3 +109,18 @@ def test_fetch_trading_fee() -> None:
     assert result.get("quote") == 0
     assert "percentage" in result
     assert result.get("percentage") == True
+
+
+def test_fetch_trading_fees() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    result = client.fetch_trading_fees()
+    assert len(result) == 17
+    result_1 = result[0]
+    assert "symbol" in result_1
+    assert result_1.get("symbol") == "534F4C4F00000000000000000000000000000000/XRP"
+    assert "base" in result_1
+    assert result_1.get("base") == 0
+    assert "quote" in result_1
+    assert result_1.get("quote") == 0
+    assert "percentage" in result_1
+    assert result_1.get("percentage") == True

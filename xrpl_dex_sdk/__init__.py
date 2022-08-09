@@ -103,10 +103,12 @@ class Client:
 
         return response
 
-    def fetch_trading_fees(self) -> Dict:
-        # fee
-        payload = {"method": "fee", "params": [{}]}
-        return self.json_rpc(payload)
+    def fetch_trading_fees(self) -> list:
+        markets = self.fetch_markets()
+        result: list = []
+        for market in markets:
+            result.append(self.fetch_trading_fee(market))
+        return result
 
     def fetch_transaction_fee(self) -> Dict:
         # fee
