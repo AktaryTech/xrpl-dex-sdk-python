@@ -107,7 +107,7 @@ class Client:
         # offer_cancel
         print("cancel_order")
 
-    def fetch_order_books(self, symbols: list[str], limit: float = LIMIT, params: Any = {}) -> Dict:
+    def fetch_order_books(self, symbols: list, limit: float = LIMIT, params: Any = {}) -> Dict:
         order_books: Any = {}
         for symbol in symbols:
             order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
