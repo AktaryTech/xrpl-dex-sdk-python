@@ -96,3 +96,16 @@ def test_fetch_order_books() -> None:
     assert "nonce" in result_1
     assert "bids" in result_1
     assert "asks" in result_1
+
+
+def test_fetch_trading_fee() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    result = client.fetch_trading_fee("XRP/USD")
+    assert "symbol" in result
+    assert result.get("symbol") == "XRP/USD"
+    assert "base" in result
+    assert result.get("base") == 0
+    assert "quote" in result
+    assert result.get("quote") == 0
+    assert "percentage" in result
+    assert result.get("percentage") == True
