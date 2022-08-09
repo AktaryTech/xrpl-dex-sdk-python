@@ -8,13 +8,6 @@ client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 # print(client.fetch_markets())
 # print(client.fetch_issuers())
 # print(client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"))
-
-# raw xrpl fee output
-# print(client.fetch_fees())
-# print(client.fetch_trading_fee())
-# print(client.fetch_trading_fees())
-# print(client.fetch_transaction_fee())
-# print(client.fetch_transaction_fees())
 # print(
 #     client.fetch_order_book(
 #         "XRP/USD",
@@ -38,6 +31,14 @@ client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 #         },
 #     )
 # )
+print(client.fetch_trading_fee("XRP/USD"))
+
+# raw xrpl fee output
+# print(client.fetch_fees())
+# print(client.fetch_trading_fee())
+# print(client.fetch_transaction_fee())
+# print(client.fetch_transaction_fees())
+
 
 # RAW
 # print(client.fetch_trades("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"))
