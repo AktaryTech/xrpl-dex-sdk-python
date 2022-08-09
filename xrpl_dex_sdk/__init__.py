@@ -110,7 +110,7 @@ class Client:
     def fetch_order_books(self, symbols: list[str], limit: float = LIMIT, params: Any = {}) -> Dict:
         order_books = {}
         for symbol in symbols:
-            order_books[symbol] = self.fetch_order_book(symbol, limit, params.get(symbol))
+            order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
         return order_books
 
     def fetch_order_book(self, symbol: str, limit: float = LIMIT, params: Any = {}) -> Dict:
