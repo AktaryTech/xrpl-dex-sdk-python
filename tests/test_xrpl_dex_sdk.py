@@ -148,3 +148,20 @@ def test_fetch_transaction_fees() -> None:
     assert "current" in result[1]
     assert "info" in result[1]
     assert "transfer" in result[1]
+
+
+def test_fetch_fees() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    result = client.fetch_fees()
+    assert "transactions" in result
+    transactions: Any = result.get("transactions")
+    assert "code" in transactions[0]
+    assert "current" in transactions[0]
+    assert "transfer" in transactions[0]
+    assert "info" in transactions[0]
+    trading: Any = result.get("trading")
+    assert "symbol" in trading[0]
+    assert "base" in trading[0]
+    assert "quote" in trading[0]
+    assert "percentage" in trading[0]
+    assert "info" in trading[0]
