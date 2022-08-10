@@ -169,10 +169,12 @@ class Client:
 
         return response
 
-    def fetch_transaction_fees(self) -> Dict:
-        # fee
-        payload = {"method": "fee", "params": [{}]}
-        return self.json_rpc(payload)
+    def fetch_transaction_fees(self, codes: list, params: dict = {}) -> list:
+        response: list = []
+        for code in codes:
+            param = params.get("code", {})
+            response.append(self.fetch_transaction_fee(code, param))
+        return response
 
     def create_order(self) -> None:
         # offer_create

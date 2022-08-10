@@ -1,7 +1,7 @@
 import xrpl_dex_sdk
 
 # client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
-# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 
 # print(client.fetch_status())
 # print(client.fetch_currencies())
@@ -34,11 +34,11 @@ import xrpl_dex_sdk
 # print(client.fetch_trading_fee("XRP/USD"))
 # print(client.fetch_trading_fees())
 # print(client.fetch_transaction_fee("EUR"))
+# print(client.fetch_transaction_fees(["EUR", "USD"]))
 
 
 # raw xrpl fee output
 # print(client.fetch_fees())
-# print(client.fetch_transaction_fees())
 
 
 # RAW

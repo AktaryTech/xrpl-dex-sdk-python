@@ -134,4 +134,17 @@ def test_fetch_transaction_fee() -> None:
     assert "info" in result
     assert "transfer" in result
 
-    # {'code': 'EUR', 'current': 10, 'info': '{"feesResult": {"current_ledger_size": "51", "current_queue_size": "0", "drops..."0.002"}]}', 'transfer': {'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq': '0.002', 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B': '0.002'}}
+
+def test_fetch_transaction_fees() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    result = client.fetch_transaction_fees(["EUR", "USD"])
+    assert "code" in result[0]
+    assert result[0].get("code") == "EUR"
+    assert "current" in result[0]
+    assert "info" in result[0]
+    assert "transfer" in result[0]
+    assert "code" in result[1]
+    assert result[1].get("code") == "USD"
+    assert "current" in result[1]
+    assert "info" in result[1]
+    assert "transfer" in result[1]
