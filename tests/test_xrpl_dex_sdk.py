@@ -18,7 +18,7 @@ def test_fetch_status() -> None:
 
 
 def test_fetch_currencies() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
     result = client.fetch_currencies()
     assert "BTC" in result
     result_1: Any = result.get("BTC")
@@ -124,3 +124,14 @@ def test_fetch_trading_fees() -> None:
     assert result_1.get("quote") == 0
     assert "percentage" in result_1
     assert result_1.get("percentage") == True
+
+
+def test_fetch_transaction_fee() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    result = client.fetch_transaction_fee("EUR")
+    assert "code" in result
+    assert "current" in result
+    assert "info" in result
+    assert "transfer" in result
+
+    # {'code': 'EUR', 'current': 10, 'info': '{"feesResult": {"current_ledger_size": "51", "current_queue_size": "0", "drops..."0.002"}]}', 'transfer': {'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq': '0.002', 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B': '0.002'}}
