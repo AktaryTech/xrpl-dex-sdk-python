@@ -10,22 +10,24 @@ import requests
 __version__ = "0.1.0"
 
 # const
-LIMIT = int(os.getenv("RIPPLE_DEFAULT_LIMIT", 20))
+LIMIT: int = int(os.getenv("RIPPLE_DEFAULT_LIMIT", 20))
 
-TESTNET = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
-DEVNET = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
-MAINNET = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
+TESTNET: str = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
+DEVNET: str = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
+MAINNET: str = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
 
-RPC_TESTNET = "https://" + TESTNET + ":51234/"
-RPC_DEVNET = "https://" + DEVNET + ":51234/"
-RPC_MAINNET = "https://" + MAINNET + ":51234/"
+RPC_TESTNET: str = "https://" + TESTNET + ":51234/"
+RPC_DEVNET: str = "https://" + DEVNET + ":51234/"
+RPC_MAINNET: str = "https://" + MAINNET + ":51234/"
 
-WS_TESTNET = "wss://" + TESTNET + ":51233/"
-WS_DEVNET = "wss://" + DEVNET + ":51233/"
-WS_MAINNET = "wss://" + MAINNET + "/"
+WS_TESTNET: str = "wss://" + TESTNET + ":51233/"
+WS_DEVNET: str = "wss://" + DEVNET + ":51233/"
+WS_MAINNET: str = "wss://" + MAINNET + "/"
 
-REFERENCE_TX_COST = 10
-ACCOUNT_DELETE_TX_COST = 2000000
+REFERENCE_TX_COST: int = 10
+ACCOUNT_DELETE_TX_COST: int = 2000000
+
+BILLION: int = 1000000000
 
 
 class Client:
@@ -33,6 +35,7 @@ class Client:
 
     def __init__(self, url: str = RPC_MAINNET) -> None:
         """Return client instant, pass in network, defaults to mainnet"""
+        self._cache: Any = {}
         self._url = url
 
     def json_rpc(self, payload: Any) -> Any:
@@ -45,6 +48,20 @@ class Client:
         data = f.read()
         f.close()
         return json.loads(data)
+
+    def transfer_rate_to_decimal(self, rate: int) -> str:
+        if rate != int(rate):
+            raise Exception("Error decoding, transfer Rate must be an integer")
+
+        if rate == 0:
+            return "0"
+
+        decimal = (rate - BILLION) / BILLION
+
+        if decimal < 0:
+            raise Exception("Error decoding, negative transfer rate")
+
+        return str(decimal)
 
     def fetch_status(self) -> Dict:
         # server_state
@@ -61,7 +78,18 @@ class Client:
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
     def fetch_currencies(self) -> Dict:
-        return self.load_data("currencies.json")
+        if "fetch_currencies" in self._cache:
+            return self._cache.get("fetch_currencies")
+        currencies = self.load_data("currencies.json")
+        for _, currency in currencies.items():
+            for curr in currency:
+                payload = {"method": "account_info", "params": [{"account": curr.get("issuer")}]}
+                account_info_result = self.json_rpc(payload).get("result")
+                account_rate = account_info_result.get("account_data").get("TransferRate")
+                if account_rate:
+                    curr["fee"] = self.transfer_rate_to_decimal(account_rate)
+        self._cache["fetch_currencies"] = currencies
+        return currencies
 
     def fetch_markets(self) -> Dict:
         return self.load_data("markets.json")
@@ -110,10 +138,36 @@ class Client:
             result.append(self.fetch_trading_fee(market))
         return result
 
-    def fetch_transaction_fee(self) -> Dict:
-        # fee
+    def fetch_transaction_fee(self, code: str, params: Dict = {}) -> Dict:
         payload = {"method": "fee", "params": [{}]}
-        return self.json_rpc(payload)
+        fees_result = self.json_rpc(payload).get("result")
+
+        currencies = self.fetch_currencies()
+        if code in currencies is False:
+            raise Exception("No code in currencies data")
+
+        transfer_rates: Any = {}
+
+        currency: Any = currencies.get(code)
+
+        params_issuer = params.get("issuer")
+        for curr in currency:
+            fee = curr.get("fee", 0)
+            issuer = curr.get("issuer")
+            if "issuer" in params:
+                if params_issuer == issuer:
+                    transfer_rates[issuer] = fee
+            else:
+                transfer_rates[issuer] = fee
+
+        response: Any = {
+            "code": code,
+            "current": int(fees_result.get("drops").get("open_ledger_fee")),
+            "transfer": transfer_rates,
+            "info": json.dumps({"feesResult": fees_result, "currency": currency}),
+        }
+
+        return response
 
     def fetch_transaction_fees(self) -> Dict:
         # fee
