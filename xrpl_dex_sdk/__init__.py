@@ -276,8 +276,8 @@ class Client:
         the_wallet = wallet.Wallet(seed=wallet_secret, sequence=wallet_sequence)
 
         offer_create = transactions.OfferCreate(
-            account=wallet.classic_address,
-            sequence=wallet.sequence,
+            account=the_wallet.classic_address,
+            sequence=the_wallet.sequence,
             taker_gets=creator_pays,
             taker_pays=creator_gets,
             expiration=expiration,
@@ -348,9 +348,38 @@ class Client:
             symbol, OrderSide.Sell.value, OrderType.Limit.value, amount, price, params
         )
 
-    def cancel_order(self) -> None:
+    async def cancel_order(self, id: str, params: Dict) -> Dict:
         # offer_cancel
-        print("cancel_order")
+        wallet_private_key = params.get("wallet_private_key")
+        wallet_public_key = params.get("wallet_public_key")
+        wallet_secret = params.get("wallet_secret")
+
+        wallet_sequence = int(id)
+        if not wallet_sequence:
+            raise Exception("Must provide sequence id")
+
+        if not wallet_secret and (not wallet_public_key or not wallet_private_key):
+            raise Exception(
+                "Must provide either wallet_secret or wallet_public_key and wallet_private_key"
+            )
+        the_wallet = wallet.Wallet(seed=wallet_secret, sequence=wallet_sequence)
+
+        offer_cancel = transactions.OfferCancel(
+            account=the_wallet.classicAddress,
+            transaction_type="OfferCancel",
+            offer_sequence=wallet_sequence,
+        )
+
+        offer_cancel_result = await transaction.safe_sign_and_submit_transaction(
+            offer_cancel, {"autofill": True, "wallet": the_wallet}
+        )
+
+        response = {
+            "id": id,
+            "info": {"OfferCancel": offer_cancel_result},
+        }
+
+        return response
 
     def fetch_order_books(self, symbols: list, limit: float = LIMIT, params: Any = {}) -> Dict:
         order_books: Any = {}
