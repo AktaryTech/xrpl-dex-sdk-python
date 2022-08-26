@@ -283,7 +283,7 @@ class Client:
         amountFilled = 0
         amountRemaining = float(creator_gets_amount)
 
-        status = OrderStatus.Open
+        status = OrderStatus.Open.value
 
         # TODO: fill this in once the Trades logic is complete
         trades: List[Any] = []
