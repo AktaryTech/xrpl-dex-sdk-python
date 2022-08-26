@@ -1,9 +1,13 @@
 import datetime
 import json
 import os
-from typing import Any, Dict
+from enum import Enum
+from typing import Any, Dict, List
 
 import requests
+from xrpl.asyncio.transaction import safe_sign_and_submit_transaction
+from xrpl.models.transactions import OfferCreate, OfferCreateFlags
+from xrpl.wallet import Wallet
 
 # import websockets
 
@@ -28,6 +32,31 @@ REFERENCE_TX_COST: int = 10
 ACCOUNT_DELETE_TX_COST: int = 2000000
 
 BILLION: int = 1000000000
+
+
+class OrderStatus(Enum):
+    Open: str = "open"
+    Closed: str = "closed"
+    Canceled: str = "canceled"
+    Expired: str = "expired"
+    Rejected: str = "rejected"
+
+
+class OrderType(Enum):
+    Limit: str = "limit"
+    Market: str = "market"
+
+
+class OrderTimeInForce(Enum):
+    GoodTillCanceled: str = "gtc"
+    ImmediateOrCancel: str = "ioc"
+    FillOrKill: str = "fok"
+    PostOnly: str = "po"
+
+
+class OrderSide(Enum):
+    Buy: str = "buy"
+    Sell: str = "sell"
 
 
 class Client:
@@ -62,6 +91,20 @@ class Client:
             raise Exception("Error decoding, negative transfer rate")
 
         return str(decimal)
+
+    def offer_create_flags_to_time_in_force(self, tx: Any) -> str:
+        # setTransactionFlagsToNumber(tx)
+        flags = float(tx.get("Flags"))
+        if flags == 0 and not tx.get("Expiration"):
+            return OrderTimeInForce.GoodTillCanceled.value
+        elif flags and OfferCreateFlags.tfFillOrKill == OfferCreateFlags.tfFillOrKill:
+            return OrderTimeInForce.FillOrKill.value
+        elif flags and OfferCreateFlags.tfImmediateOrCancel == OfferCreateFlags.tfImmediateOrCancel:
+            return OrderTimeInForce.ImmediateOrCancel.value
+        elif flags and OfferCreateFlags.tfPassive == OfferCreateFlags.tfPassive:
+            return OrderTimeInForce.PostOnly.value
+        else:
+            return OrderTimeInForce.PostOnly.value
 
     def fetch_status(self) -> Dict:
         # server_state
@@ -178,9 +221,103 @@ class Client:
             response.append(self.fetch_transaction_fee(code, param))
         return response
 
-    def create_order(self) -> None:
-        # offer_create
-        print("create_order")
+    async def create_order(
+        self, symbol: str, side: str, type: str, amount: str, price: str, params: dict
+    ) -> Dict:
+        [base, quote] = symbol.split("/")
+        wallet_private_key = params.get("wallet_private_key")
+        wallet_public_key = params.get("wallet_public_key")
+        wallet_secret = params.get("wallet_secret")
+        wallet_sequence = params.get("wallet_sequence")
+        taker_gets_issuer = params.get("taker_gets_issuer", "")
+        taker_pays_issuer = params.get("taker_pays_issuer", "")
+        expiration = params.get("expiration", None)
+        memos = params.get("memos", None)
+        flags = params.get("flags", None)
+
+        creator_gets_currency = quote if side == "buy" else base
+        creator_gets_amount = amount
+        creator_pays_currency = quote if side == "buy" else base
+        creator_pays_amount = price
+
+        if creator_gets_currency == "XRP":
+            creator_gets: Any = creator_gets_amount
+        else:
+            creator_gets = {
+                "currency": creator_gets_currency,
+                "value": creator_gets_amount,
+                "issuer": taker_pays_issuer,
+            }
+        if creator_pays_currency == "XRP":
+            creator_pays: Any = creator_pays_amount
+        else:
+            creator_pays = {
+                "currency": creator_pays_currency,
+                "value": creator_pays_amount,
+                "issuer": taker_gets_issuer,
+            }
+
+        if not wallet_secret and (not wallet_public_key or not wallet_private_key):
+            raise Exception(
+                "Must provide either wallet_secret or wallet_public_key and wallet_private_key"
+            )
+
+        wallet = Wallet(seed=wallet_secret, sequence=wallet_sequence)
+
+        offer_create = OfferCreate(
+            account=wallet.classic_address,
+            sequence=wallet.sequence,
+            taker_gets=creator_pays,
+            taker_pays=creator_gets,
+            expiration=expiration,
+            memos=memos,
+            flags=flags,
+        )
+
+        offer_create_response: Any = await safe_sign_and_submit_transaction(
+            offer_create,
+            wallet,
+        )
+
+        amountFilled = 0
+        amountRemaining = float(creator_gets_amount)
+
+        status = OrderStatus.Open
+
+        # TODO: fill this in once the Trades logic is complete
+        trades: List[Any] = []
+
+        # TODO: calculate lastTradeTimestamp once Trades logic is complete
+        last_trade_timestamp = 0
+
+        # TODO: properly calculate this once Trades logic is complete
+        average = 0
+
+        newOrder = {
+            "id": str(offer_create_response.get("result").get("Sequence", 0)),
+            "datetime": rippleTimeToISOTime(offer_create_response.get("result").get("date", 0)),
+            "timestamp": rippleTimeToUnixTime(offer_create_response.get("result").get("date", 0)),
+            "last_trade_timestamp": last_trade_timestamp,
+            "status": status,
+            "symbol": symbol,
+            "type": type,
+            "time_in_force": self.offer_create_flags_to_time_in_force(offer_create),
+            "side": side,
+            "price": float(price),
+            "average": average,
+            "amount": float(amount),
+            "filled": amountFilled,
+            "remaining": amountRemaining,
+            "cost": amountFilled * float(price),
+            "trades": trades,
+            "fee": {
+                "currency": "XRP",
+                "cost": float(offer_create_response.get("result").get("Fee", REFERENCE_TX_COST)),
+            },
+            "info": {"OfferCreate": offer_create_response.get("result")},
+        }
+
+        return newOrder
 
     def cancel_order(self) -> None:
         # offer_cancel
