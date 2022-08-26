@@ -5,10 +5,9 @@ from enum import Enum
 from typing import Any, Dict, List
 
 import requests
-from xrpl import utils
-from xrpl.asyncio.transaction import safe_sign_and_submit_transaction
-from xrpl.models.transactions import OfferCreate, OfferCreateFlags
-from xrpl.wallet import Wallet
+from xrpl import utils, wallet
+from xrpl.asyncio import transaction
+from xrpl.models import transactions
 
 # import websockets
 
@@ -98,11 +97,22 @@ class Client:
         flags = float(tx.get("Flags"))
         if flags == 0 and not tx.get("Expiration"):
             return OrderTimeInForce.GoodTillCanceled.value
-        elif flags and OfferCreateFlags.tfFillOrKill == OfferCreateFlags.tfFillOrKill:
+        elif (
+            flags
+            and transactions.OfferCreateFlags.tfFillOrKill
+            == transactions.OfferCreateFlags.tfFillOrKill
+        ):
             return OrderTimeInForce.FillOrKill.value
-        elif flags and OfferCreateFlags.tfImmediateOrCancel == OfferCreateFlags.tfImmediateOrCancel:
+        elif (
+            flags
+            and transactions.OfferCreateFlags.tfImmediateOrCancel
+            == transactions.OfferCreateFlags.tfImmediateOrCancel
+        ):
             return OrderTimeInForce.ImmediateOrCancel.value
-        elif flags and OfferCreateFlags.tfPassive == OfferCreateFlags.tfPassive:
+        elif (
+            flags
+            and transactions.OfferCreateFlags.tfPassive == transactions.OfferCreateFlags.tfPassive
+        ):
             return OrderTimeInForce.PostOnly.value
         else:
             return OrderTimeInForce.PostOnly.value
@@ -263,9 +273,9 @@ class Client:
                 "Must provide either wallet_secret or wallet_public_key and wallet_private_key"
             )
 
-        wallet = Wallet(seed=wallet_secret, sequence=wallet_sequence)
+        the_wallet = wallet.Wallet(seed=wallet_secret, sequence=wallet_sequence)
 
-        offer_create = OfferCreate(
+        offer_create = transactions.OfferCreate(
             account=wallet.classic_address,
             sequence=wallet.sequence,
             taker_gets=creator_pays,
@@ -275,9 +285,9 @@ class Client:
             flags=flags,
         )
 
-        offer_create_response: Any = await safe_sign_and_submit_transaction(
+        offer_create_response: Any = await transaction.safe_sign_and_submit_transaction(
             offer_create,
-            wallet,
+            the_wallet,
         )
 
         amountFilled = 0
