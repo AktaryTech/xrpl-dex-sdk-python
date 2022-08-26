@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any, Dict, List
 
 import requests
+from xrpl import utils
 from xrpl.asyncio.transaction import safe_sign_and_submit_transaction
 from xrpl.models.transactions import OfferCreate, OfferCreateFlags
 from xrpl.wallet import Wallet
@@ -295,8 +296,12 @@ class Client:
 
         newOrder = {
             "id": str(offer_create_response.get("result").get("Sequence", 0)),
-            "datetime": rippleTimeToISOTime(offer_create_response.get("result").get("date", 0)),
-            "timestamp": rippleTimeToUnixTime(offer_create_response.get("result").get("date", 0)),
+            "datetime": utils.ripple_time_to_datetime(
+                offer_create_response.get("result").get("date", 0)
+            ),
+            "timestamp": utils.ripple_time_to_posix(
+                offer_create_response.get("result").get("date", 0)
+            ),
             "last_trade_timestamp": last_trade_timestamp,
             "status": status,
             "symbol": symbol,
@@ -318,6 +323,20 @@ class Client:
         }
 
         return newOrder
+
+    async def create_limit_buy_order(
+        self, symbol: str, amount: str, price: str, params: dict
+    ) -> Dict:
+        return await self.create_order(
+            symbol, OrderSide.Buy.value, OrderType.Limit.value, amount, price, params
+        )
+
+    async def create_limit_sell_order(
+        self, symbol: str, side: str, type: str, amount: str, price: str, params: dict
+    ) -> Dict:
+        return await self.create_order(
+            symbol, OrderSide.Sell.value, OrderType.Limit.value, amount, price, params
+        )
 
     def cancel_order(self) -> None:
         # offer_cancel
