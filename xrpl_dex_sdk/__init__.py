@@ -514,3 +514,17 @@ class Client:
             ],
         }
         return self.json_rpc(payload)
+
+    def transform_transactions(self, data: Any) -> Dict:
+        # TODO: implement transform
+        return data
+
+    async def watch_transactions(self, accounts: List, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = {
+            "id": id,
+            "command": "subscribe",
+            "accounts": accounts,
+        }
+        await self.subscribe(json.dumps(payload), listener, self.transform_transactions)
+        return {}
