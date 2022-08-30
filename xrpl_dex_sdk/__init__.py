@@ -139,6 +139,7 @@ class Client:
             return OrderTimeInForce.PostOnly.value
 
     def status_transform(self, data: Dict) -> Dict:
+        status = data.get("status")
         state: Any = data.get("state")
         if state.get("server_state") == "disconnected":
             status = "shutdown"
