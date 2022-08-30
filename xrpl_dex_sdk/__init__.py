@@ -1,10 +1,12 @@
 import datetime
 import json
 import os
+import uuid
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 import requests
+from websockets.client import connect as ws_connect
 from xrpl import utils, wallet
 from xrpl.asyncio import transaction
 from xrpl.models import transactions
@@ -67,6 +69,25 @@ class Client:
         self._cache: Any = {}
         self._url = url
 
+    async def subscribe(self, payload: str, listener: Callable, transform: Callable) -> None:
+        """subscribes to stream"""
+        connection = ws_connect(uri=self._url)
+        async with connection as websocket:
+            # Sends a message.
+            await websocket.send(payload)
+            initialized = False
+            async for message in websocket:
+                json_message = json.loads(message)
+                if initialized is False:
+                    if json_message.get("status") == "success":
+                        initialized = True
+                        continue
+                    else:
+                        raise json_message
+
+                # call function passed in with data
+                listener(transform(message))
+
     def json_rpc(self, payload: Any) -> Any:
         """calls the json_rpc api with requests returning json dict"""
         return json.loads(requests.post(self._url, json=payload).text)
@@ -117,12 +138,9 @@ class Client:
         else:
             return OrderTimeInForce.PostOnly.value
 
-    def fetch_status(self) -> Dict:
-        # server_state
-        payload = {"method": "server_state", "params": [{}]}
-        result = self.json_rpc(payload).get("result")
-        status = result.get("status")
-        state = result.get("state")
+    def status_transform(self, data: Dict) -> Dict:
+        status = data.get("status")
+        state: Any = data.get("state")
         if state.get("server_state") == "disconnected":
             status = "shutdown"
         updated = int(
@@ -130,6 +148,22 @@ class Client:
             * 1000
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
+
+    def fetch_status(self) -> Dict:
+        # server_state
+        payload = {"method": "server_state", "params": [{}]}
+        result = self.json_rpc(payload).get("result")
+        return self.status_transform(result)
+
+    async def watch_status(self, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = '{ "id": "' + id + '", "command":"subscribe", "streams":["server"] }'
+        await self.subscribe(
+            payload,
+            listener,
+            self.status_transform,
+        )
+        return {}
 
     def fetch_currencies(self) -> Dict:
         if "fetch_currencies" in self._cache:

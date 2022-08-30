@@ -1,7 +1,9 @@
+import asyncio
+
 import xrpl_dex_sdk
 
 # client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
-client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 
 # print(client.fetch_status())
 # print(client.fetch_currencies())
@@ -35,8 +37,19 @@ client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
 # print(client.fetch_trading_fees())
 # print(client.fetch_transaction_fee("EUR"))
 # print(client.fetch_transaction_fees(["EUR", "USD"]))
-print(client.fetch_fees())
+# print(client.fetch_fees())
 
+
+def foo(data):
+    print("foo=> ", data)
+
+
+async def main() -> None:
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.WS_TESTNET)
+    await client.watch_status(foo)
+
+
+asyncio.run(main())
 
 # RAW
 # print(client.fetch_trades("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"))
