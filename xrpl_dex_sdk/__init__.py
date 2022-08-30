@@ -160,7 +160,7 @@ class Client:
         await self.subscribe(
             payload,
             listener,
-            self.watch_statusstatus_transform_transform,
+            self.status_transform,
         )
         return {}
 
