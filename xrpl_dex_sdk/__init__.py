@@ -153,7 +153,14 @@ class Client:
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
     def watch_status_transform(self, data: Dict) -> Dict:
-        return data
+        state: Any = data.get("state")
+        if state.get("server_state") == "disconnected":
+            status = "shutdown"
+        updated = int(
+            datetime.datetime.strptime(state.get("time"), "%Y-%b-%d %H:%M:%S.%f %Z").timestamp()
+            * 1000
+        )
+        return {"status": status, "updated": updated, "eta": "", "url": ""}
 
     async def watch_status(self, listener: Callable) -> Dict:
         id = uuid.uuid4().hex
