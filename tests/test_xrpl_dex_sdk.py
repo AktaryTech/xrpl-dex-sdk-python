@@ -39,8 +39,8 @@ def test_fetch_markets() -> None:
 
 
 def test_fetch_issuers() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
-    result = client.fetch_issuers()
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.WS_TESTNET)
+    result = client.watch_status()
     assert "Coreum" in result
     result_1: Any = result.get("Coreum")
     assert "name" in result_1

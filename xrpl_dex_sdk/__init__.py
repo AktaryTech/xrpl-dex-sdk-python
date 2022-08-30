@@ -1,10 +1,12 @@
 import datetime
 import json
 import os
+import uuid
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 import requests
+from websockets.client import connect as ws_connect
 from xrpl import utils, wallet
 from xrpl.asyncio import transaction
 from xrpl.models import transactions
@@ -66,6 +68,25 @@ class Client:
         """Return client instant, pass in network, defaults to mainnet"""
         self._cache: Any = {}
         self._url = url
+
+    async def subscribe(self, payload: str, listener: Callable, transform: Callable) -> None:
+        """subscribes to stream"""
+        connection = ws_connect(uri=self._url)
+        async with connection as websocket:
+            # Sends a message.
+            await websocket.send(payload)
+            initialized = False
+            async for message in websocket:
+                json_message = json.loads(message)
+                if initialized is False:
+                    if json_message.get("status") == "success":
+                        initialized = True
+                        continue
+                    else:
+                        raise json_message
+
+                # call function passed in with data
+                listener(transform(message))
 
     def json_rpc(self, payload: Any) -> Any:
         """calls the json_rpc api with requests returning json dict"""
@@ -130,6 +151,19 @@ class Client:
             * 1000
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
+
+    def watch_status_transform(self, data: Dict) -> Dict:
+        return data
+
+    async def watch_status(self, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = '{ "id": "' + id + '", "command":"subscribe", "streams":["server"] }'
+        await self.subscribe(
+            payload,
+            listener,
+            self.watch_status_transform,
+        )
+        return {}
 
     def fetch_currencies(self) -> Dict:
         if "fetch_currencies" in self._cache:
