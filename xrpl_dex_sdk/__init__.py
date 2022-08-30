@@ -79,11 +79,12 @@ class Client:
             async for message in websocket:
                 json_message = json.loads(message)
                 if initialized is False:
+                    print(json.dumps(json_message, indent=4))
                     if json_message.get("status") == "success":
                         initialized = True
                         continue
                     else:
-                        raise json_message
+                        raise Exception(message)
 
                 # call function passed in with data
                 listener(transform(message))
@@ -420,6 +421,25 @@ class Client:
         for symbol in symbols:
             order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
         return order_books
+
+    def transform_order_book(self, data: Any) -> Dict:
+        # TODO: implement transform
+        return data
+
+    async def watch_order_book(self, symbol: str, taker: str, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        [base, quote] = symbol.split("/")
+        taker_pays = {
+            "currency": quote,
+        }
+        taker_gets = {"currency": base, "issuer": taker}
+        payload = {
+            "id": id,
+            "command": "subscribe",
+            "books": [{"taker_pays": taker_pays, "taker_gets": taker_gets, "snapshot": True}],
+        }
+        await self.subscribe(json.dumps(payload), listener, self.transform_order_book)
+        return {}
 
     def fetch_order_book(self, symbol: str, limit: float = LIMIT, params: Any = {}) -> Dict:
         [base, quote] = symbol.split("/")
