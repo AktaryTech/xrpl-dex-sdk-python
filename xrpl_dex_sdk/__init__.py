@@ -138,21 +138,7 @@ class Client:
         else:
             return OrderTimeInForce.PostOnly.value
 
-    def fetch_status(self) -> Dict:
-        # server_state
-        payload = {"method": "server_state", "params": [{}]}
-        result = self.json_rpc(payload).get("result")
-        status = result.get("status")
-        state = result.get("state")
-        if state.get("server_state") == "disconnected":
-            status = "shutdown"
-        updated = int(
-            datetime.datetime.strptime(state.get("time"), "%Y-%b-%d %H:%M:%S.%f %Z").timestamp()
-            * 1000
-        )
-        return {"status": status, "updated": updated, "eta": "", "url": ""}
-
-    def watch_status_transform(self, data: Dict) -> Dict:
+    def status_transform(self, data: Dict) -> Dict:
         state: Any = data.get("state")
         if state.get("server_state") == "disconnected":
             status = "shutdown"
@@ -162,13 +148,19 @@ class Client:
         )
         return {"status": status, "updated": updated, "eta": "", "url": ""}
 
+    def fetch_status(self) -> Dict:
+        # server_state
+        payload = {"method": "server_state", "params": [{}]}
+        result = self.json_rpc(payload).get("result")
+        return self.status_transform(result)
+
     async def watch_status(self, listener: Callable) -> Dict:
         id = uuid.uuid4().hex
         payload = '{ "id": "' + id + '", "command":"subscribe", "streams":["server"] }'
         await self.subscribe(
             payload,
             listener,
-            self.watch_status_transform,
+            self.watch_statusstatus_transform_transform,
         )
         return {}
 
