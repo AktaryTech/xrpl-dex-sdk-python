@@ -573,3 +573,17 @@ class Client:
         }
         await self.subscribe(json.dumps(payload), listener, self.transform_create_order)
         return {}
+
+    def transform_cancel_order(self, data: Any) -> Dict:
+        # TODO: implement transform
+        return data
+
+    async def watch_cancel_order(self, account: str, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = {
+            "id": id,
+            "command": "subscribe",
+            "accounts": [account],
+        }
+        await self.subscribe(json.dumps(payload), listener, self.transform_cancel_order)
+        return {}
