@@ -87,7 +87,10 @@ class Client:
                         raise Exception(message)
 
                 # call function passed in with data
-                listener(transform(message))
+                transformed = transform(message)
+                # return none from transformed to prevent message callback
+                if transformed:
+                    listener(transformed)
 
     def json_rpc(self, payload: Any) -> Any:
         """calls the json_rpc api with requests returning json dict"""
@@ -555,4 +558,18 @@ class Client:
             "accounts": [account],
         }
         await self.subscribe(json.dumps(payload), listener, self.transform_balance)
+        return {}
+
+    def transform_create_order(self, data: Any) -> Dict:
+        # TODO: implement transform
+        return data
+
+    async def watch_create_order(self, account: str, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = {
+            "id": id,
+            "command": "subscribe",
+            "accounts": [account],
+        }
+        await self.subscribe(json.dumps(payload), listener, self.transform_create_order)
         return {}
