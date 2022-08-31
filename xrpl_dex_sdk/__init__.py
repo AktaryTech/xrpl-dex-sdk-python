@@ -528,3 +528,17 @@ class Client:
         }
         await self.subscribe(json.dumps(payload), listener, self.transform_transactions)
         return {}
+
+    def transform_my_trades(self, data: Any) -> Dict:
+        # TODO: implement transform
+        return data
+
+    async def watch_my_trades(self, account, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = {
+            "id": id,
+            "command": "subscribe",
+            "accounts": [account],
+        }
+        await self.subscribe(json.dumps(payload), listener, self.transform_my_trades)
+        return {}
