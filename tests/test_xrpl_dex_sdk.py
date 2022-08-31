@@ -8,7 +8,7 @@ def test_version() -> None:
 
 
 def test_fetch_status() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_status()
     assert "status" in result
     assert result.get("status") == "success"
@@ -18,7 +18,7 @@ def test_fetch_status() -> None:
 
 
 def test_fetch_currencies() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_currencies()
     assert "BTC" in result
     result_1: Any = result.get("BTC")
@@ -26,7 +26,7 @@ def test_fetch_currencies() -> None:
 
 
 def test_fetch_markets() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_markets()
     assert "XRP/ETH" in result
     result_1: Any = result.get("XRP/ETH")
@@ -39,7 +39,7 @@ def test_fetch_markets() -> None:
 
 
 def test_fetch_issuers() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_issuers()
     assert "Coreum" in result
     result_1: Any = result.get("Coreum")
@@ -51,7 +51,7 @@ def test_fetch_issuers() -> None:
 
 
 def test_fetch_balance() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib")
     assert "result" in result
     result_1: Any = result.get("result")
@@ -63,7 +63,7 @@ def test_fetch_balance() -> None:
 
 
 def test_fetch_order_book() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_order_book(
         "XRP/USD",
         3,
@@ -79,7 +79,7 @@ def test_fetch_order_book() -> None:
 
 
 def test_fetch_order_books() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_order_books(
         ["XRP/USD"],
         3,
@@ -99,7 +99,7 @@ def test_fetch_order_books() -> None:
 
 
 def test_fetch_trading_fee() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_trading_fee("XRP/USD")
     assert "symbol" in result
     assert result.get("symbol") == "XRP/USD"
@@ -112,7 +112,7 @@ def test_fetch_trading_fee() -> None:
 
 
 def test_fetch_trading_fees() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     result = client.fetch_trading_fees()
     assert len(result) == 17
     result_1 = result[0]
@@ -127,7 +127,7 @@ def test_fetch_trading_fees() -> None:
 
 
 def test_fetch_transaction_fee() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_transaction_fee("EUR")
     assert "code" in result
     assert "current" in result
@@ -136,7 +136,7 @@ def test_fetch_transaction_fee() -> None:
 
 
 def test_fetch_transaction_fees() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_transaction_fees(["EUR", "USD"])
     assert "code" in result[0]
     assert result[0].get("code") == "EUR"
@@ -151,7 +151,7 @@ def test_fetch_transaction_fees() -> None:
 
 
 def test_fetch_fees() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     result = client.fetch_fees()
     assert "transactions" in result
     transactions: Any = result.get("transactions")

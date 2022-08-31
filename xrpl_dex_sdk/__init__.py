@@ -3,7 +3,7 @@ import json
 import os
 import uuid
 from enum import Enum
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 import requests
 from websockets.client import connect as ws_connect
@@ -18,17 +18,22 @@ __version__ = "0.1.0"
 # const
 LIMIT: int = int(os.getenv("RIPPLE_DEFAULT_LIMIT", 20))
 
-TESTNET: str = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
-DEVNET: str = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
-MAINNET: str = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
+TESTNET: str = "TESTNET"
+DEVNET: str = "DEVNET"
+MAINNET: str = "MAINNET"
 
-RPC_TESTNET: str = "https://" + TESTNET + ":51234/"
-RPC_DEVNET: str = "https://" + DEVNET + ":51234/"
-RPC_MAINNET: str = "https://" + MAINNET + ":51234/"
+TESTNET_URL: str = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
+DEVNET_URL: str = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
+MAINNET_URL: str = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
 
-WS_TESTNET: str = "wss://" + TESTNET + ":51233/"
-WS_DEVNET: str = "wss://" + DEVNET + ":51233/"
-WS_MAINNET: str = "wss://" + MAINNET + "/"
+RPC_TESTNET: str = "https://" + TESTNET_URL + ":51234/"
+RPC_DEVNET: str = "https://" + DEVNET_URL + ":51234/"
+RPC_MAINNET: str = "https://" + MAINNET_URL + ":51234/"
+
+WS_TESTNET: str = "wss://" + TESTNET_URL + ":51233/"
+WS_DEVNET: str = "wss://" + DEVNET_URL + ":51233/"
+WS_MAINNET: str = "wss://" + MAINNET_URL + "/"
+
 
 REFERENCE_TX_COST: int = 10
 ACCOUNT_DELETE_TX_COST: int = 2000000
@@ -64,16 +69,26 @@ class OrderSide(Enum):
 class Client:
     """A json-rpc client class"""
 
-    def __init__(self, url: str = RPC_MAINNET) -> None:
+    def __init__(self, network: str = MAINNET) -> None:
         """Return client instant, pass in network, defaults to mainnet"""
         self._cache: Any = {}
-        self._url = url
+        if network == MAINNET:
+            self.ws_url = WS_MAINNET
+            self.rpc_url = RPC_MAINNET
+        elif network == TESTNET:
+            self.ws_url = WS_TESTNET
+            self.rpc_url = RPC_TESTNET
+        elif network == DEVNET:
+            self.ws_url = WS_DEVNET
+            self.rpc_url = RPC_DEVNET
 
-    async def subscribe(self, payload: str, listener: Callable, transform: Callable) -> None:
+    async def subscribe(
+        self, payload: str, listener: Callable, transform: Callable, extra: Tuple
+    ) -> None:
         """subscribes to stream"""
-        connection = ws_connect(uri=self._url)
+        connection = ws_connect(uri=self.ws_url)
         async with connection as websocket:
-            # Sends a message.
+            print(json.dumps(json.loads(payload), indent=4))
             await websocket.send(payload)
             initialized = False
             async for message in websocket:
@@ -87,14 +102,14 @@ class Client:
                         raise Exception(message)
 
                 # call function passed in with data
-                transformed = transform(message)
+                transformed = transform(json_message, extra)
                 # return none from transformed to prevent message callback
                 if transformed:
                     listener(transformed)
 
     def json_rpc(self, payload: Any) -> Any:
         """calls the json_rpc api with requests returning json dict"""
-        return json.loads(requests.post(self._url, json=payload).text)
+        return json.loads(requests.post(self.rpc_url, json=payload).text)
 
     def load_data(self, name: str) -> Dict:
         path = os.path.dirname(os.path.realpath(__file__)) + os.sep + "data" + os.sep + name
@@ -162,11 +177,8 @@ class Client:
     async def watch_status(self, listener: Callable) -> Dict:
         id = uuid.uuid4().hex
         payload = '{ "id": "' + id + '", "command":"subscribe", "streams":["server"] }'
-        await self.subscribe(
-            payload,
-            listener,
-            self.status_transform,
-        )
+        extra = ()
+        await self.subscribe(payload, listener, self.status_transform, extra)
         return {}
 
     def fetch_currencies(self) -> Dict:
@@ -419,32 +431,44 @@ class Client:
 
         return response
 
-    def fetch_order_books(self, symbols: list, limit: float = LIMIT, params: Any = {}) -> Dict:
+    def fetch_order_books(self, symbols: list, limit: int = LIMIT, params: Any = {}) -> Dict:
         order_books: Any = {}
         for symbol in symbols:
             order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
         return order_books
 
-    def transform_order_book(self, data: Any) -> Dict:
+    def transform_order_book(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_order_book(self, symbol: str, taker: str, listener: Callable) -> Dict:
+    async def watch_order_book(self, listener: Callable, symbol: str, taker: str = "") -> Dict:
+        markets: Any = self.fetch_markets()
+        if symbol not in markets:
+            raise Exception("symbol not in markets")
+        market: Any = markets.get(symbol)
         id = uuid.uuid4().hex
         [base, quote] = symbol.split("/")
         taker_pays = {
             "currency": quote,
         }
-        taker_gets = {"currency": base, "issuer": taker}
-        payload = {
+        if "quoteIssuer" in market:
+            taker_pays["issuer"] = market.get("quoteIssuer")
+
+        taker_gets = {"currency": base}
+        if "baseIssuer" in market:
+            taker_gets["issuer"] = market.get("baseIssuer")
+        payload: Any = {
             "id": id,
             "command": "subscribe",
-            "books": [{"taker_pays": taker_pays, "taker_gets": taker_gets, "snapshot": True}],
+            "books": [{"taker_pays": taker_pays, "taker_gets": taker_gets}],
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_order_book)
+        if taker:
+            payload.get("books")[0]["taker"] = taker
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_order_book, extra)
         return {}
 
-    def fetch_order_book(self, symbol: str, limit: float = LIMIT, params: Any = {}) -> Dict:
+    def fetch_order_book(self, symbol: str, limit: int = LIMIT, params: Any = {}) -> Dict:
         [base, quote] = symbol.split("/")
         taker_pays = {
             "currency": quote,
@@ -518,72 +542,97 @@ class Client:
         }
         return self.json_rpc(payload)
 
-    def transform_transactions(self, data: Any) -> Dict:
+    def transform_transactions(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_transactions(self, accounts: List, listener: Callable) -> Dict:
+    async def watch_transactions(self, listener: Callable, accounts: List) -> Dict:
         id = uuid.uuid4().hex
         payload = {
             "id": id,
             "command": "subscribe",
             "accounts": accounts,
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_transactions)
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_transactions, extra)
         return {}
 
-    def transform_my_trades(self, data: Any) -> Dict:
+    def transform_my_trades(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_my_trades(self, account: str, listener: Callable) -> Dict:
+    async def watch_my_trades(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
         payload = {
             "id": id,
             "command": "subscribe",
             "accounts": [account],
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_my_trades)
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_my_trades, extra)
         return {}
 
-    def transform_balance(self, data: Any) -> Dict:
+    def transform_balance(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_balance(self, account: str, listener: Callable) -> Dict:
+    async def watch_balance(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
         payload = {
             "id": id,
             "command": "subscribe",
             "accounts": [account],
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_balance)
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_balance, extra)
         return {}
 
-    def transform_create_order(self, data: Any) -> Dict:
+    def transform_create_order(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_create_order(self, account: str, listener: Callable) -> Dict:
+    async def watch_create_order(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
         payload = {
             "id": id,
             "command": "subscribe",
             "accounts": [account],
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_create_order)
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_create_order, extra)
         return {}
 
-    def transform_cancel_order(self, data: Any) -> Dict:
+    def transform_cancel_order(self, data: Any, extra: Any) -> Dict:
         # TODO: implement transform
         return data
 
-    async def watch_cancel_order(self, account: str, listener: Callable) -> Dict:
+    async def watch_cancel_order(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
         payload = {
             "id": id,
             "command": "subscribe",
             "accounts": [account],
         }
-        await self.subscribe(json.dumps(payload), listener, self.transform_cancel_order)
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_cancel_order, extra)
+        return {}
+
+    def transform_orders(self, data: Any, extra: Any) -> Union[Dict, None]:
+        (base, quote) = extra
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            if "TakerGets" in transaction and "TakerPays" in transaction:
+                tg = data.get("transaction").get("TakerGets")
+                tp = data.get("transaction").get("TakerPays")
+                if "currency" in tg and "currency" in tp:
+                    if tg.get("currency") == base and tp.get("currency") == quote:
+                        return data
+        return None
+
+    async def watch_orders(self, listener: Callable, symbol: str) -> Dict:
+        id = uuid.uuid4().hex
+        [base, quote] = symbol.split("/")
+        payload = {"id": id, "command": "subscribe", "streams": ["transactions"]}
+        extra = (base, quote)
+        await self.subscribe(json.dumps(payload), listener, self.transform_orders, extra)
         return {}
