@@ -50,7 +50,8 @@ async def main() -> None:
     # await client.watch_order_book("USD/XRP", "rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7", foo)
     # await client.watch_transactions(["rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7"], foo)
     # await client.watch_my_trades("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
-    await client.watch_balance("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
+    # await client.watch_balance("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
+    await client.watch_create_order("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
 
 
 asyncio.run(main())
