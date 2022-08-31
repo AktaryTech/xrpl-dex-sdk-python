@@ -1,9 +1,12 @@
 import asyncio
+import json
+from typing import Any
+from uuid import uuid4
 
 import xrpl_dex_sdk
 
-# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_TESTNET)
-# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.RPC_MAINNET)
+# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
+# client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
 
 # print(client.fetch_status())
 # print(client.fetch_currencies())
@@ -40,19 +43,27 @@ import xrpl_dex_sdk
 # print(client.fetch_fees())
 
 
-def foo(data):
-    print("foo=> ", data)
+def foo(data: Any) -> None:
+    print(json.dumps(data, indent=4))
+
+
+def write_to_out(data: Any) -> None:
+
+    f = open("./out/" + uuid4().hex, "w")
+    f.write(json.dumps(data, indent=4))
+    f.close()
 
 
 async def main() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.WS_TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
     # await client.watch_status(foo)
-    # await client.watch_order_book("USD/XRP", "rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7", foo)
-    # await client.watch_transactions(["rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7"], foo)
-    # await client.watch_my_trades("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
-    # await client.watch_balance("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
-    # await client.watch_create_order("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
-    await client.watch_cancel_order("rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv", foo)
+    # await client.watch_order_book(foo, "BTC/USD")
+    # await client.watch_transactions(foo, ["rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7"])
+    # await client.watch_my_trades(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
+    # await client.watch_balance(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
+    await client.watch_create_order(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
+    # await client.watch_cancel_order(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
+    # await client.watch_orders(write_to_out, "EUR/USD")
 
 
 asyncio.run(main())
