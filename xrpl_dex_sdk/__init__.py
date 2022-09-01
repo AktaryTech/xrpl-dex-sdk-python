@@ -712,3 +712,13 @@ class Client:
         extra = ()
         await self.subscribe(json.dumps(payload), listener, self.transform_tickers, extra)
         return {}
+
+    def transform_ledger(self, data: Any, extra: Any) -> Union[Dict, None]:
+        return data
+
+    async def watch_ledger(self, listener: Callable) -> Dict:
+        id = uuid.uuid4().hex
+        payload = {"id": id, "command": "subscribe", "streams": ["ledger"]}
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_ledger, extra)
+        return {}
