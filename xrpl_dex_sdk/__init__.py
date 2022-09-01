@@ -438,7 +438,6 @@ class Client:
         return order_books
 
     def transform_order_book(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
         return data
 
     async def watch_order_book(self, listener: Callable, symbol: str, taker: str = "") -> Dict:
@@ -542,9 +541,10 @@ class Client:
         }
         return self.json_rpc(payload)
 
-    def transform_transactions(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
-        return data
+    def transform_transactions(self, data: Any, extra: Any) -> Union[Dict, None]:
+        if "transaction" in data:
+            return data
+        return None
 
     async def watch_transactions(self, listener: Callable, accounts: List) -> Dict:
         id = uuid.uuid4().hex
@@ -557,9 +557,12 @@ class Client:
         await self.subscribe(json.dumps(payload), listener, self.transform_transactions, extra)
         return {}
 
-    def transform_my_trades(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
-        return data
+    def transform_my_trades(self, data: Any, extra: Any) -> Union[Dict, None]:
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            if transaction.get("TransactionType") == "Payment":
+                return data
+        return None
 
     async def watch_my_trades(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
@@ -572,9 +575,17 @@ class Client:
         await self.subscribe(json.dumps(payload), listener, self.transform_my_trades, extra)
         return {}
 
-    def transform_balance(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
-        return data
+    def transform_balance(self, data: Any, extra: Any) -> Union[Dict, None]:
+        account = extra[0]
+        if "meta" in data:
+            meta = data.get("meta")
+            if "AffectedNodes" in meta:
+                affected_nodes = meta.get("AffectedNodes")
+                for node in affected_nodes:
+                    final = node.get("ModifiedNode").get("FinalFields")
+                    if final.get("Account") == account:
+                        return {"Account": account, "Balance": int(final.get("Balance")) / 1000000}
+        return None
 
     async def watch_balance(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
@@ -583,12 +594,16 @@ class Client:
             "command": "subscribe",
             "accounts": [account],
         }
-        extra = ()
+        extra = (account,)
         await self.subscribe(json.dumps(payload), listener, self.transform_balance, extra)
         return {}
 
     def transform_create_order(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            if "TransactionType" in transaction:
+                if transaction.get("TransactionType") == "OfferCreate":
+                    return data
         return data
 
     async def watch_create_order(self, listener: Callable, account: str) -> Dict:
@@ -602,9 +617,13 @@ class Client:
         await self.subscribe(json.dumps(payload), listener, self.transform_create_order, extra)
         return {}
 
-    def transform_cancel_order(self, data: Any, extra: Any) -> Dict:
-        # TODO: implement transform
-        return data
+    def transform_cancel_order(self, data: Any, extra: Any) -> Union[Dict, None]:
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            if "TransactionType" in transaction:
+                if transaction.get("TransactionType") == "OfferCancel":
+                    return data
+        return None
 
     async def watch_cancel_order(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
@@ -642,7 +661,12 @@ class Client:
         if "transaction" in data:
             transaction = data.get("transaction")
             if "TransactionType" in transaction and transaction.get("TransactionType") == "Payment":
-                return data
+                if "TakerGets" in transaction and "TakerPays" in transaction:
+                    tg = data.get("transaction").get("TakerGets")
+                    tp = data.get("transaction").get("TakerPays")
+                    if "currency" in tg and "currency" in tp:
+                        if tg.get("currency") == base and tp.get("currency") == quote:
+                            return data
         return None
 
     async def watch_trades(self, listener: Callable, symbol: str) -> Dict:
@@ -656,6 +680,7 @@ class Client:
     def transform_tickers(self, data: Any, extra: Any) -> Union[Dict, None]:
         if "transaction" in data:
             transaction = data.get("transaction")
+            # TODO: TRANSFORM to Price
             return {
                 "TakerGets": transaction.get("TakerGets"),
                 "TakerPays": transaction.get("TakerPays"),
