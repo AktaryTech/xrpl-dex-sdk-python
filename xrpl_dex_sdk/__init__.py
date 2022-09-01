@@ -543,7 +543,6 @@ class Client:
 
     def transform_transactions(self, data: Any, extra: Any) -> Union[Dict, None]:
         if "transaction" in data:
-            transaction = data.get("transaction")
             return data
         return None
 
@@ -562,7 +561,7 @@ class Client:
         if "transaction" in data:
             transaction = data.get("transaction")
             if transaction.get("TransactionType") == "Payment":
-                return transaction
+                return data
         return None
 
     async def watch_my_trades(self, listener: Callable, account: str) -> Dict:
@@ -576,8 +575,8 @@ class Client:
         await self.subscribe(json.dumps(payload), listener, self.transform_my_trades, extra)
         return {}
 
-    def transform_balance(self, data: Any, extra: Any) -> Dict:
-        (account) = extra
+    def transform_balance(self, data: Any, extra: Any) -> Union[Dict, None]:
+        account = extra[0]
         if "meta" in data:
             meta = data.get("meta")
             if "AffectedNodes" in meta:
@@ -586,7 +585,7 @@ class Client:
                     final = node.get("ModifiedNode").get("FinalFields")
                     if final.get("Account") == account:
                         return {"Account": account, "Balance": int(final.get("Balance")) / 1000000}
-        return data
+        return None
 
     async def watch_balance(self, listener: Callable, account: str) -> Dict:
         id = uuid.uuid4().hex
