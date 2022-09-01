@@ -652,3 +652,63 @@ class Client:
         extra = (base, quote)
         await self.subscribe(json.dumps(payload), listener, self.transform_trades, extra)
         return {}
+
+    def transform_tickers(self, data: Any, extra: Any) -> Union[Dict, None]:
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            return {
+                "TakerGets": transaction.get("TakerGets"),
+                "TakerPays": transaction.get("TakerPays"),
+            }
+        return None
+
+    async def watch_tickers(self, listener: Callable, symbols: list) -> Dict:
+        markets: Any = self.fetch_markets()
+        id = uuid.uuid4().hex
+        payload: Any = {
+            "id": id,
+            "command": "subscribe",
+            "books": [],
+        }
+        for symbol in symbols:
+            if symbol not in markets:
+                raise Exception("symbol not in markets")
+            market: Any = markets.get(symbol)
+            [base, quote] = symbol.split("/")
+            taker_pays = {
+                "currency": quote,
+            }
+            if "quoteIssuer" in market:
+                taker_pays["issuer"] = market.get("quoteIssuer")
+            taker_gets = {"currency": base}
+            if "baseIssuer" in market:
+                taker_gets["issuer"] = market.get("baseIssuer")
+            payload.get("books").append({"taker_pays": taker_pays, "taker_gets": taker_gets})
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_tickers, extra)
+        return {}
+
+    async def watch_ticker(self, listener: Callable, symbol: str) -> Dict:
+        markets: Any = self.fetch_markets()
+        if symbol not in markets:
+            raise Exception("symbol not in markets")
+        market: Any = markets.get(symbol)
+        id = uuid.uuid4().hex
+        [base, quote] = symbol.split("/")
+        taker_pays = {
+            "currency": quote,
+        }
+        if "quoteIssuer" in market:
+            taker_pays["issuer"] = market.get("quoteIssuer")
+
+        taker_gets = {"currency": base}
+        if "baseIssuer" in market:
+            taker_gets["issuer"] = market.get("baseIssuer")
+        payload: Any = {
+            "id": id,
+            "command": "subscribe",
+            "books": [{"taker_pays": taker_pays, "taker_gets": taker_gets}],
+        }
+        extra = ()
+        await self.subscribe(json.dumps(payload), listener, self.transform_tickers, extra)
+        return {}

@@ -55,7 +55,7 @@ def write_to_out(data: Any) -> None:
 
 
 async def main() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
     # await client.watch_status(foo)
     # await client.watch_order_book(foo, "BTC/USD")
     # await client.watch_transactions(foo, ["rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7"])
@@ -64,7 +64,9 @@ async def main() -> None:
     # await client.watch_create_order(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
     # await client.watch_cancel_order(foo, "rhvXHRpiWhuXAztZiz3f4AgVr3jwPmNmVv")
     # await client.watch_orders(write_to_out, "EUR/USD")
-    await client.watch_trades(write_to_out, "EUR/USD")
+    # await client.watch_trades(write_to_out, "EUR/USD")
+    await client.watch_ticker(foo, "XRP/EUR")
+    # await client.watch_tickers(foo, ["XRP/EUR", "XRP/USD", "XRP/ETH", "BTC/USD"])
 
 
 asyncio.run(main())
