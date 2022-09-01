@@ -157,7 +157,7 @@ class Client:
         else:
             return OrderTimeInForce.PostOnly.value
 
-    def status_transform(self, data: Dict) -> Dict:
+    def transform_status(self, data: Dict) -> Dict:
         status = data.get("status")
         state: Any = data.get("state")
         if state.get("server_state") == "disconnected":
@@ -172,13 +172,13 @@ class Client:
         # server_state
         payload = {"method": "server_state", "params": [{}]}
         result = self.json_rpc(payload).get("result")
-        return self.status_transform(result)
+        return self.transform_status(result)
 
     async def watch_status(self, listener: Callable) -> Dict:
         id = uuid.uuid4().hex
         payload = '{ "id": "' + id + '", "command":"subscribe", "streams":["server"] }'
         extra = ()
-        await self.subscribe(payload, listener, self.status_transform, extra)
+        await self.subscribe(payload, listener, self.transform_status, extra)
         return {}
 
     def fetch_currencies(self) -> Dict:
@@ -635,4 +635,20 @@ class Client:
         payload = {"id": id, "command": "subscribe", "streams": ["transactions"]}
         extra = (base, quote)
         await self.subscribe(json.dumps(payload), listener, self.transform_orders, extra)
+        return {}
+
+    def transform_trades(self, data: Any, extra: Any) -> Union[Dict, None]:
+        (base, quote) = extra
+        if "transaction" in data:
+            transaction = data.get("transaction")
+            if "TransactionType" in transaction and transaction.get("TransactionType") == "Payment":
+                return data
+        return None
+
+    async def watch_trades(self, listener: Callable, symbol: str) -> Dict:
+        id = uuid.uuid4().hex
+        [base, quote] = symbol.split("/")
+        payload = {"id": id, "command": "subscribe", "streams": ["transactions"]}
+        extra = (base, quote)
+        await self.subscribe(json.dumps(payload), listener, self.transform_trades, extra)
         return {}
