@@ -5,6 +5,10 @@ import uuid
 from enum import Enum
 from typing import Any, Callable, Dict, List, Tuple, Union
 
+from .methods.fetch_balance import fetch_balance
+from .models.ccxt.orders import OrderSide, OrderStatus, OrderTimeInForce, OrderType
+from . import constants
+
 import requests
 from websockets.client import connect as ws_connect
 from xrpl import utils, wallet
@@ -15,72 +19,24 @@ from xrpl.models import transactions
 
 __version__ = "0.1.0"
 
-# const
-LIMIT: int = int(os.getenv("RIPPLE_DEFAULT_LIMIT", 20))
-
-TESTNET: str = "TESTNET"
-DEVNET: str = "DEVNET"
-MAINNET: str = "MAINNET"
-
-TESTNET_URL: str = os.getenv("RIPPLE_TESTNET_URL", "s.altnet.rippletest.net")
-DEVNET_URL: str = os.getenv("RIPPLE_DEVNET_URL", "s.devnet.rippletest.net")
-MAINNET_URL: str = os.getenv("RIPPLE_MAINNET_URL", "s1.ripple.com")
-
-RPC_TESTNET: str = "https://" + TESTNET_URL + ":51234/"
-RPC_DEVNET: str = "https://" + DEVNET_URL + ":51234/"
-RPC_MAINNET: str = "https://" + MAINNET_URL + ":51234/"
-
-WS_TESTNET: str = "wss://" + TESTNET_URL + ":51233/"
-WS_DEVNET: str = "wss://" + DEVNET_URL + ":51233/"
-WS_MAINNET: str = "wss://" + MAINNET_URL + "/"
-
-
-REFERENCE_TX_COST: int = 10
-ACCOUNT_DELETE_TX_COST: int = 2000000
-
-BILLION: int = 1000000000
-
-
-class OrderStatus(Enum):
-    Open: str = "open"
-    Closed: str = "closed"
-    Canceled: str = "canceled"
-    Expired: str = "expired"
-    Rejected: str = "rejected"
-
-
-class OrderType(Enum):
-    Limit: str = "limit"
-    Market: str = "market"
-
-
-class OrderTimeInForce(Enum):
-    GoodTillCanceled: str = "gtc"
-    ImmediateOrCancel: str = "ioc"
-    FillOrKill: str = "fok"
-    PostOnly: str = "po"
-
-
-class OrderSide(Enum):
-    Buy: str = "buy"
-    Sell: str = "sell"
-
 
 class Client:
     """A json-rpc client class"""
 
-    def __init__(self, network: str = MAINNET) -> None:
+    fetch_balance = fetch_balance
+
+    def __init__(self, network: str = constants.MAINNET) -> None:
         """Return client instant, pass in network, defaults to mainnet"""
         self._cache: Any = {}
-        if network == MAINNET:
-            self.ws_url = WS_MAINNET
-            self.rpc_url = RPC_MAINNET
-        elif network == TESTNET:
-            self.ws_url = WS_TESTNET
-            self.rpc_url = RPC_TESTNET
-        elif network == DEVNET:
-            self.ws_url = WS_DEVNET
-            self.rpc_url = RPC_DEVNET
+        if network == constants.MAINNET:
+            self.ws_url = constants.WS_MAINNET
+            self.rpc_url = constants.RPC_MAINNET
+        elif network == constants.TESTNET:
+            self.ws_url = constants.WS_TESTNET
+            self.rpc_url = constants.RPC_TESTNET
+        elif network == constants.DEVNET:
+            self.ws_url = constants.WS_DEVNET
+            self.rpc_url = constants.RPC_DEVNET
 
     async def subscribe(
         self, payload: str, listener: Callable, transform: Callable, extra: Tuple
@@ -125,7 +81,7 @@ class Client:
         if rate == 0:
             return "0"
 
-        decimal = (rate - BILLION) / BILLION
+        decimal = (rate - constants.BILLION) / constants.BILLION
 
         if decimal < 0:
             raise Exception("Error decoding, negative transfer rate")
@@ -200,11 +156,6 @@ class Client:
 
     def fetch_issuers(self) -> Dict:
         return self.load_data("issuers.json")
-
-    def fetch_balance(self, account: str) -> Dict:
-        # gateway_balances
-        payload = {"method": "gateway_balances", "params": [{"account": account}]}
-        return self.json_rpc(payload)
 
     def fetch_fees(self) -> Dict:
         currencies: Any = self.fetch_currencies()
@@ -377,7 +328,9 @@ class Client:
             "trades": trades,
             "fee": {
                 "currency": "XRP",
-                "cost": float(offer_create_response.get("result").get("Fee", REFERENCE_TX_COST)),
+                "cost": float(
+                    offer_create_response.get("result").get("Fee", constants.REFERENCE_TX_COST)
+                ),
             },
             "info": {"OfferCreate": offer_create_response.get("result")},
         }
@@ -431,7 +384,9 @@ class Client:
 
         return response
 
-    def fetch_order_books(self, symbols: list, limit: int = LIMIT, params: Any = {}) -> Dict:
+    def fetch_order_books(
+        self, symbols: list, limit: int = constants.DEFAULT_LIMIT, params: Any = {}
+    ) -> Dict:
         order_books: Any = {}
         for symbol in symbols:
             order_books.setdefault(symbol, self.fetch_order_book(symbol, limit, params.get(symbol)))
@@ -467,7 +422,9 @@ class Client:
         await self.subscribe(json.dumps(payload), listener, self.transform_order_book, extra)
         return {}
 
-    def fetch_order_book(self, symbol: str, limit: int = LIMIT, params: Any = {}) -> Dict:
+    def fetch_order_book(
+        self, symbol: str, limit: int = constants.DEFAULT_LIMIT, params: Any = {}
+    ) -> Dict:
         [base, quote] = symbol.split("/")
         taker_pays = {
             "currency": quote,
