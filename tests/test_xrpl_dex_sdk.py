@@ -8,6 +8,17 @@ def test_version() -> None:
     assert xrpl_dex_sdk.__version__ == "0.1.0"
 
 
+def test_sdk() -> None:
+    sdk = xrpl_dex_sdk.SDK(
+        {
+            "network": xrpl_dex_sdk.constants.TESTNET,
+            "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
+        }
+    )
+    assert sdk.client != None
+    assert sdk.wallet.classic_address == "rpkeJcxB2y5BeAFyycuWwdTTcR3og2a3SR"
+
+
 def test_fetch_balance() -> None:
     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.constants.TESTNET)
     result = client.fetch_balance(params={"account": addresses["default"]})
