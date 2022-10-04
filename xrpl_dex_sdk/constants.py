@@ -1,4 +1,6 @@
+from enum import Enum
 import os
+from typing import Dict
 
 
 DEFAULT_LIMIT: int = int(os.getenv("XRPL_DEFAULT_LIMIT", 20))
@@ -31,3 +33,18 @@ FEE_CURRENCY: str = "XRP"
 REFERENCE_TX_COST: int = 10
 ACCOUNT_DELETE_TX_COST: int = 2000000
 BILLION: int = 1000000000
+
+Networks: Dict[str, str] = {
+    "MAINNET": {
+        "json_rpc": RPC_MAINNET,
+        "ws": WS_MAINNET,
+    },
+    "TESTNET": {
+        "json_rpc": RPC_TESTNET,
+        "ws": WS_TESTNET,
+    },
+    "DEVNET": {
+        "json_rpc": RPC_DEVNET,
+        "ws": WS_DEVNET,
+    },
+}
