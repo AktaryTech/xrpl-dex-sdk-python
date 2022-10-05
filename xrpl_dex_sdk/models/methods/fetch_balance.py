@@ -1,7 +1,7 @@
-from typing import Any, Dict, NamedTuple, Optional
+from typing import NamedTuple, Optional
 
 from ...models import AccountAddress, CurrencyCode
-from ...models.ccxt.balances import Balance
+from ...models.ccxt.balances import Balances
 
 
 class FetchBalanceParams(NamedTuple):
@@ -9,6 +9,4 @@ class FetchBalanceParams(NamedTuple):
     code: Optional[CurrencyCode]
 
 
-class FetchBalanceResponse(NamedTuple):
-    balances: Dict[CurrencyCode, Balance]
-    info: Dict[str, Any]
+FetchBalanceResponse = Balances or None

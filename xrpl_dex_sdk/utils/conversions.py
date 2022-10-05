@@ -1,11 +1,19 @@
-from math import floor
-
-from ..constants import DROPS_PER_XRP
+from ..constants import BILLION
 
 
-def drops_to_xrp(drops: int or str) -> float:
-    return int(drops) / DROPS_PER_XRP
+def transfer_rate_to_decimal(rate: int) -> float:
+    if rate == 0:
+        return 0
+    decimal = rate - BILLION / BILLION
+    if decimal < 0:
+        return
+    return decimal
 
 
-def xrp_to_drops(xrp: float) -> int:
-    return floor(xrp * DROPS_PER_XRP)
+def decimal_to_transfer_rate(decimal: float) -> int:
+    rate = decimal * BILLION + BILLION
+    if rate < BILLION or rate > (BILLION * 2):
+        return
+    if rate == BILLION:
+        return 0
+    return rate

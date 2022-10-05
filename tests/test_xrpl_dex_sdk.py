@@ -1,11 +1,30 @@
 from typing import Any
 
-import xrpl_dex_sdk
 from . import addresses
+import xrpl_dex_sdk
+from xrpl_dex_sdk.models.ccxt.orders import OrderId
+from xrpl_dex_sdk.models.ccxt.trades import TradeId
+from xrpl_dex_sdk.utils.hashes import hash_offer_id
+
+
+def test_hash_offer_id() -> None:
+    offer_id_hash = hash_offer_id("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    print(offer_id_hash)
+    assert offer_id_hash == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
 
 
 def test_version() -> None:
     assert xrpl_dex_sdk.__version__ == "0.1.0"
+
+
+def test_order_id() -> None:
+    id = OrderId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    assert id.id == "rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ:30419151"
+
+
+def test_trade_id() -> None:
+    id = TradeId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    assert id.id == "rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ:30419151"
 
 
 def test_sdk() -> None:
@@ -26,6 +45,14 @@ def test_fetch_balance() -> None:
     assert "info" in result
     assert "XRP" in result["balances"]
     assert result["info"]["account_info"]["Account"] == addresses["default"]
+
+
+def test_fetch_order() -> None:
+    id = OrderId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.constants.TESTNET)
+    result = client.fetch_order(id)
+    print(result)
+    assert result == None
 
 
 # def test_fetch_status() -> None:

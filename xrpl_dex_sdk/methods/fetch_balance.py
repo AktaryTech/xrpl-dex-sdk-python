@@ -1,8 +1,11 @@
 from typing import Any, Dict
 
+from xrpl.utils import drops_to_xrp
+
 from ..models.methods.fetch_balance import FetchBalanceParams, FetchBalanceResponse
 from ..models.ccxt.balances import Balance
-from ..utils.conversions import drops_to_xrp
+
+# from ..utils.conversions import drops_to_xrp
 
 
 def fetch_balance(self, params: FetchBalanceParams) -> FetchBalanceResponse:
@@ -30,8 +33,8 @@ def fetch_balance(self, params: FetchBalanceParams) -> FetchBalanceResponse:
         server_state_response = self.json_rpc(server_state_request)
 
         validated_ledger = server_state_response["result"]["state"]["validated_ledger"]
-        xrp_reserve_base = drops_to_xrp(validated_ledger["reserve_base"])
-        xrp_reserve_inc = drops_to_xrp(validated_ledger["reserve_inc"])
+        xrp_reserve_base = drops_to_xrp(str(validated_ledger["reserve_base"]))
+        xrp_reserve_inc = drops_to_xrp(str(validated_ledger["reserve_inc"]))
 
         used_xrp = xrp_reserve_base + account_object_count * xrp_reserve_inc
         free_xrp = drops_to_xrp(account_info["Balance"]) - used_xrp
