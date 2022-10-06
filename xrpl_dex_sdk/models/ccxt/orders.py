@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Any, Dict, List, NamedTuple, Optional
 
-from .. import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
+from ..common import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
 from .fees import Fee
 from .trades import Trade
 

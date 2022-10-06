@@ -1,17 +1,38 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 from xrpl.models.requests.tx import Tx
 from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
 from ..constants import DEFAULT_SEARCH_LIMIT
-from ..models.methods.fetch_order import FetchOrderParams, FetchOrderResponse
-from ..models.xrpl.offers import OfferCreateFlags, OfferFlags
-from ..models.ccxt.orders import Order, OrderId, OrderStatus, OrderSide, OrderTimeInForce, OrderType
-from ..models.ccxt.trades import Trade, TradeSide, TradeType
-from ..models import CurrencyCode, MarketSymbol
-from ..utils.fees import fetch_transfer_rate
-from ..utils.hashes import hash_offer_id
-from ..utils.orders import get_most_recent_tx, parse_transaction, get_taker_or_maker
+from ..models import (
+    FetchOrderParams,
+    FetchOrderResponse,
+    OfferCreateFlags,
+    OfferFlags,
+    Order,
+    OrderId,
+    OrderStatus,
+    OrderTimeInForce,
+    OrderSide,
+    OrderType,
+    Trade,
+    TradeSide,
+    TradeType,
+    CurrencyCode,
+    MarketSymbol,
+    UnixTimestamp,
+)
+from ..utils import (
+    fetch_transfer_rate,
+    get_most_recent_tx,
+    hash_offer_id,
+    has_offer_flag,
+    has_offer_create_flag,
+    parse_transaction,
+    get_taker_or_maker,
+    sort_by_date,
+    parse_amount_value,
+)
 
 
 def fetch_order(
@@ -21,66 +42,98 @@ def fetch_order(
     params: FetchOrderParams = {"search_limit": DEFAULT_SEARCH_LIMIT},
 ) -> FetchOrderResponse:
 
+    print("Getting Order: " + id.id)
+
     transactions: List[Any] = []
 
     previous_txn = get_most_recent_tx(self.client, id, params["search_limit"])
-    print("previous_txn")
-    print(previous_txn)
 
     if previous_txn == None:
+        print("Could not find previous Transaction! Aborting...")
         return
 
     order_status = previous_txn["order_status"] or OrderStatus.Open
-    previous_txn_id = previous_txn["previous_txn_id"]
+    previous_txn_id: str or None = previous_txn["previous_txn_id"]
     previous_txn_data = previous_txn["previous_txn_data"]
+
     if previous_txn_data != None:
         transactions.append(previous_txn_data)
 
     while previous_txn_id != None:
-        tx_request = Tx.from_dict({"transaction": previous_txn_id, "ledger_index": "validated"})
-        tx_response = self.json_rpc(tx_request)
-        previous_txn_data = parse_transaction(id, tx_response)
+        tx_response = self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
+        tx = tx_response.result
+
+        if "error" in tx:
+            print("Error: " + tx["error_message"])
+            return
+
+        previous_txn_data = parse_transaction(id, tx)
+
         if previous_txn_data != None:
-            transactions.append(previous_txn_data["previous_txn_id"])
+            transactions.append(previous_txn_data)
+            previous_txn_id = previous_txn_data["previous_txn_id"]
 
     trades: List[Trade] = []
-    order: Order or None
+    order: Order or None = None
+    last_trade_timestamp: UnixTimestamp or None = None
     filled: float = 0
     fill_price: float = 0
     total_fill_price: float = fill_price
 
+    if len(transactions) == 0:
+        print("Could not find any Transactions for this Order! Aborting...")
+        return
+
+    print("Preparing to loop through " + str(len(transactions)) + " Transactions")
+
+    transactions.sort(reverse=True, key=sort_by_date)
+
     for transaction_data in transactions:
-        transaction, offers, date = transaction_data
+        transaction = transaction_data["transaction"]
+        offers = transaction_data["offers"]
+        date = transaction_data["date"]
+
+        if last_trade_timestamp == None:
+            last_trade_timestamp = date
 
         for offer in offers:
             source = offer
 
-            if "Sequence" not in source:
+            if source.Sequence == None:
+                print("Could not find Sequence property in Offer! Aborting...")
                 return
 
             side: TradeSide = (
-                "sell" if (source.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+                TradeSide.Sell.value
+                if has_offer_flag(source.Flags, OfferFlags.LSF_SELL)
+                else TradeSide.Buy.value
             )
 
-            base_amount = source.TakerPays if side == "buy" else source.TakerGets
+            base_amount = source.TakerPays if side == TradeSide.Buy.value else source.TakerGets
             base_code = (
-                CurrencyCode("XRP")
-                if base_amount == str
-                else CurrencyCode(base_amount["currency"], base_amount["issuer"])
+                CurrencyCode(base_amount["currency"], base_amount["issuer"])
+                if "currency" in base_amount
+                else CurrencyCode("XRP")
             )
-            base_value = float(
-                drops_to_xrp(base_amount) if base_amount == str else base_amount["value"]
+            base_amount_value = parse_amount_value(base_amount)
+            base_value = (
+                float(drops_to_xrp(str(base_amount_value)))
+                if isinstance(base_amount_value, int)
+                else base_amount_value
             )
 
-            quote_amount = source.TakerGets if side == "buy" else source.TakerPays
+            quote_amount = source.TakerGets if side == TradeSide.Buy.value else source.TakerPays
             quote_code = (
-                CurrencyCode("XRP")
-                if quote_amount == str
-                else CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
+                CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
+                if "currency" in quote_amount
+                else CurrencyCode("XRP")
             )
             quote_rate = fetch_transfer_rate(self.client, quote_amount)
+            quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
-                float(drops_to_xrp(quote_amount)) if quote_amount == str else quote_amount["value"]
+                float(drops_to_xrp(str(quote_amount_value)))
+                if isinstance(quote_amount_value, int)
+                else quote_amount_value
             )
 
             amount = base_value
@@ -94,28 +147,28 @@ def fetch_order(
             fill_price = price
             total_fill_price = total_fill_price + fill_price
 
-            trade: Trade = {
-                "id": OrderId(source.Account, source.Sequence),
-                "order": id,
-                "datetime": ripple_time_to_datetime(date or 0),
-                "timestamp": ripple_time_to_posix(date or 0),
-                "symbol": MarketSymbol(base_code, quote_code),
-                "type": TradeType.Limit,
-                "side": side,
-                "amount": amount,
-                "price": price,
-                "takerOrMaker": get_taker_or_maker(side),
-                "cost": cost,
-                "info": {"offer": offer, "transaction": transaction},
-            }
-
-            if fee_cost > 0:
-                trade.fee = {
+            trade = Trade(
+                id=OrderId(source.Account, source.Sequence),
+                order=id,
+                datetime=ripple_time_to_datetime(date or 0),
+                timestamp=ripple_time_to_posix(date or 0),
+                symbol=MarketSymbol(base_code, quote_code),
+                type=TradeType.Limit,
+                side=side,
+                amount=amount,
+                price=price,
+                takerOrMaker=get_taker_or_maker(side),
+                cost=cost,
+                fee={
                     "currency": str(quote_code),
                     "cost": fee_cost,
                     "rate": fee_rate,
                     "percentage": True,
                 }
+                if fee_cost > 0
+                else None,
+                info={"offer": offer, "transaction": transaction},
+            )
 
             trades.append(trade)
 
@@ -123,42 +176,59 @@ def fetch_order(
             source = transaction
 
             if "Sequence" not in source:
+                print("Could not find Sequence property in Transaction! Aborting...")
                 return
 
             side: OrderSide = (
-                "sell"
-                if (source.Flags & OfferCreateFlags.TF_SELL) == OfferCreateFlags.TF_SELL
-                else "buy"
+                OrderSide.Sell.value
+                if has_offer_create_flag(source["Flags"], OfferCreateFlags.TF_SELL)
+                else OrderSide.Buy.value
             )
 
-            base_amount = source.TakerPays if side == "buy" else source.TakerGets
+            base_amount = (
+                source["TakerPays"] if side == OrderSide.Buy.value else source["TakerGets"]
+            )
             base_code = (
                 CurrencyCode("XRP")
-                if base_amount == str
+                if isinstance(base_amount, str)
                 else CurrencyCode(base_amount["currency"], base_amount["issuer"])
             )
-            base_value = float(
-                drops_to_xrp(base_amount) if base_amount == str else base_amount["value"]
+            base_amount_value = parse_amount_value(base_amount)
+            base_value = (
+                float(drops_to_xrp(str(base_amount_value)))
+                if isinstance(base_amount_value, int)
+                else base_amount_value
             )
 
-            quote_amount = source.TakerGets if side == "buy" else source.TakerPays
+            quote_amount = (
+                source["TakerGets"] if side == OrderSide.Buy.value else source["TakerPays"]
+            )
             quote_code = (
                 CurrencyCode("XRP")
-                if quote_amount == str
+                if isinstance(quote_amount, str)
                 else CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
             )
             quote_rate = fetch_transfer_rate(self.client, quote_amount)
+            quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
-                float(drops_to_xrp(quote_amount)) if quote_amount == str else quote_amount["value"]
+                float(drops_to_xrp(str(quote_amount_value)))
+                if isinstance(quote_amount_value, int)
+                else quote_amount_value
             )
 
-            order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled
-            if source.Flags == OfferCreateFlags.TF_PASSIVE:
-                order_time_in_force = OrderTimeInForce.PostOnly
-            elif source.Flags == OfferCreateFlags.TF_FILL_OR_KILL:
-                order_time_in_force = OrderTimeInForce.FillOrKill
-            elif source.Flags == OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL:
-                order_time_in_force = OrderTimeInForce.ImmediateOrCancel
+            order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled.value
+            if (
+                source["Flags"] & OfferCreateFlags.TF_PASSIVE.value
+            ) == OfferCreateFlags.TF_PASSIVE.value:
+                order_time_in_force = OrderTimeInForce.PostOnly.value
+            elif (
+                source["Flags"] & OfferCreateFlags.TF_FILL_OR_KILL.value
+            ) == OfferCreateFlags.TF_FILL_OR_KILL.value:
+                order_time_in_force = OrderTimeInForce.FillOrKill.value
+            elif (
+                source["Flags"] & OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL.value
+            ) == OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL.value:
+                order_time_in_force = OrderTimeInForce.ImmediateOrCancel.value
 
             amount = base_value
             price = quote_value / amount
@@ -170,34 +240,35 @@ def fetch_order(
             fee_rate = quote_rate
             fee_cost = filled * fee_rate
 
-            order = {
-                "id": OrderId(source.Account, source.Sequence),
-                "clientOrderId": hash_offer_id(source.Account, source.Sequence),
-                "order": id,
-                "datetime": ripple_time_to_datetime(date or 0),
-                "timestamp": ripple_time_to_posix(date or 0),
-                "lastTradeTimestamp": ripple_time_to_posix(transactions[0].date or 0),
-                "status": order_status,
-                "symbol": MarketSymbol(base_code, quote_code),
-                "type": OrderType.Limit,
-                "timeInForce": order_time_in_force,
-                "side": side,
-                "amount": amount,
-                "price": price,
-                "average": average,
-                "filled": filled,
-                "remaining": remaining,
-                "cost": cost,
-                "trades": trades,
-                "info": {"transaction": transaction},
-            }
-
-            if fee_cost > 0:
-                trade.fee = {
+            order = Order(
+                id=OrderId(source["Account"], source["Sequence"]),
+                clientOrderId=hash_offer_id(source["Account"], source["Sequence"]),
+                datetime=ripple_time_to_datetime(date or 0),
+                timestamp=ripple_time_to_posix(date or 0),
+                lastTradeTimestamp=last_trade_timestamp
+                if last_trade_timestamp != None
+                else ripple_time_to_posix(0),
+                status=order_status,
+                symbol=MarketSymbol(base_code, quote_code),
+                type=OrderType.Limit,
+                timeInForce=order_time_in_force,
+                side=side,
+                amount=amount,
+                price=price,
+                average=average,
+                filled=filled,
+                remaining=remaining,
+                cost=cost,
+                trades=trades,
+                fee={
                     "currency": str(quote_code),
                     "cost": fee_cost,
                     "rate": fee_rate,
                     "percentage": True,
                 }
+                if fee_cost > 0
+                else None,
+                info={"transaction": transaction},
+            )
 
     return order

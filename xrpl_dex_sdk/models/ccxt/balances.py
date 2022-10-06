@@ -1,6 +1,6 @@
 from typing import Any, Dict, NamedTuple
 
-from .. import CurrencyCode
+from ..common import CurrencyCode
 
 
 class Balance(NamedTuple):

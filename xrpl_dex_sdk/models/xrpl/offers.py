@@ -1,4 +1,25 @@
 from enum import Enum
+from typing import NamedTuple, Optional
+
+from ..common import XrplTimestamp
+from .amounts import Amount
+from .ledger import LedgerEntryTypes
+
+
+class Offer(NamedTuple):
+    index: str
+    LedgerEntryType: LedgerEntryTypes
+    Flags: int
+    Account: str
+    Sequence: int
+    TakerPays: Amount
+    TakerGets: Amount
+    BookDirectory: str
+    BookNode: str
+    OwnerNode: str
+    PreviousTxnID: str
+    PreviousTxnLgrSeq: int
+    Expiration: Optional[XrplTimestamp]
 
 
 class OfferFlags(Enum):

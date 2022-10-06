@@ -7,9 +7,10 @@ from typing import Any, Callable, Dict, List, Tuple, Union
 
 from .methods.fetch_balance import fetch_balance
 from .methods.fetch_order import fetch_order
-from .sdk import SDK
+from .sdk import SDK, SDKParams
 from .models.ccxt.orders import OrderSide, OrderStatus, OrderTimeInForce, OrderType
 from . import constants
+from . import utils
 
 import requests
 from websockets.client import connect as ws_connect

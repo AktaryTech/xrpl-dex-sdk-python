@@ -1,58 +1,56 @@
 from typing import Any
 
-from . import addresses
-import xrpl_dex_sdk
-from xrpl_dex_sdk.models.ccxt.orders import OrderId
-from xrpl_dex_sdk.models.ccxt.trades import TradeId
-from xrpl_dex_sdk.utils.hashes import hash_offer_id
+from xrpl_dex_sdk import __version__, SDK, SDKParams, models, constants
+from xrpl_dex_sdk.utils import hash_offer_id, omit
+from .fixtures.responses import fetch_order_response
 
-
-def test_hash_offer_id() -> None:
-    offer_id_hash = hash_offer_id("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    print(offer_id_hash)
-    assert offer_id_hash == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+sdk_test_params: SDKParams = {
+    "network": constants.TESTNET,
+    "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
+}
 
 
 def test_version() -> None:
-    assert xrpl_dex_sdk.__version__ == "0.1.0"
+    assert __version__ == "0.1.0"
 
 
-def test_order_id() -> None:
-    id = OrderId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    assert id.id == "rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ:30419151"
+def test_hash_offer_id() -> None:
+    offer_id_hash_1 = hash_offer_id("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    assert offer_id_hash_1 == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+    offer_id_hash_2 = hash_offer_id("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
+    assert offer_id_hash_2 == "29B699A1C221904E43650999C5BA5C3B32E6416E4CA390E64EF4392FFACF4406"
 
 
-def test_trade_id() -> None:
-    id = TradeId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    assert id.id == "rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ:30419151"
+def test_ids() -> None:
+    order_id = models.OrderId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
+    assert order_id.id == "rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ:30419151"
+    trade_id = models.TradeId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
+    assert trade_id.id == "r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z:31617670"
 
 
 def test_sdk() -> None:
-    sdk = xrpl_dex_sdk.SDK(
-        {
-            "network": xrpl_dex_sdk.constants.TESTNET,
-            "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
-        }
-    )
+    sdk = SDK(sdk_test_params)
     assert sdk.client != None
     assert sdk.wallet.classic_address == "rpkeJcxB2y5BeAFyycuWwdTTcR3og2a3SR"
 
 
 def test_fetch_balance() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.constants.TESTNET)
-    result = client.fetch_balance(params={"account": addresses["default"]})
+    sdk = SDK(sdk_test_params)
+    result = sdk.fetch_balance()
+    assert result != None
     assert "balances" in result
     assert "info" in result
     assert "XRP" in result["balances"]
-    assert result["info"]["account_info"]["Account"] == addresses["default"]
+    assert result["info"]["account_info"]["Account"] == sdk.wallet.classic_address
 
 
 def test_fetch_order() -> None:
-    id = OrderId("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.constants.TESTNET)
-    result = client.fetch_order(id)
+    sdk = SDK(sdk_test_params)
+    id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
+    result = sdk.fetch_order(id)
+    assert result != None
     print(result)
-    assert result == None
+    assert result == fetch_order_response
 
 
 # def test_fetch_status() -> None:

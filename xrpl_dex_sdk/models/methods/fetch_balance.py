@@ -1,11 +1,10 @@
 from typing import NamedTuple, Optional
 
-from ...models import AccountAddress, CurrencyCode
-from ...models.ccxt.balances import Balances
+from ...models.ccxt import Balances
+from ..common import CurrencyCode
 
 
 class FetchBalanceParams(NamedTuple):
-    account: AccountAddress
     code: Optional[CurrencyCode]
 
 

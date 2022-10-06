@@ -1,7 +1,6 @@
-from typing import Any, Dict, NamedTuple, Optional
+from typing import NamedTuple, Optional
 
-from ...models import AccountAddress, CurrencyCode
-from ...models.ccxt.orders import Order
+from ...models.ccxt import Order
 
 
 class FetchOrderParams(NamedTuple):

@@ -3,7 +3,7 @@ import json
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.account_info import AccountInfo
 
-from ..models.xrpl import Amount
+from ..models import Amount
 from ..utils.conversions import transfer_rate_to_decimal
 
 
