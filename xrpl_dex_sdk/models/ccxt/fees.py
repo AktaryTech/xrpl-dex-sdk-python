@@ -2,6 +2,7 @@ from typing import NamedTuple, Optional
 
 from ..common import CurrencyCode
 
+
 class Fee(NamedTuple):
     # Fee currency
     currency: CurrencyCode

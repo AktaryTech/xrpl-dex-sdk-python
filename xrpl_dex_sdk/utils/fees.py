@@ -1,10 +1,6 @@
-import json
-from pprint import pprint
-
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.account_info import AccountInfo
 
-from ..constants import BILLION
 from ..models import Amount
 from ..utils.conversions import transfer_rate_to_decimal
 
