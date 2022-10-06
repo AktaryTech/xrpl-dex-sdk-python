@@ -1,9 +1,9 @@
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from xrpl.models.requests.tx import Tx
 from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
-from ..constants import DEFAULT_SEARCH_LIMIT
+from ..constants import CURRENCY_PRECISION, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchOrderParams,
     FetchOrderResponse,
@@ -41,9 +41,6 @@ def fetch_order(
     symbol: Optional[MarketSymbol] = None,
     params: FetchOrderParams = {"search_limit": DEFAULT_SEARCH_LIMIT},
 ) -> FetchOrderResponse:
-
-    print("Getting Order: " + id.id)
-
     transactions: List[Any] = []
 
     previous_txn = get_most_recent_tx(self.client, id, params["search_limit"])
@@ -76,15 +73,13 @@ def fetch_order(
     trades: List[Trade] = []
     order: Order or None = None
     last_trade_timestamp: UnixTimestamp or None = None
-    filled: float = 0
-    fill_price: float = 0
-    total_fill_price: float = fill_price
+    filled: float = float(0)
+    fill_price: float = float(0)
+    total_fill_price: float = float(fill_price)
 
     if len(transactions) == 0:
         print("Could not find any Transactions for this Order! Aborting...")
         return
-
-    print("Preparing to loop through " + str(len(transactions)) + " Transactions")
 
     transactions.sort(reverse=True, key=sort_by_date)
 
@@ -147,29 +142,34 @@ def fetch_order(
             fill_price = price
             total_fill_price = total_fill_price + fill_price
 
+            trade_info: Dict[str, Any] = {}
+            if transaction["Account"] != id.account:
+                trade_info["transaction"] = source
+            else:
+                trade_info["offer"] = source
+
             trade = Trade(
-                id=OrderId(source.Account, source.Sequence),
-                order=id,
+                id=OrderId(source.Account, source.Sequence).id,
+                order=id.id,
                 datetime=ripple_time_to_datetime(date or 0),
                 timestamp=ripple_time_to_posix(date or 0),
-                symbol=MarketSymbol(base_code, quote_code),
-                type=TradeType.Limit,
+                symbol=MarketSymbol(base_code, quote_code).symbol,
+                type=TradeType.Limit.value,
                 side=side,
-                amount=amount,
-                price=price,
-                takerOrMaker=get_taker_or_maker(side),
-                cost=cost,
+                amount=round(amount, CURRENCY_PRECISION),
+                price=round(price, CURRENCY_PRECISION),
+                takerOrMaker=get_taker_or_maker(side).value,
+                cost=round(cost, CURRENCY_PRECISION),
                 fee={
                     "currency": str(quote_code),
-                    "cost": fee_cost,
-                    "rate": fee_rate,
+                    "cost": round(fee_cost, CURRENCY_PRECISION),
+                    "rate": round(fee_rate, CURRENCY_PRECISION),
                     "percentage": True,
                 }
                 if fee_cost > 0
                 else None,
-                info={"offer": offer, "transaction": transaction},
+                info=trade_info,
             )
-
             trades.append(trade)
 
         if transaction["Account"] == id.account and transaction["Sequence"] == id.sequence:
@@ -233,7 +233,9 @@ def fetch_order(
             amount = base_value
             price = quote_value / amount
             actual_price = fill_price
+
             average = total_fill_price / len(trades) if len(trades) > 0 else float(0)
+
             remaining = amount - filled
             cost = filled * actual_price
 
@@ -241,34 +243,34 @@ def fetch_order(
             fee_cost = filled * fee_rate
 
             order = Order(
-                id=OrderId(source["Account"], source["Sequence"]),
+                id=OrderId(source["Account"], source["Sequence"]).id,
                 clientOrderId=hash_offer_id(source["Account"], source["Sequence"]),
                 datetime=ripple_time_to_datetime(date or 0),
                 timestamp=ripple_time_to_posix(date or 0),
                 lastTradeTimestamp=last_trade_timestamp
                 if last_trade_timestamp != None
                 else ripple_time_to_posix(0),
-                status=order_status,
-                symbol=MarketSymbol(base_code, quote_code),
-                type=OrderType.Limit,
+                status=order_status.value,
+                symbol=MarketSymbol(base_code, quote_code).symbol,
+                type=OrderType.Limit.value,
                 timeInForce=order_time_in_force,
                 side=side,
-                amount=amount,
-                price=price,
-                average=average,
-                filled=filled,
-                remaining=remaining,
-                cost=cost,
+                amount=round(amount, CURRENCY_PRECISION),
+                price=round(price, CURRENCY_PRECISION),
+                average=round(average, CURRENCY_PRECISION),
+                filled=round(filled, CURRENCY_PRECISION),
+                remaining=round(remaining, CURRENCY_PRECISION),
+                cost=round(cost, CURRENCY_PRECISION),
                 trades=trades,
                 fee={
                     "currency": str(quote_code),
-                    "cost": fee_cost,
-                    "rate": fee_rate,
+                    "cost": round(fee_cost, CURRENCY_PRECISION),
+                    "rate": round(fee_rate, CURRENCY_PRECISION),
                     "percentage": True,
                 }
                 if fee_cost > 0
                 else None,
-                info={"transaction": transaction},
+                info={"transactionData": transaction_data},
             )
 
     return order

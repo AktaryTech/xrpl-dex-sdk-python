@@ -27,8 +27,8 @@ class TradeSide(Enum):
 
 
 class TradeTakerOrMaker(Enum):
-    Taker: str = ("taker",)
-    Maker: str = ("maker",)
+    Taker: str = "taker"
+    Maker: str = "maker"
 
 
 class Trade(NamedTuple):

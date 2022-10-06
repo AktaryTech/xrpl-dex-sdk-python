@@ -6,12 +6,6 @@ def parse_amount_value(amount: Amount) -> Union[float, int]:
     return int(amount) if isinstance(amount, str) else float(amount["value"])
 
 
-def subtract_amount_values(amount: Amount, subtractor: Amount) -> Union[float, int]:
-    amount_value = parse_amount_value(amount)
-    subtractor_value = parse_amount_value(subtractor)
-    return amount_value - subtractor_value
-
-
 def subtract_amounts(amount: Amount, subtractor: Amount) -> Amount:
     amount_value = parse_amount_value(amount)
     subtractor_value = parse_amount_value(subtractor)

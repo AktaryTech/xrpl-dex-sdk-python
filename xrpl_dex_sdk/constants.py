@@ -27,7 +27,7 @@ WS_TESTNET: str = "wss://" + TESTNET_URL + ":51233/"
 WS_DEVNET: str = "wss://" + DEVNET_URL + ":51233/"
 WS_MAINNET: str = "wss://" + MAINNET_URL + "/"
 
-CURRENCY_PRECISION: int = os.getenv("XRPL_CURRENCY_PRECISION", 15)
+CURRENCY_PRECISION: int = int(os.getenv("XRPL_CURRENCY_PRECISION", 15))
 DROPS_PER_XRP: int = 1000000
 FEE_CURRENCY: str = "XRP"
 REFERENCE_TX_COST: int = 10

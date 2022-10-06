@@ -1,6 +1,5 @@
-from operator import itemgetter
-from re import I
-from typing import Any, Dict, List, Optional
+import json
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.ledger_entry import LedgerEntry
@@ -11,7 +10,6 @@ from xrpl.utils import posix_to_ripple_time
 
 from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
-    Amount,
     LedgerEntryTypes,
     OrderId,
     OrderSide,
@@ -23,7 +21,33 @@ from ..models import (
     Node,
     TransactionMetadata,
 )
-from ..utils import hash_offer_id, omit, sort_by_date, subtract_amount_values, subtract_amounts
+from ..utils import hash_offer_id, omit, sort_by_date, subtract_amounts
+
+
+def order_to_json(input: NamedTuple) -> str:
+    output: Dict[str, Any] = {}
+    for field in input._fields:
+        if field == "fee":
+            if input.__getattribute__(field) == None:
+                continue
+            else:
+                output[field] = input.__getattribute__(field)
+        if field == "trades":
+            trades = []
+            for _trade in input.__getattribute__(field):
+                trade: Dict[str, Any] = {}
+                for trade_field in _trade._fields:
+                    if trade_field == "info" or trade_field == "fee":
+                        trade[trade_field] = _trade.__getattribute__(trade_field)
+                    else:
+                        trade[trade_field] = str(_trade.__getattribute__(trade_field))
+                trades.append(trade)
+            output[field] = trades
+        elif field == "info" or field == "timestamp" or field == "lastTradeTimestamp":
+            output[field] = input.__getattribute__(field)
+        else:
+            output[field] = str(input.__getattribute__(field))
+    return json.dumps(output)
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
@@ -317,5 +341,6 @@ __all__ = [
     "get_order_side_from_offer",
     "get_quote_amount_key",
     "get_taker_or_maker",
+    "order_to_json",
     "parse_transaction",
 ]

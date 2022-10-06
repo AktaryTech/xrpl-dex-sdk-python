@@ -1,12 +1,10 @@
-from typing import Dict, Union
-from typing_extensions import get_args
 from ..constants import BILLION
 
 
 def transfer_rate_to_decimal(rate: int) -> float:
     if rate == 0:
-        return 0
-    decimal = rate - BILLION / BILLION
+        return float(0)
+    decimal = (rate - BILLION) / BILLION
     if decimal < 0:
         return
     return decimal
