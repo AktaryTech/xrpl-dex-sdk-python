@@ -14,7 +14,8 @@ class SDKParams(NamedTuple):
 
 
 class SDK:
-    fetch_balance = methods.fetch_balance.fetch_balance
+    fetch_balance = methods.fetch_balance
+    fetch_order = methods.fetch_order
 
     def __init__(self, params: SDKParams) -> None:
 
