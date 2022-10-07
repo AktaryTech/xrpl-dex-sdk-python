@@ -16,3 +16,5 @@ class FetchOrdersParams(NamedTuple):
 
 
 FetchOrdersResponse = List[Order]
+
+__all__ = ["FetchOrdersParams", "FetchOrdersResponse"]

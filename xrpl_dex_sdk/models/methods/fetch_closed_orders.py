@@ -10,3 +10,5 @@ class FetchClosedOrdersParams(NamedTuple):
 
 
 FetchClosedOrdersResponse = List[Order]
+
+__all__ = ["FetchClosedOrdersParams", "FetchClosedOrdersResponse"]
