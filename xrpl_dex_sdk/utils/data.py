@@ -1,6 +1,8 @@
-from typing import Any, Dict, Set
+from typing import Any, Dict, List, Set
 
+from ..models.xrpl.amounts import Amount
 from ..models.xrpl.offers import OfferCreateFlags, OfferFlags
+from ..models.common import MarketSymbol, CurrencyCode
 
 
 def omit(d: Dict, keys: Set[str]):
@@ -19,9 +21,24 @@ def has_offer_create_flag(flags: int, target_flag: OfferCreateFlags) -> bool:
     return flags & target_flag.value == target_flag.value
 
 
+def get_market_symbol(base: Amount, quote: Amount) -> MarketSymbol:
+    base_code = (
+        CurrencyCode(currency="XRP")
+        if isinstance(base, str)
+        else CurrencyCode(currency=base["currency"], issuer=base["issuer"])
+    )
+    quote_code = (
+        CurrencyCode(currency="XRP")
+        if isinstance(quote, str)
+        else CurrencyCode(currency=quote["currency"], issuer=quote["issuer"])
+    )
+    return MarketSymbol(base_code, quote_code)
+
+
 __all__ = [
     "omit",
     "sort_by_date",
     "has_offer_flag",
     "has_offer_create_flag",
+    "get_market_symbol",
 ]

@@ -15,8 +15,8 @@ def fetch_transfer_rate(client: JsonRpcClient, amount: Amount) -> float:
             {"account": issuer, "ledger_index": "validated"}
         )
         account_info_response = client.request(account_info_request)
-        if account_info_response.__getattribute__("result") != None:
-            account_info_result = account_info_response.result
+        account_info_result = account_info_response.result
+        if account_info_result != None:
             if account_info_result["account_data"]["TransferRate"]:
                 transfer_rate = transfer_rate_to_decimal(
                     account_info_result["account_data"]["TransferRate"]

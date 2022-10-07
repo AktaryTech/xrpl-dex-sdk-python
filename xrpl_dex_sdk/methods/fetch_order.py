@@ -247,7 +247,7 @@ def fetch_order(
                 clientOrderId=hash_offer_id(source["Account"], source["Sequence"]),
                 datetime=ripple_time_to_datetime(date or 0),
                 timestamp=ripple_time_to_posix(date or 0),
-                lastTradeTimestamp=last_trade_timestamp
+                lastTradeTimestamp=ripple_time_to_posix(last_trade_timestamp)
                 if last_trade_timestamp != None
                 else ripple_time_to_posix(0),
                 status=order_status.value,
