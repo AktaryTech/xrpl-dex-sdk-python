@@ -17,6 +17,9 @@ class SDK:
     fetch_balance = methods.fetch_balance
     fetch_order = methods.fetch_order
     fetch_orders = methods.fetch_orders
+    fetch_open_orders = methods.fetch_open_orders
+    fetch_closed_orders = methods.fetch_closed_orders
+    fetch_canceled_orders = methods.fetch_canceled_orders
 
     def __init__(self, params: SDKParams) -> None:
 

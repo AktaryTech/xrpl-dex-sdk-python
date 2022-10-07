@@ -185,6 +185,46 @@ def test_fetch_orders() -> None:
     #             assert str(actual_value) == str(expected_value)
 
 
+def test_fetch_open_orders() -> None:
+    sdk = SDK(sdk_test_params)
+    symbol = models.MarketSymbol(
+        models.CurrencyCode("EUR", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+        models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+    )
+
+    result = sdk.fetch_open_orders(symbol, None, 1, models.FetchOpenOrdersParams(search_limit=25))
+
+    assert result != None
+
+
+def test_fetch_closed_orders() -> None:
+    sdk = SDK(sdk_test_params)
+    symbol = models.MarketSymbol(
+        models.CurrencyCode("EUR", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+        models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+    )
+
+    result = sdk.fetch_closed_orders(
+        symbol, None, 1, models.FetchClosedOrdersParams(search_limit=25)
+    )
+
+    assert result != None
+
+
+def test_fetch_canceled_orders() -> None:
+    sdk = SDK(sdk_test_params)
+    symbol = models.MarketSymbol(
+        models.CurrencyCode("EUR", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+        models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
+    )
+
+    result = sdk.fetch_canceled_orders(
+        symbol, None, 1, models.FetchCanceledOrdersParams(search_limit=25)
+    )
+
+    assert result != None
+
+
 # def test_fetch_status() -> None:
 #     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
 #     result = client.fetch_status()
