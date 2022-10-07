@@ -1,12 +1,21 @@
+from xrpl.clients import JsonRpcClient
+from xrpl.utils import xrp_to_drops
+from xrpl.wallet import generate_faucet_wallet
+
 from xrpl_dex_sdk import __version__, SDK, SDKParams, models, constants
 from xrpl_dex_sdk.utils import hash_offer_id
 from .fixtures.responses import fetch_order_responses
 
 
+test_client = JsonRpcClient(constants.Networks[constants.TESTNET]["json_rpc"])
+
 sdk_test_params: SDKParams = {
-    "network": constants.TESTNET,
+    "client": test_client,
     "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
 }
+
+test_currency = "AKT"
+test_issuer = "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
 
 
 def test_version() -> None:
@@ -15,9 +24,15 @@ def test_version() -> None:
 
 def test_hash_offer_id() -> None:
     offer_id_hash_1 = hash_offer_id("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    assert offer_id_hash_1 == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+    assert (
+        offer_id_hash_1
+        == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+    )
     offer_id_hash_2 = hash_offer_id("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
-    assert offer_id_hash_2 == "29B699A1C221904E43650999C5BA5C3B32E6416E4CA390E64EF4392FFACF4406"
+    assert (
+        offer_id_hash_2
+        == "29B699A1C221904E43650999C5BA5C3B32E6416E4CA390E64EF4392FFACF4406"
+    )
 
 
 def test_ids() -> None:
@@ -59,8 +74,14 @@ def test_fetch_order() -> None:
             for index in range(len(expected_value)):
                 for trade_field in expected_value[index]:
                     expected_trade_value = expected_value[index][trade_field]
-                    actual_trade_value = actual_value[index].__getattribute__(trade_field)
-                    if trade_field == "amount" or trade_field == "price" or trade_field == "cost":
+                    actual_trade_value = actual_value[index].__getattribute__(
+                        trade_field
+                    )
+                    if (
+                        trade_field == "amount"
+                        or trade_field == "price"
+                        or trade_field == "cost"
+                    ):
                         assert float(actual_trade_value) == float(expected_trade_value)
                     elif trade_field == "fee":
                         for fee_field in expected_trade_value:
@@ -86,9 +107,13 @@ def test_fetch_order() -> None:
         elif field == "fee":
             for fee_field in expected_value:
                 if fee_field == "cost" or fee_field == "rate":
-                    assert float(actual_value[fee_field]) == float(expected_value[fee_field])
+                    assert float(actual_value[fee_field]) == float(
+                        expected_value[fee_field]
+                    )
                 else:
-                    assert str(actual_value[fee_field]) == str(expected_value[fee_field])
+                    assert str(actual_value[fee_field]) == str(
+                        expected_value[fee_field]
+                    )
         elif (
             field == "amount"
             or field == "price"
@@ -118,7 +143,9 @@ def test_fetch_orders() -> None:
     )
     # expected_responses = [fetch_order_responses[id.id]]
 
-    result = sdk.fetch_orders(symbol, None, 1, models.FetchOrdersParams(search_limit=25))
+    result = sdk.fetch_orders(
+        symbol, None, 1, models.FetchOrdersParams(search_limit=25)
+    )
 
     assert result != None
     # assert len(result) > 0
@@ -192,7 +219,9 @@ def test_fetch_open_orders() -> None:
         models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
     )
 
-    result = sdk.fetch_open_orders(symbol, None, 1, models.FetchOpenOrdersParams(search_limit=25))
+    result = sdk.fetch_open_orders(
+        symbol, None, 1, models.FetchOpenOrdersParams(search_limit=25)
+    )
 
     assert result != None
 
@@ -223,6 +252,113 @@ def test_fetch_canceled_orders() -> None:
     )
 
     assert result != None
+
+
+def test_cancel_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    create_result = sdk.create_limit_buy_order(
+        symbol=symbol,
+        amount=2,
+        price=1.6,
+    )
+    assert create_result != None
+
+    cancel_result = sdk.cancel_order(id=create_result.id)
+
+    assert cancel_result != None
+    assert cancel_result.id == create_result.id
+
+
+def test_create_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    amount = 2
+    price = 2
+
+    result = sdk.create_order(
+        symbol=symbol,
+        side=models.OrderSide.Buy,
+        type=models.OrderType.Limit,
+        amount=amount,
+        price=price,
+    )
+
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
+    assert tx["TakerGets"] == xrp_to_drops(amount * price)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount
+
+
+def test_create_limit_buy_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    amount = 2
+    price = 2
+
+    result = sdk.create_limit_buy_order(
+        symbol=symbol,
+        amount=amount,
+        price=price,
+    )
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
+    assert tx["TakerGets"] == xrp_to_drops(amount * price)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount
+
+
+def test_create_limit_sell_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode("XRP"),
+        models.CurrencyCode(test_currency, test_issuer),
+    )
+
+    amount = 5
+    price = 1.5
+
+    result = sdk.create_limit_sell_order(
+        symbol=symbol,
+        amount=amount,
+        price=price,
+    )
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert (
+        tx["Flags"] & models.OfferCreateFlags.TF_SELL.value
+        == models.OfferCreateFlags.TF_SELL.value
+    )
+    assert tx["TakerGets"] == xrp_to_drops(amount)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount * price
 
 
 # def test_fetch_status() -> None:

@@ -1,5 +1,25 @@
 from typing import Any, Dict
 
+create_order_responses: Dict[str, Any] = {}
+
+create_order_responses["rpkeJcxB2y5BeAFyycuWwdTTcR3og2a3SR:30419079"] = {
+    "Account": "rpkeJcxB2y5BeAFyycuWwdTTcR3og2a3SR",
+    "Fee": "10",
+    "Flags": 524288,
+    "LastLedgerSequence": 31813272,
+    "Sequence": 30419079,
+    "SigningPubKey": "02155F290580BC63BD445368B7B2101C0A8997FA0E18D591C181AC4C6342499AF3",
+    "TakerGets": "50000000",
+    "TakerPays": {
+        "currency": "AKT",
+        "issuer": "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B",
+        "value": "25",
+    },
+    "TransactionType": "OfferCreate",
+    "TxnSignature": "30440220478EEC4A1096AA045E75C9FAF2196C9F594AE61DF57E18A305F445E5AF868D60022026C8FBC9AE39777A0616119930EEDC65A6046A1D201BB0343453C83735BFF77B",
+    "hash": "28E3B19CF04CEDB3403D3187054F992BA6453CA9177E7C32ECAE23AF56382B6F",
+}
+
 
 fetch_order_responses: Dict[str, Any] = {}
 

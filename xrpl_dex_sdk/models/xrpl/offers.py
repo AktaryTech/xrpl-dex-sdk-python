@@ -1,8 +1,10 @@
 from enum import Enum
 from typing import NamedTuple, Optional
 
+from xrpl.models.amounts.issued_currency_amount import IssuedCurrencyAmount
+
 from ..common import XrplTimestamp
-from .amounts import Amount
+from .common import Amount
 from .ledger import LedgerEntryTypes
 
 
@@ -12,8 +14,8 @@ class Offer(NamedTuple):
     Flags: int
     Account: str
     Sequence: int
-    TakerPays: Amount
-    TakerGets: Amount
+    TakerPays: IssuedCurrencyAmount
+    TakerGets: IssuedCurrencyAmount
     BookDirectory: str
     BookNode: str
     OwnerNode: str
@@ -32,3 +34,6 @@ class OfferCreateFlags(Enum):
     TF_IMMEDIATE_OR_CANCEL: int = 131072
     TF_PASSIVE: int = 65536
     TF_SELL: int = 524288
+
+
+__all__ = ["Offer", "OfferCreateFlags", "OfferFlags"]

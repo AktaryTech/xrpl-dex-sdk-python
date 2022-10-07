@@ -12,3 +12,6 @@ class Balance(NamedTuple):
 class Balances(NamedTuple):
     balances: Dict[CurrencyCode, Balance]
     info: Dict[str, Any]
+
+
+__all__ = ["Balance", "Balances"]

@@ -1,3 +1,4 @@
+from functools import reduce
 import json
 from typing import Any, Dict, List, NamedTuple, Optional
 
@@ -17,6 +18,7 @@ from ..models import (
     TradeTakerOrMaker,
     TradeSide,
     Offer,
+    OfferCreateFlags,
     OfferFlags,
     Node,
     TransactionMetadata,
@@ -50,20 +52,48 @@ def order_to_json(input: NamedTuple) -> str:
     return json.dumps(output)
 
 
+def set_transaction_flags_to_number(tx: Any):
+    if "Flags" not in tx or tx["Flags"] == None:
+        tx["Flags"] = 0
+        return tx
+
+    elif isinstance(tx["Flags"], int):
+        return tx
+
+    else:
+        if tx["TransactionType"] == "OfferCreate":
+            flags = 0
+            for flag in tx["Flags"]:
+                print("flag")
+                print(flag)
+                if OfferCreateFlags.__getattribute__(flag) != None:
+                    flags = tx["Flags"] | OfferCreateFlags.__getattribute__(flag)
+            tx["Flags"] = flags
+            return tx
+
+
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
-    return TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    return (
+        TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    )
 
 
 def get_order_side_from_offer(offer: Offer) -> OrderSide:
-    return "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+    return (
+        "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+    )
 
 
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    return (
+        "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    )
 
 
 def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    return (
+        "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    )
 
 
 #
@@ -82,12 +112,18 @@ def get_offer_from_node(node: Node) -> Offer:
 
     LedgerIndex = affected_node["LedgerIndex"]
     FinalFields = affected_node["FinalFields"]
-    PreviousTxnID = affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
-    PreviousFields = affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    PreviousTxnID = (
+        affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
+    )
+    PreviousFields = (
+        affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    )
 
     offer_index = LedgerIndex
     offer_previous_txn_id = (
-        FinalFields["PreviousTxnID"] if "PreviousTxnID" in FinalFields else PreviousTxnID
+        FinalFields["PreviousTxnID"]
+        if "PreviousTxnID" in FinalFields
+        else PreviousTxnID
     )
 
     offer_taker_gets = (
@@ -123,7 +159,9 @@ def get_offer_from_node(node: Node) -> Offer:
 #
 # Returns an Offer Ledger object from a Transaction
 #
-def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}) -> Offer:
+def get_offer_from_tx(
+    transaction: Any, overrides: Optional[Dict[str, Any]] = {}
+) -> Offer:
     if transaction["TransactionType"] != "OfferCreate":
         return
 
@@ -136,8 +174,12 @@ def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}
         if "Sequence" in transaction
         else None
     )
-    TakerGets = overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
-    TakerPays = overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    TakerGets = (
+        overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
+    )
+    TakerPays = (
+        overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    )
     PreviousTxnID = overrides["PreviousTxnID"] if "PreviousTxnID" in overrides else ""
 
     if Sequence == None:
@@ -254,7 +296,10 @@ def get_most_recent_tx(
 
     ledger_offer_response = client.request(
         LedgerEntry.from_dict(
-            {"offer": {"account": id.account, "seq": id.sequence}, "ledger_index": "validated"}
+            {
+                "offer": {"account": id.account, "seq": id.sequence},
+                "ledger_index": "validated",
+            }
         )
     )
     ledger_offer = ledger_offer_response.result
@@ -333,6 +378,7 @@ def get_most_recent_tx(
 
 
 __all__ = [
+    "set_transaction_flags_to_number",
     "get_base_amount_key",
     "get_most_recent_tx",
     "get_offer_from_node",
