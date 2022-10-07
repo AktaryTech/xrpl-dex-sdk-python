@@ -314,11 +314,10 @@ def get_most_recent_tx(
             transactions.sort(reverse=True, key=sort_by_date)
 
             for transaction in transactions:
-                tx_account = transaction["tx"]["Account"] if "Account" in transaction["tx"] else ""
-                tx_sequence = (
-                    str(transaction["tx"]["Sequence"]) if "Sequence" in transaction["tx"] else ""
-                )
-                is_match = tx_account + ":" + tx_sequence == id.account + ":" + str(id.sequence)
+                # tx_account = transaction["tx"]["Account"] if "Account" in transaction["tx"] else ""
+                # tx_sequence = (
+                #     str(transaction["tx"]["Sequence"]) if "Sequence" in transaction["tx"] else ""
+                # )
                 previous_txn_data = parse_transaction(id, transaction)
                 if previous_txn_data != None:
                     return {
