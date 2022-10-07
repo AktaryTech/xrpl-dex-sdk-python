@@ -111,14 +111,14 @@ def test_fetch_order() -> None:
 
 def test_fetch_orders() -> None:
     sdk = SDK(sdk_test_params)
-    id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
+    # id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
     symbol = models.MarketSymbol(
         models.CurrencyCode("EUR", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
         models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
     )
-    expected_responses = [fetch_order_responses[id.id]]
+    # expected_responses = [fetch_order_responses[id.id]]
 
-    result = sdk.fetch_orders(symbol, None, 1)
+    result = sdk.fetch_orders(symbol, None, 1, models.FetchOrdersParams(search_limit=25))
 
     assert result != None
     # assert len(result) > 0

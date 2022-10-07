@@ -28,12 +28,7 @@ def fetch_orders(
     symbol: Optional[MarketSymbol] = None,
     since: Optional[UnixTimestamp] = None,
     limit: Optional[int] = DEFAULT_LIMIT,
-    params: FetchOrdersParams = FetchOrdersParams(
-        search_limit=DEFAULT_SEARCH_LIMIT,
-        show_open=True,
-        show_closed=True,
-        show_canceled=True,
-    ),
+    params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
     orders: List[Order] = []
 
