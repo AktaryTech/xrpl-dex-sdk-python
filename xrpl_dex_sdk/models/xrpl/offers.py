@@ -1,6 +1,5 @@
 from enum import Enum
-from types import UnionType
-from typing import NamedTuple, Optional
+from typing import NamedTuple, Optional, Union
 
 from xrpl.models.amounts.issued_currency_amount import IssuedCurrencyAmount
 
@@ -14,8 +13,8 @@ class Offer(NamedTuple):
     Flags: int
     Account: str
     Sequence: int
-    TakerPays: UnionType[str, IssuedCurrencyAmount]
-    TakerGets: UnionType[str, IssuedCurrencyAmount]
+    TakerPays: Union[str, IssuedCurrencyAmount]
+    TakerGets: Union[str, IssuedCurrencyAmount]
     BookDirectory: str
     BookNode: str
     OwnerNode: str
