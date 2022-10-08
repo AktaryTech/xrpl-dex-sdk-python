@@ -10,6 +10,6 @@ class FetchOrderParams(NamedTuple):
     ledger_index: Optional[int or str]
 
 
-FetchOrderResponse = Order or None
+FetchOrderResponse = Order
 
 __all__ = ["FetchOrderParams", "FetchOrderResponse"]

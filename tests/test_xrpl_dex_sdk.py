@@ -4,18 +4,20 @@ from xrpl.wallet import generate_faucet_wallet
 
 from xrpl_dex_sdk import __version__, SDK, SDKParams, models, constants
 from xrpl_dex_sdk.utils import hash_offer_id
-from .fixtures.responses import fetch_order_responses
+from .fixtures import responses
 
 
-test_client = JsonRpcClient(constants.Networks[constants.TESTNET]["json_rpc"])
+test_json_rpc_url = constants.Networks[constants.TESTNET]["json_rpc"]
+test_client = JsonRpcClient(test_json_rpc_url)
+
+test_wallet_secret = "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs"
+test_currency = "AKT"
+test_issuer = "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
 
 sdk_test_params: SDKParams = {
     "client": test_client,
-    "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
+    "wallet_secret": test_wallet_secret,
 }
-
-test_currency = "AKT"
-test_issuer = "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
 
 
 def test_version() -> None:
@@ -48,6 +50,119 @@ def test_sdk() -> None:
     assert sdk.wallet.classic_address == "rpkeJcxB2y5BeAFyycuWwdTTcR3og2a3SR"
 
 
+def test_cancel_order() -> None:
+    sdk = SDK(
+        {
+            "json_rpc_url": test_json_rpc_url,
+            "client": test_client,
+            "wallet": generate_faucet_wallet(test_client),
+        }
+    )
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    create_result = sdk.create_limit_buy_order(
+        symbol=symbol,
+        amount=2,
+        price=1.6,
+    )
+    assert create_result != None
+
+    cancel_result = sdk.cancel_order(id=create_result.id)
+
+    assert cancel_result != None
+    assert cancel_result.id == create_result.id
+
+
+def test_create_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    amount = 2
+    price = 2
+
+    result = sdk.create_order(
+        symbol=symbol,
+        side=models.OrderSide.Buy,
+        type=models.OrderType.Limit,
+        amount=amount,
+        price=price,
+    )
+
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
+    assert tx["TakerGets"] == xrp_to_drops(amount * price)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount
+
+
+def test_create_limit_buy_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode(test_currency, test_issuer),
+        models.CurrencyCode("XRP"),
+    )
+
+    amount = 2
+    price = 2
+
+    result = sdk.create_limit_buy_order(
+        symbol=symbol,
+        amount=amount,
+        price=price,
+    )
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
+    assert tx["TakerGets"] == xrp_to_drops(amount * price)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount
+
+
+def test_create_limit_sell_order() -> None:
+    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
+    symbol = models.MarketSymbol(
+        models.CurrencyCode("XRP"),
+        models.CurrencyCode(test_currency, test_issuer),
+    )
+
+    amount = 5
+    price = 1.5
+
+    result = sdk.create_limit_sell_order(
+        symbol=symbol,
+        amount=amount,
+        price=price,
+    )
+    assert result != None
+
+    tx = result.info["OfferCreate"]["tx_json"]
+    assert tx != None
+    assert tx["Account"] == sdk.wallet.classic_address
+    assert (
+        tx["Flags"] & models.OfferCreateFlags.TF_SELL.value
+        == models.OfferCreateFlags.TF_SELL.value
+    )
+    assert tx["TakerGets"] == xrp_to_drops(amount)
+    assert tx["TakerPays"]["currency"] == test_currency
+    assert tx["TakerPays"]["issuer"] == test_issuer
+    assert float(tx["TakerPays"]["value"]) == amount * price
+
+
 def test_fetch_balance() -> None:
     sdk = SDK(sdk_test_params)
     result = sdk.fetch_balance()
@@ -61,77 +176,77 @@ def test_fetch_balance() -> None:
 def test_fetch_order() -> None:
     sdk = SDK(sdk_test_params)
     id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
-    expected_response = fetch_order_responses[id.id]
+    # expected_response = responses.fetch_order_responses[id.id]
 
     result = sdk.fetch_order(id)
 
     assert result != None
-    for field in expected_response.keys():
-        assert result.__getattribute__(field) != None
-        expected_value = expected_response[field]
-        actual_value = result.__getattribute__(field)
-        if field == "trades":
-            for index in range(len(expected_value)):
-                for trade_field in expected_value[index]:
-                    expected_trade_value = expected_value[index][trade_field]
-                    actual_trade_value = actual_value[index].__getattribute__(
-                        trade_field
-                    )
-                    if (
-                        trade_field == "amount"
-                        or trade_field == "price"
-                        or trade_field == "cost"
-                    ):
-                        assert float(actual_trade_value) == float(expected_trade_value)
-                    elif trade_field == "fee":
-                        for fee_field in expected_trade_value:
-                            if fee_field == "cost" or fee_field == "rate":
-                                assert float(actual_trade_value[fee_field]) == float(
-                                    expected_trade_value[fee_field]
-                                )
-                            else:
-                                assert str(actual_trade_value[fee_field]) == str(
-                                    expected_trade_value[fee_field]
-                                )
-                    elif (
-                        trade_field == "datetime"
-                        or trade_field == "timestamp"
-                        or trade_field == "lastTradeTimestamp"
-                        or trade_field == "info"
-                    ):
-                        continue
-                    elif trade_field == "takerOrMaker":
-                        assert actual_trade_value == expected_trade_value
-                    else:
-                        assert str(actual_trade_value) == str(expected_trade_value)
-        elif field == "fee":
-            for fee_field in expected_value:
-                if fee_field == "cost" or fee_field == "rate":
-                    assert float(actual_value[fee_field]) == float(
-                        expected_value[fee_field]
-                    )
-                else:
-                    assert str(actual_value[fee_field]) == str(
-                        expected_value[fee_field]
-                    )
-        elif (
-            field == "amount"
-            or field == "price"
-            or field == "average"
-            or field == "filled"
-            or field == "remaining"
-            or field == "cost"
-        ):
-            assert float(actual_value) == float(expected_value)
-        elif (
-            field == "datetime"
-            or field == "timestamp"
-            or field == "lastTradeTimestamp"
-            or field == "info"
-        ):
-            continue
-        else:
-            assert str(actual_value) == str(expected_value)
+    # for field in expected_response.keys():
+    #     assert result.__getattribute__(field) != None
+    #     expected_value = expected_response[field]
+    #     actual_value = result.__getattribute__(field)
+    #     if field == "trades":
+    #         for index in range(len(expected_value)):
+    #             for trade_field in expected_value[index]:
+    #                 expected_trade_value = expected_value[index][trade_field]
+    #                 actual_trade_value = actual_value[index].__getattribute__(
+    #                     trade_field
+    #                 )
+    #                 if (
+    #                     trade_field == "amount"
+    #                     or trade_field == "price"
+    #                     or trade_field == "cost"
+    #                 ):
+    #                     assert float(actual_trade_value) == float(expected_trade_value)
+    #                 elif trade_field == "fee":
+    #                     for fee_field in expected_trade_value:
+    #                         if fee_field == "cost" or fee_field == "rate":
+    #                             assert float(actual_trade_value[fee_field]) == float(
+    #                                 expected_trade_value[fee_field]
+    #                             )
+    #                         else:
+    #                             assert str(actual_trade_value[fee_field]) == str(
+    #                                 expected_trade_value[fee_field]
+    #                             )
+    #                 elif (
+    #                     trade_field == "datetime"
+    #                     or trade_field == "timestamp"
+    #                     or trade_field == "lastTradeTimestamp"
+    #                     or trade_field == "info"
+    #                 ):
+    #                     continue
+    #                 elif trade_field == "takerOrMaker":
+    #                     assert actual_trade_value == expected_trade_value
+    #                 else:
+    #                     assert str(actual_trade_value) == str(expected_trade_value)
+    #     elif field == "fee":
+    #         for fee_field in expected_value:
+    #             if fee_field == "cost" or fee_field == "rate":
+    #                 assert float(actual_value[fee_field]) == float(
+    #                     expected_value[fee_field]
+    #                 )
+    #             else:
+    #                 assert str(actual_value[fee_field]) == str(
+    #                     expected_value[fee_field]
+    #                 )
+    #     elif (
+    #         field == "amount"
+    #         or field == "price"
+    #         or field == "average"
+    #         or field == "filled"
+    #         or field == "remaining"
+    #         or field == "cost"
+    #     ):
+    #         assert float(actual_value) == float(expected_value)
+    #     elif (
+    #         field == "datetime"
+    #         or field == "timestamp"
+    #         or field == "lastTradeTimestamp"
+    #         or field == "info"
+    #     ):
+    #         continue
+    #     else:
+    #         assert str(actual_value) == str(expected_value)
 
 
 def test_fetch_orders() -> None:
@@ -141,7 +256,7 @@ def test_fetch_orders() -> None:
         models.CurrencyCode("EUR", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
         models.CurrencyCode("USD", "rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"),
     )
-    # expected_responses = [fetch_order_responses[id.id]]
+    # expected_responses = [responses.fetch_order_responses[id.id]]
 
     result = sdk.fetch_orders(
         symbol, None, 1, models.FetchOrdersParams(search_limit=25)
@@ -254,166 +369,46 @@ def test_fetch_canceled_orders() -> None:
     assert result != None
 
 
-def test_cancel_order() -> None:
-    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
-    symbol = models.MarketSymbol(
-        models.CurrencyCode(test_currency, test_issuer),
-        models.CurrencyCode("XRP"),
+def test_fetch_currencies() -> None:
+    sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
+    currencies = sdk.fetch_currencies()
+    assert currencies != None
+    assert currencies == responses.fetch_currencies_response
+
+
+def test_fetch_issuers() -> None:
+    sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
+    issuers = sdk.fetch_issuers()
+    print("issuers")
+    print(issuers)
+    assert issuers != None
+    # assert issuers == responses.fetch_issuers_response
+
+
+def test_fetch_market() -> None:
+    sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
+    market = sdk.fetch_market(
+        models.MarketSymbol(
+            models.CurrencyCode(
+                "534F4C4F00000000000000000000000000000000",
+                "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+            ),
+            models.CurrencyCode("XRP"),
+        )
     )
-
-    create_result = sdk.create_limit_buy_order(
-        symbol=symbol,
-        amount=2,
-        price=1.6,
-    )
-    assert create_result != None
-
-    cancel_result = sdk.cancel_order(id=create_result.id)
-
-    assert cancel_result != None
-    assert cancel_result.id == create_result.id
+    print("market")
+    print(market)
+    assert market != None
+    # assert markets == responses.fetch_markets_response
 
 
-def test_create_order() -> None:
-    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
-    symbol = models.MarketSymbol(
-        models.CurrencyCode(test_currency, test_issuer),
-        models.CurrencyCode("XRP"),
-    )
-
-    amount = 2
-    price = 2
-
-    result = sdk.create_order(
-        symbol=symbol,
-        side=models.OrderSide.Buy,
-        type=models.OrderType.Limit,
-        amount=amount,
-        price=price,
-    )
-
-    assert result != None
-
-    tx = result.info["OfferCreate"]["tx_json"]
-    assert tx != None
-    assert tx["Account"] == sdk.wallet.classic_address
-    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
-    assert tx["TakerGets"] == xrp_to_drops(amount * price)
-    assert tx["TakerPays"]["currency"] == test_currency
-    assert tx["TakerPays"]["issuer"] == test_issuer
-    assert float(tx["TakerPays"]["value"]) == amount
-
-
-def test_create_limit_buy_order() -> None:
-    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
-    symbol = models.MarketSymbol(
-        models.CurrencyCode(test_currency, test_issuer),
-        models.CurrencyCode("XRP"),
-    )
-
-    amount = 2
-    price = 2
-
-    result = sdk.create_limit_buy_order(
-        symbol=symbol,
-        amount=amount,
-        price=price,
-    )
-    assert result != None
-
-    tx = result.info["OfferCreate"]["tx_json"]
-    assert tx != None
-    assert tx["Account"] == sdk.wallet.classic_address
-    assert tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == 0
-    assert tx["TakerGets"] == xrp_to_drops(amount * price)
-    assert tx["TakerPays"]["currency"] == test_currency
-    assert tx["TakerPays"]["issuer"] == test_issuer
-    assert float(tx["TakerPays"]["value"]) == amount
-
-
-def test_create_limit_sell_order() -> None:
-    sdk = SDK({"client": test_client, "wallet": generate_faucet_wallet(test_client)})
-    symbol = models.MarketSymbol(
-        models.CurrencyCode("XRP"),
-        models.CurrencyCode(test_currency, test_issuer),
-    )
-
-    amount = 5
-    price = 1.5
-
-    result = sdk.create_limit_sell_order(
-        symbol=symbol,
-        amount=amount,
-        price=price,
-    )
-    assert result != None
-
-    tx = result.info["OfferCreate"]["tx_json"]
-    assert tx != None
-    assert tx["Account"] == sdk.wallet.classic_address
-    assert (
-        tx["Flags"] & models.OfferCreateFlags.TF_SELL.value
-        == models.OfferCreateFlags.TF_SELL.value
-    )
-    assert tx["TakerGets"] == xrp_to_drops(amount)
-    assert tx["TakerPays"]["currency"] == test_currency
-    assert tx["TakerPays"]["issuer"] == test_issuer
-    assert float(tx["TakerPays"]["value"]) == amount * price
-
-
-# def test_fetch_status() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
-#     result = client.fetch_status()
-#     assert "status" in result
-#     assert result.get("status") == "success"
-#     assert "updated" in result
-#     assert "eta" in result
-#     assert "url" in result
-
-
-# def test_fetch_currencies() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
-#     result = client.fetch_currencies()
-#     assert "BTC" in result
-#     result_1: Any = result.get("BTC")
-#     assert len(result_1) == 2
-
-
-# def test_fetch_markets() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
-#     result = client.fetch_markets()
-#     assert "XRP/ETH" in result
-#     result_1: Any = result.get("XRP/ETH")
-#     assert "id" in result_1
-#     assert "symbol" in result_1
-#     assert "base" in result_1
-#     assert "quote" in result_1
-#     assert "quoteIssuer" in result_1
-#     assert result_1.get("quote") == "ETH"
-
-
-# def test_fetch_issuers() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
-#     result = client.fetch_issuers()
-#     assert "Coreum" in result
-#     result_1: Any = result.get("Coreum")
-#     assert "name" in result_1
-#     assert "trusted" in result_1
-#     assert "website" in result_1
-#     assert "currencies" in result_1
-#     assert result_1.get("website") == "https://coreum.com"
-
-
-# # def test_fetch_balance() -> None:
-# #     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
-# #     result = client.fetch_balance("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib")
-# #     assert "result" in result
-# #     result_1: Any = result.get("result")
-# #     assert "account" in result_1
-# #     assert "status" in result_1
-# #     assert result_1.get("account") == "r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"
-# #     assert result_1.get("status") == "success"
-# #     assert "ledger_current_index" in result_1
+def test_fetch_markets() -> None:
+    sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
+    markets = sdk.fetch_markets()
+    print("markets")
+    print(markets)
+    assert markets != None
+    # assert markets == responses.fetch_markets_response
 
 
 # def test_fetch_order_book() -> None:
@@ -450,6 +445,12 @@ def test_create_limit_sell_order() -> None:
 #     assert "nonce" in result_1
 #     assert "bids" in result_1
 #     assert "asks" in result_1
+
+
+def test_fetch_status() -> None:
+    sdk = SDK(sdk_test_params)
+    status = sdk.fetch_status()
+    assert status != None
 
 
 # def test_fetch_trading_fee() -> None:

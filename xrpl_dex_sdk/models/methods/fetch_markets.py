@@ -1,6 +1,6 @@
 from ...models.ccxt import Markets
 
 
-FetchMarketsResponse = Markets or None
+FetchMarketsResponse = Markets
 
 __all__ = ["FetchMarketsResponse"]

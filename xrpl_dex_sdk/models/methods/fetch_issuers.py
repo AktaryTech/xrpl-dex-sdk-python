@@ -1,6 +1,6 @@
 from ...models.xrpl import Issuers
 
 
-FetchIssuersResponse = Issuers or None
+FetchIssuersResponse = Issuers
 
 __all__ = ["FetchIssuersResponse"]

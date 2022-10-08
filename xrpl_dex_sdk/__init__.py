@@ -11,6 +11,7 @@ from .sdk import SDK, SDKParams
 from .models.ccxt.orders import OrderSide, OrderStatus, OrderTimeInForce, OrderType
 from . import constants
 from . import utils
+from . import data
 
 import requests
 from websockets.client import connect as ws_connect

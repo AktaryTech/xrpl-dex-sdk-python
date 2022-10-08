@@ -1,6 +1,6 @@
 from ...models.ccxt import Currencies
 
 
-FetchCurrenciesResponse = Currencies or None
+FetchCurrenciesResponse = Currencies
 
 __all__ = ["FetchCurrenciesResponse"]

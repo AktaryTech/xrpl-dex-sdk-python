@@ -1,4 +1,3 @@
-from functools import reduce
 import json
 from typing import Any, Dict, List, NamedTuple, Optional
 

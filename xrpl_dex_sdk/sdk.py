@@ -2,6 +2,7 @@ from typing import Any, NamedTuple, Optional
 from xrpl import clients, wallet
 
 from . import methods
+from .models import Currencies, Issuers, Markets
 from .constants import Networks
 
 
@@ -17,6 +18,11 @@ class SDKParams(NamedTuple):
 
 
 class SDK:
+    # cache
+    currencies: Currencies = None
+    issuers: Issuers = None
+    markets: Markets = None
+
     cancel_order = methods.cancel_order
     create_limit_buy_order = methods.create_limit_buy_order
     create_limit_sell_order = methods.create_limit_sell_order
@@ -26,10 +32,10 @@ class SDK:
     fetch_closed_orders = methods.fetch_closed_orders
     fetch_canceled_orders = methods.fetch_canceled_orders
     fetch_currencies = methods.fetch_currencies
-    # fetch_fees = methods.fetch_fees
+    fetch_fees = methods.fetch_fees
     fetch_issuers = methods.fetch_issuers
     # fetch_l2_order_book = methods.fetch_l2_order_book
-    # fetch_market = methods.fetch_market
+    fetch_market = methods.fetch_market
     fetch_markets = methods.fetch_markets
     # fetch_my_trades = methods.fetch_my_trades
     fetch_open_orders = methods.fetch_open_orders
@@ -37,7 +43,7 @@ class SDK:
     # fetch_order_book = methods.fetch_order_book
     # fetch_order_books = methods.fetch_order_books
     fetch_orders = methods.fetch_orders
-    # fetch_status = methods.fetch_status
+    fetch_status = methods.fetch_status
     # fetch_ticker = methods.fetch_ticker
     # fetch_tickers = methods.fetch_tickers
     # fetch_trades = methods.fetch_trades
@@ -45,9 +51,9 @@ class SDK:
     fetch_trading_fees = methods.fetch_trading_fees
     fetch_transaction_fee = methods.fetch_transaction_fee
     fetch_transaction_fees = methods.fetch_transaction_fees
-    # load_currencies = methods.load_currencies
-    # load_issuers = methods.load_issuers
-    # load_markets = methods.load_markets
+    load_currencies = methods.load_currencies
+    load_issuers = methods.load_issuers
+    load_markets = methods.load_markets
     # watch_balance = methods.watch_balance
     # watch_my_trades = methods.watch_my_trades
     # watch_order_book = methods.watch_order_book
@@ -58,6 +64,8 @@ class SDK:
     # watch_trades = methods.watch_trades
 
     def __init__(self, params: SDKParams) -> None:
+
+        self.params = params
 
         if "wallet" not in params and "wallet_secret" not in params:
             print("Must either pass in a `Wallet` object or provide a `wallet_secret`")
@@ -73,6 +81,8 @@ class SDK:
             )
             return
 
+        self.network = params["network"] if "network" in params else None
+
         self.json_rpc_url = (
             params["json_rpc_url"]
             if "json_rpc_url" in params
@@ -84,6 +94,12 @@ class SDK:
             if "network" in params
             else None
         )
+
+        if self.json_rpc_url != None and "network" not in params:
+            for network in Networks:
+                if Networks[network]["json_rpc"] == self.json_rpc_url:
+                    self.network = network
+                    break
 
         self.ws_url = (
             params["ws_url"]
@@ -97,7 +113,11 @@ class SDK:
             else None
         )
 
-        self.params = params
+        if self.ws_url != None and "network" not in params:
+            for network in Networks:
+                if Networks[network]["ws"] == self.ws_url:
+                    self.network = network
+                    break
 
         self.client = (
             params["client"]

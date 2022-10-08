@@ -13,7 +13,7 @@ from .fetch_fees import fetch_fees
 from .fetch_issuers import fetch_issuers
 
 # from .fetch_l2_order_book import fetch_l2_order_book
-# from .fetch_market import fetch_market
+from .fetch_market import fetch_market
 from .fetch_markets import fetch_markets
 
 # from .fetch_my_trades import fetch_my_trades
@@ -24,7 +24,7 @@ from .fetch_order import fetch_order
 # from .fetch_order_books import fetch_order_books
 from .fetch_orders import fetch_orders
 
-# from .fetch_status import fetch_status
+from .fetch_status import fetch_status
 # from .fetch_ticker import fetch_ticker
 # from .fetch_tickers import fetch_tickers
 # from .fetch_trades import fetch_trades
@@ -33,9 +33,10 @@ from .fetch_trading_fees import fetch_trading_fees
 from .fetch_transaction_fee import fetch_transaction_fee
 from .fetch_transaction_fees import fetch_transaction_fees
 
-# from .load_currencies import load_currencies
-# from .load_issuers import load_issuers
-# from .load_markets import load_markets
+from .load_currencies import load_currencies
+from .load_issuers import load_issuers
+from .load_markets import load_markets
+
 # from .watch_balance import watch_balance
 # from .watch_my_trades import watch_my_trades
 # from .watch_order_book import watch_order_book
@@ -59,7 +60,7 @@ __all__ = [
     "fetch_fees",
     "fetch_issuers",
     # "fetch_l2_order_book",
-    # "fetch_market",
+    "fetch_market",
     "fetch_markets",
     # "fetch_my_trades",
     "fetch_open_orders",
@@ -67,7 +68,7 @@ __all__ = [
     # "fetch_order_book",
     # "fetch_order_books",
     "fetch_orders",
-    # "fetch_status",
+    "fetch_status",
     # "fetch_ticker",
     # "fetch_tickers",
     # "fetch_trades",
@@ -75,9 +76,9 @@ __all__ = [
     "fetch_trading_fees",
     "fetch_transaction_fee",
     "fetch_transaction_fees",
-    # "load_currencies",
-    # "load_issuers",
-    # "load_markets",
+    "load_currencies",
+    "load_issuers",
+    "load_markets",
     # "watch_balance",
     # "watch_my_trades",
     # "watch_order_book",
