@@ -9,3 +9,5 @@ class FetchBalanceParams(NamedTuple):
 
 
 FetchBalanceResponse = Balances or None
+
+__all__ = ["FetchBalanceParams", "FetchBalanceResponse"]

@@ -32,16 +32,32 @@ class TradeTakerOrMaker(Enum):
 
 
 class Trade(NamedTuple):
-    id: TradeId  # string trade id
-    order: TradeId  # string order id or undefined/None/null
-    datetime: UnixISOTimestamp  # ISO8601 datetime with milliseconds;
-    timestamp: UnixTimestamp  # Unix timestamp in milliseconds
-    symbol: MarketSymbol  # symbol in CCXT format
-    type: Optional[TradeType]  # order type, 'market', 'limit', ... or undefined/None/null
-    side: TradeSide  # direction of the trade, 'buy' or 'sell'
-    amount: float  # amount of base currency
-    price: float  # float price in quote currency
-    takerOrMaker: TradeTakerOrMaker  # | 'maker'; string, 'taker' or 'maker'
-    cost: float  # total cost (including fees), `price * amount`
+    # string trade id
+    id: TradeId
+    # string order id or undefined/None/null
+    order: TradeId
+    # ISO8601 datetime with milliseconds;
+    datetime: UnixISOTimestamp
+    # Unix timestamp in milliseconds
+    timestamp: UnixTimestamp
+    # symbol in CCXT format
+    symbol: MarketSymbol
+    # order type, 'market', 'limit', ... or undefined/None/null
+    type: Optional[TradeType]
+    # direction of the trade, 'buy' or 'sell'
+    side: TradeSide
+    # amount of base currency
+    amount: float
+    # float price in quote currency
+    price: float
+    # | 'maker'; string, 'taker' or 'maker'
+    takerOrMaker: TradeTakerOrMaker
+    # total cost (including fees), `price * amount`
+    cost: float
+    # transfer fees
     fee: Optional[float]
-    info: Dict[str, Any]  # the original decoded JSON as is
+    # Raw response from exchange
+    info: Dict[str, Any]
+
+
+__all__ = ["TradeId", "TradeType", "TradeSide", "TradeTakerOrMaker", "Trade"]

@@ -123,7 +123,7 @@ def fetch_order(
                 if "currency" in quote_amount
                 else CurrencyCode("XRP")
             )
-            quote_rate = fetch_transfer_rate(self.client, quote_amount)
+            quote_rate = fetch_transfer_rate(self.client, quote_code)
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))
@@ -208,7 +208,7 @@ def fetch_order(
                 if isinstance(quote_amount, str)
                 else CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
             )
-            quote_rate = fetch_transfer_rate(self.client, quote_amount)
+            quote_rate = fetch_transfer_rate(self.client, quote_code)
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))

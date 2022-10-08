@@ -17,6 +17,7 @@ from ..models import (
     TradeTakerOrMaker,
     TradeSide,
     Offer,
+    OfferCreateFlags,
     OfferFlags,
     Node,
     TransactionMetadata,
@@ -48,6 +49,26 @@ def order_to_json(input: NamedTuple) -> str:
         else:
             output[field] = str(input.__getattribute__(field))
     return json.dumps(output)
+
+
+def set_transaction_flags_to_number(tx: Any):
+    if "Flags" not in tx or tx["Flags"] == None:
+        tx["Flags"] = 0
+        return tx
+
+    elif isinstance(tx["Flags"], int):
+        return tx
+
+    else:
+        if tx["TransactionType"] == "OfferCreate":
+            flags = 0
+            for flag in tx["Flags"]:
+                print("flag")
+                print(flag)
+                if OfferCreateFlags.__getattribute__(flag) != None:
+                    flags = tx["Flags"] | OfferCreateFlags.__getattribute__(flag)
+            tx["Flags"] = flags
+            return tx
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
@@ -254,7 +275,10 @@ def get_most_recent_tx(
 
     ledger_offer_response = client.request(
         LedgerEntry.from_dict(
-            {"offer": {"account": id.account, "seq": id.sequence}, "ledger_index": "validated"}
+            {
+                "offer": {"account": id.account, "seq": id.sequence},
+                "ledger_index": "validated",
+            }
         )
     )
     ledger_offer = ledger_offer_response.result
@@ -333,6 +357,7 @@ def get_most_recent_tx(
 
 
 __all__ = [
+    "set_transaction_flags_to_number",
     "get_base_amount_key",
     "get_most_recent_tx",
     "get_offer_from_node",

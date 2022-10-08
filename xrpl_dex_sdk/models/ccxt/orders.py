@@ -63,3 +63,13 @@ class Order(NamedTuple):
     trades: List[Trade]
     fee: Optional[Fee]
     info: Dict[str, Any]
+
+
+__all__ = [
+    "OrderId",
+    "OrderStatus",
+    "OrderType",
+    "OrderTimeInForce",
+    "OrderSide",
+    "Order",
+]

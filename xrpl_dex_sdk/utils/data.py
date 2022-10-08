@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Set
 
-from ..models.xrpl.amounts import Amount
+from ..models.xrpl.common import Amount
 from ..models.xrpl.offers import OfferCreateFlags, OfferFlags
 from ..models.common import MarketSymbol, CurrencyCode
 
