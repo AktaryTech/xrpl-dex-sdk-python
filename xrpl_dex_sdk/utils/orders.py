@@ -72,27 +72,19 @@ def set_transaction_flags_to_number(tx: Any):
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
-    return (
-        TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
-    )
+    return TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
 
 
 def get_order_side_from_offer(offer: Offer) -> OrderSide:
-    return (
-        "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
-    )
+    return "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
 
 
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
-    return (
-        "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
-    )
+    return "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
 
 
 def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
-    return (
-        "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
-    )
+    return "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
 
 
 #
@@ -111,18 +103,12 @@ def get_offer_from_node(node: Node) -> Offer:
 
     LedgerIndex = affected_node["LedgerIndex"]
     FinalFields = affected_node["FinalFields"]
-    PreviousTxnID = (
-        affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
-    )
-    PreviousFields = (
-        affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
-    )
+    PreviousTxnID = affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
+    PreviousFields = affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
 
     offer_index = LedgerIndex
     offer_previous_txn_id = (
-        FinalFields["PreviousTxnID"]
-        if "PreviousTxnID" in FinalFields
-        else PreviousTxnID
+        FinalFields["PreviousTxnID"] if "PreviousTxnID" in FinalFields else PreviousTxnID
     )
 
     offer_taker_gets = (
@@ -158,9 +144,7 @@ def get_offer_from_node(node: Node) -> Offer:
 #
 # Returns an Offer Ledger object from a Transaction
 #
-def get_offer_from_tx(
-    transaction: Any, overrides: Optional[Dict[str, Any]] = {}
-) -> Offer:
+def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}) -> Offer:
     if transaction["TransactionType"] != "OfferCreate":
         return
 
@@ -173,12 +157,8 @@ def get_offer_from_tx(
         if "Sequence" in transaction
         else None
     )
-    TakerGets = (
-        overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
-    )
-    TakerPays = (
-        overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
-    )
+    TakerGets = overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
+    TakerPays = overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
     PreviousTxnID = overrides["PreviousTxnID"] if "PreviousTxnID" in overrides else ""
 
     if Sequence == None:

@@ -25,6 +25,7 @@ from .fetch_order import fetch_order
 from .fetch_orders import fetch_orders
 
 from .fetch_status import fetch_status
+
 # from .fetch_ticker import fetch_ticker
 # from .fetch_tickers import fetch_tickers
 # from .fetch_trades import fetch_trades
