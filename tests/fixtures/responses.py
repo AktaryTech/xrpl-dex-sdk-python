@@ -1,6 +1,31 @@
 from typing import Any, Dict
 
-from xrpl_dex_sdk.models import Currencies
+from xrpl_dex_sdk.models import (
+    Currencies,
+    CurrencyCode,
+    MarketSymbol,
+    OrderBooks,
+    OrderBookLevel,
+)
+
+
+fetch_order_book_response: OrderBooks = {}
+
+fetch_order_book_response["AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"] = {
+    "symbol": MarketSymbol(
+        quote=CurrencyCode(currency="XRP"),
+        base=CurrencyCode(
+            currency="AKT",
+            issuer="rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B",
+        ),
+    ),
+    "nonce": 30419081,
+    "bids": [],
+    "asks": [[0.5, 19.5], [0.5, 50.0], [0.5, 50.0]],
+    "level": OrderBookLevel.L2,
+    "timestamp": None,
+    "datetime": None,
+}
 
 fetch_currencies_response: Currencies = {
     "534F4C4F00000000000000000000000000000000+rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz": {

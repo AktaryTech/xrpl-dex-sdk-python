@@ -400,40 +400,57 @@ def test_fetch_markets() -> None:
     # assert markets == responses.fetch_markets_response
 
 
-# def test_fetch_order_book() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
-#     result = client.fetch_order_book(
-#         "XRP/USD",
-#         3,
-#         {
-#             "taker": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-#             "taker_pays_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
-#         },
-#     )
-#     assert "symbol" in result
-#     assert "nonce" in result
-#     assert "bids" in result
-#     assert "asks" in result
+def test_fetch_order_book() -> None:
+    sdk = SDK(sdk_test_params)
+    test_limit = 3
+    test_symbol = models.MarketSymbol(
+        quote=models.CurrencyCode(currency="XRP"),
+        base=models.CurrencyCode(
+            currency=test_currency,
+            issuer=test_issuer,
+        ),
+    )
+    order_book: models.OrderBook = sdk.fetch_order_book(
+        symbol=test_symbol,
+        limit=test_limit,
+        params=models.FetchOrderBookParams(taker=sdk.wallet.classic_address),
+    )
+
+    expected_order_book = responses.fetch_order_book_response[test_symbol.symbol]
+    assert order_book.symbol.symbol == expected_order_book["symbol"].symbol
+    assert order_book.nonce == expected_order_book["nonce"]
+    assert order_book.bids == expected_order_book["bids"]
+    assert order_book.asks == expected_order_book["asks"]
+    assert len(order_book.bids) + len(order_book.asks) == test_limit
 
 
-# def test_fetch_order_books() -> None:
-#     client = xrpl_dex_sdk.Client(xrpl_dex_sdk.MAINNET)
-#     result = client.fetch_order_books(
-#         ["XRP/USD"],
-#         3,
-#         {
-#             "XRP/USD": {
-#                 "taker": "rf1BiGeXwwQoi8Z2ueFYTEXSwuJYfV2Jpn",
-#                 "taker_pays_issuer": "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B",
-#             },
-#         },
-#     )
-#     assert "XRP/USD" in result
-#     result_1: Any = result.get("XRP/USD")
-#     assert "symbol" in result_1
-#     assert "nonce" in result_1
-#     assert "bids" in result_1
-#     assert "asks" in result_1
+def test_fetch_order_books() -> None:
+    sdk = SDK(sdk_test_params)
+    test_limit = 3
+    test_symbol = models.MarketSymbol(
+        quote=models.CurrencyCode(currency="XRP"),
+        base=models.CurrencyCode(
+            currency=test_currency,
+            issuer=test_issuer,
+        ),
+    )
+    order_books: models.OrderBooks = sdk.fetch_order_books(
+        symbols=[test_symbol],
+        limit=test_limit,
+        params=models.FetchOrderBooksParams(
+            symbols={test_symbol: models.FetchOrderBookParams(taker=sdk.wallet.classic_address)}
+        ),
+    )
+
+    assert test_symbol in order_books
+    order_book_1 = order_books[test_symbol]
+
+    expected_order_book = responses.fetch_order_book_response[test_symbol.symbol]
+    assert order_book_1.symbol.symbol == expected_order_book["symbol"].symbol
+    assert order_book_1.nonce == expected_order_book["nonce"]
+    assert order_book_1.bids == expected_order_book["bids"]
+    assert order_book_1.asks == expected_order_book["asks"]
+    assert len(order_book_1.bids) + len(order_book_1.asks) == test_limit
 
 
 def test_fetch_status() -> None:

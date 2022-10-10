@@ -19,11 +19,9 @@ from .fetch_markets import fetch_markets
 # from .fetch_my_trades import fetch_my_trades
 from .fetch_open_orders import fetch_open_orders
 from .fetch_order import fetch_order
-
-# from .fetch_order_book import fetch_order_book
-# from .fetch_order_books import fetch_order_books
+from .fetch_order_book import fetch_order_book
+from .fetch_order_books import fetch_order_books
 from .fetch_orders import fetch_orders
-
 from .fetch_status import fetch_status
 
 # from .fetch_ticker import fetch_ticker
@@ -66,8 +64,8 @@ __all__ = [
     # "fetch_my_trades",
     "fetch_open_orders",
     "fetch_order",
-    # "fetch_order_book",
-    # "fetch_order_books",
+    "fetch_order_book",
+    "fetch_order_books",
     "fetch_orders",
     "fetch_status",
     # "fetch_ticker",

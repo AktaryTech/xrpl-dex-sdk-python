@@ -1,18 +1,10 @@
 from enum import Enum
-from typing import List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional
 
 from ..common import MarketSymbol, UnixISOTimestamp, UnixTimestamp
 
 
-class OrderBookEntryType(Enum):
-    BID: str = "bid"
-    ASK: str = "ask"
-
-
-class OrderBookEntry(NamedTuple):
-    type: OrderBookEntryType
-    price: float
-    amount: float
+OrderBookEntry = List[float]
 
 
 class OrderBookLevel(Enum):
@@ -26,13 +18,17 @@ class OrderBook(NamedTuple):
     nonce: int
     bids: List[OrderBookEntry] = []
     asks: List[OrderBookEntry] = []
+    level: Optional[OrderBookLevel] = OrderBookLevel.L2
     timestamp: Optional[UnixTimestamp] = None
     datetime: Optional[UnixISOTimestamp] = None
 
 
+OrderBooks = Dict[MarketSymbol, OrderBook]
+
+
 __all__ = [
-    "OrderBookEntryType",
     "OrderBookEntry",
     "OrderBookLevel",
     "OrderBook",
+    "OrderBooks",
 ]

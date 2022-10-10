@@ -40,8 +40,8 @@ class SDK:
     # fetch_my_trades = methods.fetch_my_trades
     fetch_open_orders = methods.fetch_open_orders
     fetch_order = methods.fetch_order
-    # fetch_order_book = methods.fetch_order_book
-    # fetch_order_books = methods.fetch_order_books
+    fetch_order_book = methods.fetch_order_book
+    fetch_order_books = methods.fetch_order_books
     fetch_orders = methods.fetch_orders
     fetch_status = methods.fetch_status
     # fetch_ticker = methods.fetch_ticker
