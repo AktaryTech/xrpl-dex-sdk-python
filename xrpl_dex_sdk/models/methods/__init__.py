@@ -25,8 +25,9 @@ from .fetch_order_books import *
 from .fetch_orders import *
 from .fetch_status import *
 
-# from .fetch_ticker import *
-# from .fetch_tickers import *
+from .fetch_ticker import *
+from .fetch_tickers import *
+
 # from .fetch_trades import *
 from .fetch_trading_fee import *
 from .fetch_trading_fees import *
@@ -68,8 +69,8 @@ __all__ = [
     *fetch_order_books.__all__,
     *fetch_orders.__all__,
     *fetch_status.__all__,
-    # *fetch_ticker.__all__,
-    # *fetch_tickers.__all__,
+    *fetch_ticker.__all__,
+    *fetch_tickers.__all__,
     # *fetch_trades.__all__,
     *fetch_trading_fee.__all__,
     *fetch_trading_fees.__all__,

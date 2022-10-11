@@ -1,27 +1,18 @@
-import json
 from ..models.methods.fetch_trading_fee import FetchTradingFeeResponse
+from ..models.common import MarketSymbol
+from ..models.ccxt.markets import Market
 
 
-def fetch_trading_fee(self, symbol: str) -> FetchTradingFeeResponse:
-    markets = self.fetch_markets()
-    if symbol in markets is False:
-        raise Exception("No symbol in markets data")
+def fetch_trading_fee(self, symbol: MarketSymbol) -> FetchTradingFeeResponse:
+    market: Market = self.fetch_market(symbol)
 
-    market_symbol = markets.get(symbol)
-    base_fee = market_symbol.get("baseFee", 0)
-    base_issuer = market_symbol.get("baseIssuer")
-    quote_fee = market_symbol.get("quoteFee", 0)
-    quote_issuer = market_symbol.get("quoteIssuer")
-    response = {
+    if market == None:
+        return
+
+    return {
         "symbol": symbol,
-        "base": base_fee,
-        "quote": quote_fee,
+        "base": market["base_fee"] if "base_fee" in market else 0,
+        "quote": market["quote_fee"] if "quote_fee" in market else 0,
         "percentage": True,
-        "info": json.dumps({"market": market_symbol}),
+        "info": {"market": market},
     }
-    if base_issuer:
-        response["baseIssuer"] = base_issuer
-    if quote_issuer:
-        response["quoteIssuer"] = quote_issuer
-
-    return response

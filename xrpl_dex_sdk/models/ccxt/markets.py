@@ -13,9 +13,9 @@ class Market(NamedTuple):
     # Quote token
     quote: CurrencyCode
     # Base token transfer fee
-    base_fee: float
+    base_fee: float = 0
     # Quote token transfer fee
-    quote_fee: float
+    quote_fee: float = 0
     # Whether transfer fees are percentages
     percentage: Optional[bool] = True
 

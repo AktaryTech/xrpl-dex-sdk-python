@@ -44,8 +44,8 @@ class SDK:
     fetch_order_books = methods.fetch_order_books
     fetch_orders = methods.fetch_orders
     fetch_status = methods.fetch_status
-    # fetch_ticker = methods.fetch_ticker
-    # fetch_tickers = methods.fetch_tickers
+    fetch_ticker = methods.fetch_ticker
+    fetch_tickers = methods.fetch_tickers
     # fetch_trades = methods.fetch_trades
     fetch_trading_fee = methods.fetch_trading_fee
     fetch_trading_fees = methods.fetch_trading_fees
@@ -87,7 +87,9 @@ class SDK:
             params["json_rpc_url"]
             if "json_rpc_url" in params
             else (
-                Networks[params["network"]]["json_rpc"] if params["network"] in Networks else None
+                Networks[params["network"]]["json_rpc"]
+                if params["network"] in Networks
+                else None
             )
             if "network" in params
             else None
@@ -102,7 +104,11 @@ class SDK:
         self.ws_url = (
             params["ws_url"]
             if "ws_url" in params
-            else (Networks[params["network"]]["ws"] if params["network"] in Networks else None)
+            else (
+                Networks[params["network"]]["ws"]
+                if params["network"] in Networks
+                else None
+            )
             if "network" in params
             else None
         )
@@ -114,11 +120,15 @@ class SDK:
                     break
 
         self.client = (
-            params["client"] if "client" in params else clients.JsonRpcClient(self.json_rpc_url)
+            params["client"]
+            if "client" in params
+            else clients.JsonRpcClient(self.json_rpc_url)
         )
 
         self.wallet = (
-            params["wallet"] if "wallet" in params else wallet.Wallet(params["wallet_secret"], 0)
+            params["wallet"]
+            if "wallet" in params
+            else wallet.Wallet(params["wallet_secret"], 0)
         )
 
         if (
@@ -126,4 +136,6 @@ class SDK:
             and "fund_testnet_wallet" in params
             and params["fund_testnet_wallet"] == True
         ):
-            self.wallet = wallet.generate_faucet_wallet(client=self.client, wallet=self.wallet)
+            self.wallet = wallet.generate_faucet_wallet(
+                client=self.client, wallet=self.wallet
+            )

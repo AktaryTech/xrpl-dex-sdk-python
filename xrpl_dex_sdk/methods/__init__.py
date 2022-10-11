@@ -23,9 +23,9 @@ from .fetch_order_book import fetch_order_book
 from .fetch_order_books import fetch_order_books
 from .fetch_orders import fetch_orders
 from .fetch_status import fetch_status
+from .fetch_ticker import fetch_ticker
+from .fetch_tickers import fetch_tickers
 
-# from .fetch_ticker import fetch_ticker
-# from .fetch_tickers import fetch_tickers
 # from .fetch_trades import fetch_trades
 from .fetch_trading_fee import fetch_trading_fee
 from .fetch_trading_fees import fetch_trading_fees
@@ -68,8 +68,8 @@ __all__ = [
     "fetch_order_books",
     "fetch_orders",
     "fetch_status",
-    # "fetch_ticker",
-    # "fetch_tickers",
+    "fetch_ticker",
+    "fetch_tickers",
     # "fetch_trades",
     "fetch_trading_fee",
     "fetch_trading_fees",

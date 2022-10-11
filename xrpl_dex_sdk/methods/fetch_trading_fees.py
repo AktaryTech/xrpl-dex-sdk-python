@@ -1,9 +1,18 @@
 from ..models.methods.fetch_trading_fees import FetchTradingFeesResponse
+from ..models.ccxt.markets import Markets
 
 
 def fetch_trading_fees(self) -> FetchTradingFeesResponse:
-    markets = self.fetch_markets()
-    result: list = []
-    for market in markets:
-        result.append(self.fetch_trading_fees(market))
-    return result
+    markets: Markets = self.fetch_markets()
+
+    if markets == None:
+        return []
+
+    trading_fees: FetchTradingFeesResponse = []
+
+    for symbol in markets:
+        trading_fee = self.fetch_trading_fee(symbol)
+        if trading_fee != None:
+            trading_fees.append(trading_fee)
+
+    return trading_fees

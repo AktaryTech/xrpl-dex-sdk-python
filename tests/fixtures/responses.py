@@ -12,13 +12,7 @@ from xrpl_dex_sdk.models import (
 fetch_order_book_response: OrderBooks = {}
 
 fetch_order_book_response["AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"] = {
-    "symbol": MarketSymbol(
-        quote=CurrencyCode(currency="XRP"),
-        base=CurrencyCode(
-            currency="AKT",
-            issuer="rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B",
-        ),
-    ),
+    "symbol": MarketSymbol("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"),
     "nonce": 30419081,
     "bids": [],
     "asks": [[0.5, 19.5], [0.5, 50.0], [0.5, 50.0]],

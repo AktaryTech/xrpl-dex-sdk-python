@@ -5,7 +5,7 @@ from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.ledger_entry import LedgerEntry
 from xrpl.models.requests.tx import Tx
 from xrpl.models.requests.account_tx import AccountTx
-from xrpl.utils import posix_to_ripple_time
+from xrpl.utils import posix_to_ripple_time, drops_to_xrp
 
 
 from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
@@ -72,19 +72,87 @@ def set_transaction_flags_to_number(tx: Any):
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
-    return TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    return (
+        TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    )
 
 
 def get_order_side_from_offer(offer: Offer) -> OrderSide:
-    return "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+    return (
+        "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+    )
 
 
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    return (
+        "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    )
 
 
 def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    return (
+        "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    )
+
+
+def get_offer_base_value(offer: Offer) -> float:
+    base_amount = (
+        offer["TakerPays"]
+        if offer["Flags"] & OfferFlags.LSF_SELL.value == 0
+        else offer["TakerGets"]
+    )
+    return float(
+        base_amount["value"] if "value" in base_amount else drops_to_xrp(base_amount)
+    )
+
+
+def get_offer_quote_value(offer: Offer) -> float:
+    quote_amount = (
+        offer["TakerGets"]
+        if offer["Flags"] & OfferFlags.LSF_SELL.value == 0
+        else offer["TakerPays"]
+    )
+    return float(
+        quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount)
+    )
+
+
+def get_book_offer_taker_pays(book_offer: Offer):
+    return (
+        book_offer["taker_pays_funded"]
+        if "taker_pays_funded" in book_offer
+        else book_offer["TakerPays"]
+    )
+
+
+def get_book_offer_taker_gets(book_offer: Offer):
+    return (
+        book_offer["taker_gets_funded"]
+        if "taker_gets_funded" in book_offer
+        else book_offer["TakerGets"]
+    )
+
+
+def get_book_offer_base_value(book_offer: Offer) -> float:
+    base_amount = (
+        get_book_offer_taker_pays(book_offer)
+        if book_offer["Flags"] & OfferFlags.LSF_SELL.value == 0
+        else get_book_offer_taker_gets(book_offer)
+    )
+    return float(
+        base_amount["value"] if "value" in base_amount else drops_to_xrp(base_amount)
+    )
+
+
+def get_book_offer_quote_value(book_offer: Offer) -> float:
+    quote_amount = (
+        get_book_offer_taker_gets(book_offer)
+        if book_offer["Flags"] & OfferFlags.LSF_SELL.value == 0
+        else get_book_offer_taker_pays(book_offer)
+    )
+    return float(
+        quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount)
+    )
 
 
 #
@@ -103,12 +171,18 @@ def get_offer_from_node(node: Node) -> Offer:
 
     LedgerIndex = affected_node["LedgerIndex"]
     FinalFields = affected_node["FinalFields"]
-    PreviousTxnID = affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
-    PreviousFields = affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    PreviousTxnID = (
+        affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
+    )
+    PreviousFields = (
+        affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    )
 
     offer_index = LedgerIndex
     offer_previous_txn_id = (
-        FinalFields["PreviousTxnID"] if "PreviousTxnID" in FinalFields else PreviousTxnID
+        FinalFields["PreviousTxnID"]
+        if "PreviousTxnID" in FinalFields
+        else PreviousTxnID
     )
 
     offer_taker_gets = (
@@ -144,7 +218,9 @@ def get_offer_from_node(node: Node) -> Offer:
 #
 # Returns an Offer Ledger object from a Transaction
 #
-def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}) -> Offer:
+def get_offer_from_tx(
+    transaction: Any, overrides: Optional[Dict[str, Any]] = {}
+) -> Offer:
     if transaction["TransactionType"] != "OfferCreate":
         return
 
@@ -157,8 +233,12 @@ def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}
         if "Sequence" in transaction
         else None
     )
-    TakerGets = overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
-    TakerPays = overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    TakerGets = (
+        overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
+    )
+    TakerPays = (
+        overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    )
     PreviousTxnID = overrides["PreviousTxnID"] if "PreviousTxnID" in overrides else ""
 
     if Sequence == None:
@@ -359,6 +439,8 @@ def get_most_recent_tx(
 __all__ = [
     "set_transaction_flags_to_number",
     "get_base_amount_key",
+    "get_book_offer_base_value",
+    "get_book_offer_quote_value",
     "get_most_recent_tx",
     "get_offer_from_node",
     "get_offer_from_tx",
