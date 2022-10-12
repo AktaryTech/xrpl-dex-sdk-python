@@ -1,6 +1,7 @@
 """Top-level exports for the utils package."""
 from .conversions import transfer_rate_to_decimal, decimal_to_transfer_rate
 from .data import *
+from .errors import *
 from .fees import fetch_transfer_rate
 from .hashes import LedgerNameSpaces, sha512, sha_512_half, hash_offer_id
 from .numbers import parse_amount_value, subtract_amounts
@@ -18,5 +19,6 @@ __all__ = [
     "sha512",
     "sha_512_half",
     *data.__all__,
+    *errors.__all__,
     *orders.__all__,
 ]

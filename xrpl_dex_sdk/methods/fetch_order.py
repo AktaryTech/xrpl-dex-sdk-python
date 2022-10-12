@@ -153,7 +153,7 @@ def fetch_order(
                 order=id.id,
                 datetime=ripple_time_to_datetime(date or 0),
                 timestamp=ripple_time_to_posix(date or 0),
-                symbol=MarketSymbol(base_code, quote_code).symbol,
+                symbol=MarketSymbol(base_code.code, quote_code.code).symbol,
                 type=TradeType.Limit.value,
                 side=side,
                 amount=round(amount, CURRENCY_PRECISION),
@@ -251,7 +251,7 @@ def fetch_order(
                 if last_trade_timestamp != None
                 else ripple_time_to_posix(0),
                 status=order_status.value,
-                symbol=MarketSymbol(base_code, quote_code).symbol,
+                symbol=MarketSymbol(base_code.code, quote_code.code).symbol,
                 type=OrderType.Limit.value,
                 timeInForce=order_time_in_force,
                 side=side,

@@ -1,26 +1,24 @@
-import json
-from ..models.methods.fetch_transaction_fee import (
-    FetchTransactionFeeResponse,
-)
+from xrpl.models.requests.fee import Fee
+
+from ..models.methods.fetch_transaction_fee import FetchTransactionFeeResponse
+from ..models.common import CurrencyCode
 
 
-def fetch_transaction_fee(self, code: str) -> FetchTransactionFeeResponse:
-    payload = {"method": "fee", "params": [{}]}
-    fees_result = self.json_rpc(payload).get("result")
+def fetch_transaction_fee(self, code: CurrencyCode) -> FetchTransactionFeeResponse:
+    fee_response = self.client.request(Fee())
+    fee_result = fee_response.result
 
-    currencies = self.fetch_currencies()
-    if code in currencies is False:
-        raise Exception("No code in currencies data")
+    if "error" in fee_result:
+        raise Exception(fee_response["error"] + " " + fee_response["error_message"])
 
-    transfer_rates = {}
+    currencies = self.currencies if self.currencies != None else self.fetch_currencies()
 
-    currency = currencies.get(code)
+    if code not in currencies:
+        return
 
-    response = {
+    return {
         "code": code,
-        "current": int(fees_result.get("drops").get("open_ledger_fee")),
-        "transfer": transfer_rates,
-        "info": json.dumps({"feesResult": fees_result, "currency": currency}),
+        "current": fee_result["drops"]["open_ledger_fee"],
+        "transfer": currencies[code].get("fee", 0),
+        "info": {"fee": fee_result, "currency": currencies[code]},
     }
-
-    return response

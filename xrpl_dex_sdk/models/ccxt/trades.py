@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Dict, NamedTuple, Optional
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from ..common import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
 
@@ -60,4 +60,7 @@ class Trade(NamedTuple):
     info: Dict[str, Any]
 
 
-__all__ = ["TradeId", "TradeType", "TradeSide", "TradeTakerOrMaker", "Trade"]
+Trades = List[Trade]
+
+
+__all__ = ["TradeId", "TradeType", "TradeSide", "TradeTakerOrMaker", "Trade", "Trades"]

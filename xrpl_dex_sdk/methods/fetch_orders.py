@@ -96,11 +96,11 @@ def fetch_orders(
                     continue
 
                 if (
-                    order["status"] == OrderStatus.Open.value
+                    order.status == OrderStatus.Open.value
                     and params.show_open == False
-                    or order["status"] == OrderStatus.Closed.value
+                    or order.status == OrderStatus.Closed.value
                     and params.show_closed == False
-                    or order["status"] == OrderStatus.Canceled.value
+                    or order.status == OrderStatus.Canceled.value
                     and params.show_canceled == False
                 ):
                     continue

@@ -17,14 +17,12 @@ def fetch_markets(self) -> FetchMarketsResponse:
 
     for market in markets:
         if markets[market]["base"] != "XRP":
-            [code, issuer] = markets[market]["base"].split("+")
             markets[market]["base_fee"] = fetch_transfer_rate(
-                self.client, CurrencyCode(code, issuer)
+                self.client, CurrencyCode(markets[market]["base"])
             )
         if markets[market]["quote"] != "XRP":
-            [code, issuer] = markets[market]["quote"].split("+")
             markets[market]["quote_fee"] = fetch_transfer_rate(
-                self.client, CurrencyCode(code, issuer)
+                self.client, CurrencyCode(markets[market]["quote"])
             )
 
     return markets
