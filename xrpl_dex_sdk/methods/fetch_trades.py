@@ -67,9 +67,7 @@ def fetch_trades(
 
         handle_error(ledger)
 
-        if since != None and ripple_time_to_posix(
-            ledger["ledger"]["close_time"] >= since
-        ):
+        if since != None and ripple_time_to_posix(ledger["ledger"]["close_time"] >= since):
             has_next_page = False
             continue
 
@@ -152,15 +150,9 @@ def fetch_trades(
                     trade = Trade(
                         id=TradeId(transaction["Account"], transaction["Sequence"]),
                         order=OrderId(offer.Account, offer.Sequence),
-                        datetime=ripple_time_to_datetime(
-                            ledger["ledger"]["close_time"] or 0
-                        ),
-                        timestamp=ripple_time_to_posix(
-                            ledger["ledger"]["close_time"] or 0
-                        ),
-                        symbol=MarketSymbol(
-                            base_currency.code, quote_currency.code
-                        ).symbol,
+                        datetime=ripple_time_to_datetime(ledger["ledger"]["close_time"] or 0),
+                        timestamp=ripple_time_to_posix(ledger["ledger"]["close_time"] or 0),
+                        symbol=MarketSymbol(base_currency.code, quote_currency.code).symbol,
                         type=TradeType.Limit.value,
                         side=side,
                         amount=round(amount, CURRENCY_PRECISION),

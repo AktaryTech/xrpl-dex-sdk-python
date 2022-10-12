@@ -8,18 +8,12 @@ IssuerAddress = AccountAddress
 class CurrencyCode:
     def __init__(self, code: str, issuer: Optional[str] = None) -> None:
         if isinstance(code, str) == False:
-            raise Exception(
-                "Error creating CurrencyCode: provided value is not a string"
-            )
+            raise Exception("Error creating CurrencyCode: provided value is not a string")
         currency_issuer_pair = [code, issuer] if issuer != None else code.split("+")
         if currency_issuer_pair[0] == None:
-            raise Exception(
-                "Error creating CurrencyCode: " + code + " is not a valid code"
-            )
+            raise Exception("Error creating CurrencyCode: " + code + " is not a valid code")
         self.currency = currency_issuer_pair[0]
-        self.issuer = (
-            currency_issuer_pair[1] if len(currency_issuer_pair) == 2 else None
-        )
+        self.issuer = currency_issuer_pair[1] if len(currency_issuer_pair) == 2 else None
         self.code = self.currency
         if issuer != None:
             self.code += "+" + self.issuer
@@ -34,21 +28,11 @@ class CurrencyCode:
 class MarketSymbol:
     def __init__(self, symbol: str, quote_symbol: Optional[str] = None) -> None:
         if isinstance(symbol, str) == False:
-            raise Exception(
-                "Error creating MarketSymbol: provided value is not a string"
-            )
+            raise Exception("Error creating MarketSymbol: provided value is not a string")
 
-        base_quote_pair = (
-            [symbol, quote_symbol] if quote_symbol != None else symbol.split("/")
-        )
-        if (
-            len(base_quote_pair) == 1
-            or base_quote_pair[0] == None
-            or base_quote_pair[1] == None
-        ):
-            raise Exception(
-                "Error creating MarketSymbol: " + symbol + " is not a valid symbol"
-            )
+        base_quote_pair = [symbol, quote_symbol] if quote_symbol != None else symbol.split("/")
+        if len(base_quote_pair) == 1 or base_quote_pair[0] == None or base_quote_pair[1] == None:
+            raise Exception("Error creating MarketSymbol: " + symbol + " is not a valid symbol")
         self.base = CurrencyCode(base_quote_pair[0])
         self.quote = CurrencyCode(base_quote_pair[1])
         self.symbol = base_quote_pair[0] + "/" + base_quote_pair[1]

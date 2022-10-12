@@ -8,9 +8,7 @@ from xrpl.utils import drops_to_xrp
 from ..models import WatchBalanceParams, WatchBalanceResponse, Balance
 
 
-def watch_balance(
-    self, params: Optional[WatchBalanceParams] = {}
-) -> WatchBalanceResponse:
+def watch_balance(self, params: Optional[WatchBalanceParams] = {}) -> WatchBalanceResponse:
     balances: Dict[str, Balance] = {}
     info: Dict[str, Any] = {}
 

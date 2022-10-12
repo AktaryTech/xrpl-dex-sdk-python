@@ -41,9 +41,7 @@ def fetch_orders(
             {
                 "transactions": True,
                 "expand": True,
-                "ledger_hash": previous_ledger_hash
-                if previous_ledger_hash != None
-                else None,
+                "ledger_hash": previous_ledger_hash if previous_ledger_hash != None else None,
                 "ledger_index": "validated" if previous_ledger_hash == None else None,
             }
         )
@@ -81,9 +79,7 @@ def fetch_orders(
                 if symbol != None:
                     tx_side = (
                         OrderSide.Sell.value
-                        if has_offer_create_flag(
-                            transaction["Flags"], OfferCreateFlags.TF_SELL
-                        )
+                        if has_offer_create_flag(transaction["Flags"], OfferCreateFlags.TF_SELL)
                         else OrderSide.Buy.value
                     )
                     base_amount = transaction[get_base_amount_key(tx_side)]

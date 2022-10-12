@@ -57,9 +57,7 @@ def fetch_order(
         transactions.append(previous_txn_data)
 
     while previous_txn_id != None:
-        tx_response = self.client.request(
-            Tx.from_dict({"transaction": previous_txn_id})
-        )
+        tx_response = self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
         tx = tx_response.result
 
         if "error" in tx:
@@ -106,9 +104,7 @@ def fetch_order(
                 else TradeSide.Buy.value
             )
 
-            base_amount = (
-                source.TakerPays if side == TradeSide.Buy.value else source.TakerGets
-            )
+            base_amount = source.TakerPays if side == TradeSide.Buy.value else source.TakerGets
             base_code = (
                 CurrencyCode(base_amount["currency"], base_amount["issuer"])
                 if "currency" in base_amount
@@ -121,9 +117,7 @@ def fetch_order(
                 else base_amount_value
             )
 
-            quote_amount = (
-                source.TakerGets if side == TradeSide.Buy.value else source.TakerPays
-            )
+            quote_amount = source.TakerGets if side == TradeSide.Buy.value else source.TakerPays
             quote_code = (
                 CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
                 if "currency" in quote_amount
@@ -178,10 +172,7 @@ def fetch_order(
             )
             trades.append(trade)
 
-        if (
-            transaction["Account"] == id.account
-            and transaction["Sequence"] == id.sequence
-        ):
+        if transaction["Account"] == id.account and transaction["Sequence"] == id.sequence:
             source = transaction
 
             if "Sequence" not in source:
@@ -195,9 +186,7 @@ def fetch_order(
             )
 
             base_amount = (
-                source["TakerPays"]
-                if side == OrderSide.Buy.value
-                else source["TakerGets"]
+                source["TakerPays"] if side == OrderSide.Buy.value else source["TakerGets"]
             )
             base_code = (
                 CurrencyCode("XRP")
@@ -212,9 +201,7 @@ def fetch_order(
             )
 
             quote_amount = (
-                source["TakerGets"]
-                if side == OrderSide.Buy.value
-                else source["TakerPays"]
+                source["TakerGets"] if side == OrderSide.Buy.value else source["TakerPays"]
             )
             quote_code = (
                 CurrencyCode("XRP")
@@ -229,9 +216,7 @@ def fetch_order(
                 else quote_amount_value
             )
 
-            order_time_in_force: OrderTimeInForce = (
-                OrderTimeInForce.GoodTillCanceled.value
-            )
+            order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled.value
             if (
                 source["Flags"] & OfferCreateFlags.TF_PASSIVE.value
             ) == OfferCreateFlags.TF_PASSIVE.value:

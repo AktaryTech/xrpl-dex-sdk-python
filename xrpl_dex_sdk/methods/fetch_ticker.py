@@ -76,9 +76,7 @@ def fetch_ticker(
     book_offers.sort(reverse=False, key=sort_by_previous_txn_lgr_seq)
 
     def get_book_offer_price(book_offer: Dict[str, Any]) -> float:
-        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(
-            book_offer
-        )
+        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(book_offer)
 
     open = get_book_offer_price(book_offers[1])
     close = get_book_offer_price(book_offers[len(book_offers) - 1])

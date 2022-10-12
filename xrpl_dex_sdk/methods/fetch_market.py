@@ -23,12 +23,8 @@ def fetch_market(self, symbol: MarketSymbol) -> FetchMarketResponse:
         return
 
     if market["base"] != "XRP":
-        market["base_fee"] = fetch_transfer_rate(
-            self.client, CurrencyCode(market["base"])
-        )
+        market["base_fee"] = fetch_transfer_rate(self.client, CurrencyCode(market["base"]))
     if market["quote"] != "XRP":
-        market["quote_fee"] = fetch_transfer_rate(
-            self.client, CurrencyCode(market["quote"])
-        )
+        market["quote_fee"] = fetch_transfer_rate(self.client, CurrencyCode(market["quote"]))
 
     return market

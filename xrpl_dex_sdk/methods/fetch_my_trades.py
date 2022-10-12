@@ -112,11 +112,7 @@ def fetch_my_trades(
                     else None
                 )
 
-                if (
-                    node == None
-                    or node["LedgerEntryType"] != "Offer"
-                    or "FinalFields" not in node
-                ):
+                if node == None or node["LedgerEntryType"] != "Offer" or "FinalFields" not in node:
                     continue
 
                 offer: Offer = node["FinalFields"]
@@ -150,9 +146,7 @@ def fetch_my_trades(
                 cost = amount * price
 
                 fee_rate = quote_rate if side == OrderSide.Buy else base_rate
-                fee_cost = (
-                    quote_value if side == OrderSide.Buy else base_value
-                ) * fee_rate
+                fee_cost = (quote_value if side == OrderSide.Buy else base_value) * fee_rate
 
                 trade = Trade(
                     id=TradeId(tx["Account"], tx["Sequence"]),
@@ -167,9 +161,7 @@ def fetch_my_trades(
                     takerOrMaker=get_taker_or_maker(side).value,
                     cost=round(cost, CURRENCY_PRECISION),
                     fee={
-                        "currency": str(
-                            base_currency if side == OrderSide.Buy else quote_currency
-                        ),
+                        "currency": str(base_currency if side == OrderSide.Buy else quote_currency),
                         "cost": round(fee_cost, CURRENCY_PRECISION),
                         "rate": round(fee_rate, CURRENCY_PRECISION),
                         "percentage": True,
