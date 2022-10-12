@@ -30,8 +30,8 @@ from .fetch_transaction_fees import fetch_transaction_fees
 from .load_currencies import load_currencies
 from .load_issuers import load_issuers
 from .load_markets import load_markets
-from .watch_balance import watch_balance
 
+# from .watch_balance import watch_balance
 # from .watch_my_trades import watch_my_trades
 # from .watch_order_book import watch_order_book
 # from .watch_orders import watch_orders
