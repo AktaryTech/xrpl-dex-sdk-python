@@ -148,10 +148,24 @@ def test_create_limit_sell_order() -> None:
         tx["Flags"] & models.OfferCreateFlags.TF_SELL.value
         == models.OfferCreateFlags.TF_SELL.value
     )
-    assert tx["TakerPays"] == xrp_to_drops(amount)
+    assert tx["TakerPays"] == xrp_to_drops(amount * price)
     assert tx["TakerGets"]["currency"] == test_currency
     assert tx["TakerGets"]["issuer"] == test_issuer
-    assert float(tx["TakerGets"]["value"]) == amount * price
+    assert float(tx["TakerGets"]["value"]) == amount
+
+
+def test_create_trust_line() -> None:
+    sdk = SDK(
+        {
+            "json_rpc_url": test_json_rpc_url,
+            "client": test_client,
+            "wallet": generate_faucet_wallet(test_client),
+        }
+    )
+    create_result = sdk.create_trust_line(
+        code=models.CurrencyCode(test_currency, test_issuer), limit_amount="1000000"
+    )
+    assert create_result != None
 
 
 def test_fetch_balance() -> None:
@@ -393,6 +407,24 @@ def test_fetch_issuers() -> None:
     # assert issuers == responses.fetch_issuers_response
 
 
+def test_fetch_l2_order_book() -> None:
+    sdk = SDK(sdk_test_params)
+    test_limit = 3
+    test_symbol = models.MarketSymbol("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP")
+    order_book: models.OrderBook = sdk.fetch_l2_order_book(
+        symbol=test_symbol,
+        limit=test_limit,
+        params=models.FetchL2OrderBookParams(taker=sdk.wallet.classic_address),
+    )
+    expected_order_book = responses.fetch_order_book_response[test_symbol.symbol]
+    assert order_book.symbol == expected_order_book["symbol"]
+    assert order_book.level == models.OrderBookLevel.L2
+    assert order_book.nonce == expected_order_book["nonce"]
+    assert order_book.bids == expected_order_book["bids"]
+    assert order_book.asks == expected_order_book["asks"]
+    assert len(order_book.bids) + len(order_book.asks) == test_limit
+
+
 def test_fetch_market() -> None:
     sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
     market = sdk.fetch_market(
@@ -426,7 +458,7 @@ def test_fetch_order_book() -> None:
     )
 
     expected_order_book = responses.fetch_order_book_response[test_symbol.symbol]
-    assert order_book.symbol.symbol == expected_order_book["symbol"].symbol
+    assert order_book.symbol == expected_order_book["symbol"]
     assert order_book.nonce == expected_order_book["nonce"]
     assert order_book.bids == expected_order_book["bids"]
     assert order_book.asks == expected_order_book["asks"]
@@ -442,18 +474,18 @@ def test_fetch_order_books() -> None:
         limit=test_limit,
         params=models.FetchOrderBooksParams(
             symbols={
-                test_symbol: models.FetchOrderBookParams(
+                test_symbol.symbol: models.FetchOrderBookParams(
                     taker=sdk.wallet.classic_address
                 )
-            }
+            },
         ),
     )
 
-    assert test_symbol in order_books
-    order_book_1 = order_books[test_symbol]
+    assert str(test_symbol) in order_books
+    order_book_1 = order_books[str(test_symbol)]
 
-    expected_order_book = responses.fetch_order_book_response[test_symbol.symbol]
-    assert order_book_1.symbol.symbol == expected_order_book["symbol"].symbol
+    expected_order_book = responses.fetch_order_book_response[str(test_symbol)]
+    assert order_book_1.symbol == expected_order_book["symbol"]
     assert order_book_1.nonce == expected_order_book["nonce"]
     assert order_book_1.bids == expected_order_book["bids"]
     assert order_book_1.asks == expected_order_book["asks"]
@@ -547,3 +579,26 @@ def test_fetch_tickers() -> None:
     ticker = sdk.fetch_tickers(["TST+rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd/XRP"])
     assert ticker != None
     assert len(ticker) == 1
+
+
+def test_fetch_trades() -> None:
+    sdk = SDK(sdk_test_params)
+    base_currency = "EUR+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"
+    quote_currency = "CSC+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"
+    symbol = base_currency + "/" + quote_currency
+    trades = sdk.fetch_trades(
+        symbol=symbol, limit=1, params=models.FetchTradesParams(search_limit=100)
+    )
+    assert trades != None
+    # TODO: mock up these responses (too hard to find a real testnet pair with recent trades)
+    # assert len(trades) > 0
+
+
+def test_fetch_my_trades() -> None:
+    sdk = SDK(sdk_test_params)
+    # TODO: mock up this response
+    my_trades = sdk.fetch_my_trades(
+        symbol="XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B", limit=3
+    )
+    assert my_trades != None
+    assert len(my_trades) == 3

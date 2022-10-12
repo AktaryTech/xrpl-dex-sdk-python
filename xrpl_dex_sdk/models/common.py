@@ -59,6 +59,11 @@ class MarketSymbol:
     def __str__(self) -> str:
         return self.symbol
 
+    def __eq__(self, other_symbol: object) -> bool:
+        if other_symbol == None:
+            return False
+        return self.symbol == other_symbol.symbol
+
 
 UnixTimestamp = int  # milliseconds since start of Unix epoch (1/1/1970)
 UnixISOTimestamp = str  # ISO8601 datetime with milliseconds

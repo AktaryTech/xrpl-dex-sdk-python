@@ -1,9 +1,10 @@
 import json
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, Dict, List, NamedTuple, Optional, Union
 
 from xrpl.clients import JsonRpcClient
 from xrpl.models.requests.ledger_entry import LedgerEntry
 from xrpl.models.requests.tx import Tx
+from xrpl.models.amounts import IssuedCurrencyAmount
 from xrpl.models.requests.account_tx import AccountTx
 from xrpl.utils import posix_to_ripple_time, drops_to_xrp
 
@@ -11,6 +12,7 @@ from xrpl.utils import posix_to_ripple_time, drops_to_xrp
 from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
     LedgerEntryTypes,
+    CurrencyCode,
     OrderId,
     OrderSide,
     OrderStatus,
@@ -77,9 +79,26 @@ def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
     )
 
 
+def get_order_side(flags: int) -> OrderSide:
+    if flags & OfferFlags.LSF_SELL.value == OfferFlags.LSF_SELL.value:
+        return OrderSide.Sell
+    elif flags & OfferCreateFlags.TF_SELL.value == OfferCreateFlags.TF_SELL.value:
+        return OrderSide.Sell
+    else:
+        return OrderSide.Buy
+
+
 def get_order_side_from_offer(offer: Offer) -> OrderSide:
     return (
         "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
+    )
+
+
+def get_amount_currency_code(amount: Union[IssuedCurrencyAmount, str]):
+    return (
+        CurrencyCode(amount["currency"], amount["issuer"])
+        if "currency" in amount
+        else CurrencyCode("XRP")
     )
 
 
@@ -96,14 +115,12 @@ def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
 
 
 def get_offer_base_value(offer: Offer) -> float:
-    base_amount = (
+    amount = (
         offer["TakerPays"]
         if offer["Flags"] & OfferFlags.LSF_SELL.value == 0
         else offer["TakerGets"]
     )
-    return float(
-        base_amount["value"] if "value" in base_amount else drops_to_xrp(base_amount)
-    )
+    return float(amount["value"] if "value" in amount else drops_to_xrp(amount))
 
 
 def get_offer_quote_value(offer: Offer) -> float:
@@ -134,14 +151,12 @@ def get_book_offer_taker_gets(book_offer: Offer):
 
 
 def get_book_offer_base_value(book_offer: Offer) -> float:
-    base_amount = (
+    amount = (
         get_book_offer_taker_pays(book_offer)
         if book_offer["Flags"] & OfferFlags.LSF_SELL.value == 0
         else get_book_offer_taker_gets(book_offer)
     )
-    return float(
-        base_amount["value"] if "value" in base_amount else drops_to_xrp(base_amount)
-    )
+    return float(amount["value"] if "value" in amount else drops_to_xrp(amount))
 
 
 def get_book_offer_quote_value(book_offer: Offer) -> float:
@@ -385,8 +400,7 @@ def get_most_recent_tx(
                 "order_status": order_status,
             }
     elif ledger_offer["error"] != "entryNotFound":
-        # TODO: throw error here
-        return
+        raise Exception(ledger_offer["error"] + " " + ledger_offer["error_message"])
     else:
         order_status = OrderStatus.Closed
 
@@ -418,10 +432,6 @@ def get_most_recent_tx(
             transactions.sort(reverse=True, key=sort_by_date)
 
             for transaction in transactions:
-                # tx_account = transaction["tx"]["Account"] if "Account" in transaction["tx"] else ""
-                # tx_sequence = (
-                #     str(transaction["tx"]["Sequence"]) if "Sequence" in transaction["tx"] else ""
-                # )
                 previous_txn_data = parse_transaction(id, transaction)
                 if previous_txn_data != None:
                     return {
@@ -438,12 +448,16 @@ def get_most_recent_tx(
 
 __all__ = [
     "set_transaction_flags_to_number",
+    "get_amount_currency_code",
     "get_base_amount_key",
+    "get_offer_base_value",
+    "get_offer_quote_value",
     "get_book_offer_base_value",
     "get_book_offer_quote_value",
     "get_most_recent_tx",
     "get_offer_from_node",
     "get_offer_from_tx",
+    "get_order_side",
     "get_order_side_from_offer",
     "get_quote_amount_key",
     "get_taker_or_maker",

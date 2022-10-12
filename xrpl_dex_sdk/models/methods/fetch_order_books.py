@@ -11,7 +11,7 @@ from .fetch_order_book import FetchOrderBookParams
 #
 class FetchOrderBooksParams(NamedTuple):
     # Options for each symbol
-    symbols: Optional[Dict[MarketSymbol, FetchOrderBookParams]] = None
+    symbols: Dict[MarketSymbol, FetchOrderBookParams] = {}
 
 
 #
