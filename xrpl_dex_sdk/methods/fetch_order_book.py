@@ -16,7 +16,7 @@ from ..models import (
 )
 
 
-def fetch_order_book(
+async def fetch_order_book(
     self,
     symbol: MarketSymbol,
     limit: int = DEFAULT_LIMIT,
@@ -48,7 +48,7 @@ def fetch_order_book(
     if params.taker != None:
         book_offers_request["taker"] = params.taker
 
-    book_offers_response = self.client.request(BookOffers.from_dict(book_offers_request))
+    book_offers_response = await self.client.request(BookOffers.from_dict(book_offers_request))
     book_offers_result = book_offers_response.result
 
     offers = book_offers_result["offers"]

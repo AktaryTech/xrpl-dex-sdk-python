@@ -46,6 +46,7 @@ class MarketSymbol:
     def __eq__(self, other_symbol: object) -> bool:
         if other_symbol == None:
             return False
+        other_symbol = MarketSymbol(other_symbol) if isinstance(other_symbol, str) else other_symbol
         return self.symbol == other_symbol.symbol
 
 

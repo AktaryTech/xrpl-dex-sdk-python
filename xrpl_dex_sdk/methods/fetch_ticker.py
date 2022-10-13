@@ -16,7 +16,7 @@ from ..utils import (
 )
 
 
-def fetch_ticker(
+async def fetch_ticker(
     self,
     symbol: MarketSymbol,
     params: FetchTickerParams = FetchTickerParams(),
@@ -45,7 +45,7 @@ def fetch_ticker(
     if symbol.quote.issuer != None:
         quote_amount["issuer"] = symbol.quote.issuer
 
-    bids_response = self.client.request(
+    bids_response = await self.client.request(
         BookOffers.from_dict(
             {
                 "limit": params.search_limit + 1,
@@ -58,7 +58,7 @@ def fetch_ticker(
     if "error" in bids_result:
         raise Exception(bids_result["error"] + " " + bids_result["error_message"])
 
-    asks_response = self.client.request(
+    asks_response = await self.client.request(
         BookOffers.from_dict(
             {
                 "limit": params.search_limit + 1,

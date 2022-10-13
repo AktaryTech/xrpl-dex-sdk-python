@@ -19,6 +19,7 @@ from ..models import (
     TradeTakerOrMaker,
     TradeSide,
     Offer,
+    OrderTimeInForce,
     OfferCreateFlags,
     OfferFlags,
     Node,
@@ -71,6 +72,21 @@ def set_transaction_flags_to_number(tx: Any):
                     flags = tx["Flags"] | OfferCreateFlags.__getattribute__(flag)
             tx["Flags"] = flags
             return tx
+
+
+def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
+    order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled.value
+    if (input["Flags"] & OfferCreateFlags.TF_PASSIVE.value) == OfferCreateFlags.TF_PASSIVE.value:
+        order_time_in_force = OrderTimeInForce.PostOnly.value
+    elif (
+        input["Flags"] & OfferCreateFlags.TF_FILL_OR_KILL.value
+    ) == OfferCreateFlags.TF_FILL_OR_KILL.value:
+        order_time_in_force = OrderTimeInForce.FillOrKill.value
+    elif (
+        input["Flags"] & OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL.value
+    ) == OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL.value:
+        order_time_in_force = OrderTimeInForce.ImmediateOrCancel.value
+    return order_time_in_force
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
@@ -336,7 +352,7 @@ def parse_transaction(id: OrderId, transaction: Any) -> Dict[str, Any]:
 #
 # Get the most recent Transaction to affect an Order
 #
-def get_most_recent_tx(
+async def get_most_recent_tx(
     client: JsonRpcClient,
     id: OrderId,
     # This is to prevent us spending forever searching through an account's Transactions for an Order
@@ -344,7 +360,7 @@ def get_most_recent_tx(
 ) -> Any or None:
     order_status = OrderStatus.Open
 
-    ledger_offer_response = client.request(
+    ledger_offer_response = await client.request(
         LedgerEntry.from_dict(
             {
                 "offer": {"account": id.account, "seq": id.sequence},
@@ -355,7 +371,7 @@ def get_most_recent_tx(
     ledger_offer = ledger_offer_response.result
 
     if "error" not in ledger_offer:
-        tx_response = client.request(
+        tx_response = await client.request(
             Tx.from_dict({"transaction": ledger_offer["node"]["PreviousTxnID"]})
         )
         tx = tx_response.result
@@ -395,7 +411,7 @@ def get_most_recent_tx(
                     "ledger_index": "validated",
                 }
             )
-            account_tx_response = client.request(account_tx_request)
+            account_tx_response = await client.request(account_tx_request)
             account_tx = account_tx_response.result
 
             if account_tx == None:
@@ -427,6 +443,7 @@ __all__ = [
     "get_amount_currency_code",
     "get_base_amount_key",
     "get_offer_base_value",
+    "get_order_time_in_force",
     "get_offer_quote_value",
     "get_book_offer_base_value",
     "get_book_offer_quote_value",

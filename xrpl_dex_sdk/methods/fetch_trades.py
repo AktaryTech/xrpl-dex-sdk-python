@@ -22,7 +22,7 @@ from ..models import (
 from ..utils import (
     get_base_amount_key,
     get_quote_amount_key,
-    handle_error,
+    handle_response_error,
     get_order_side,
     parse_amount_value,
     fetch_transfer_rate,
@@ -31,7 +31,7 @@ from ..utils import (
 )
 
 
-def fetch_trades(
+async def fetch_trades(
     self,
     # Market symbol to fetch trades for
     symbol: MarketSymbol,
@@ -62,10 +62,10 @@ def fetch_trades(
         else:
             ledger_request["ledger_index"] = "validated"
 
-        ledger_response = self.client.request(Ledger.from_dict(ledger_request))
+        ledger_response = await self.client.request(Ledger.from_dict(ledger_request))
         ledger = ledger_response.result
 
-        handle_error(ledger)
+        handle_response_error(ledger)
 
         if since != None and ripple_time_to_posix(ledger["ledger"]["close_time"] >= since):
             has_next_page = False
@@ -128,7 +128,7 @@ def fetch_trades(
 
                     quote_amount = offer[get_quote_amount_key(side)]
                     quote_currency = get_amount_currency_code(quote_currency)
-                    quote_rate = fetch_transfer_rate(self.client, quote_currency)
+                    quote_rate = await fetch_transfer_rate(self.client, quote_currency)
                     quote_amount_value = parse_amount_value(quote_amount)
                     quote_value = (
                         float(drops_to_xrp(str(quote_amount_value)))

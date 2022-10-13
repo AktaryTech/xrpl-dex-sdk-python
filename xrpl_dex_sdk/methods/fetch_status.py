@@ -7,8 +7,8 @@ from ..models import (
 )
 
 
-def fetch_status(self) -> FetchStatusResponse:
-    server_state_response = self.client.request(ServerState())
+async def fetch_status(self) -> FetchStatusResponse:
+    server_state_response = await self.client.request(ServerState())
     server_state_result = server_state_response.result
 
     if "error" in server_state_result:

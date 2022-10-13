@@ -30,15 +30,14 @@ from .fetch_transaction_fees import fetch_transaction_fees
 from .load_currencies import load_currencies
 from .load_issuers import load_issuers
 from .load_markets import load_markets
-
-# from .watch_balance import watch_balance
-# from .watch_my_trades import watch_my_trades
-# from .watch_order_book import watch_order_book
-# from .watch_orders import watch_orders
-# from .watch_status import watch_status
-# from .watch_ticker import watch_ticker
-# from .watch_tickers import watch_tickers
-# from .watch_trades import watch_trades
+from .watch_balance import watch_balance
+from .watch_my_trades import watch_my_trades
+from .watch_order_book import watch_order_book
+from .watch_orders import watch_orders
+from .watch_status import watch_status
+from .watch_ticker import watch_ticker
+from .watch_tickers import watch_tickers
+from .watch_trades import watch_trades
 
 
 __all__ = [
@@ -73,12 +72,12 @@ __all__ = [
     "load_currencies",
     "load_issuers",
     "load_markets",
-    # "watch_balance",
-    # "watch_my_trades",
-    # "watch_order_book",
-    # "watch_orders",
-    # "watch_status",
-    # "watch_ticker",
-    # "watch_tickers",
-    # "watch_trades",
+    "watch_balance",
+    "watch_my_trades",
+    "watch_order_book",
+    "watch_orders",
+    "watch_status",
+    "watch_ticker",
+    "watch_tickers",
+    "watch_trades",
 ]
