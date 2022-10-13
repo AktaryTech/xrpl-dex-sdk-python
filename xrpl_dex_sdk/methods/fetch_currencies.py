@@ -1,6 +1,5 @@
 from ..data import CurrenciesData
 from ..models import Currencies
-from ..utils import fetch_transfer_rate
 
 
 async def fetch_currencies(self) -> Currencies:
@@ -17,7 +16,7 @@ async def fetch_currencies(self) -> Currencies:
 
     for currency in currencies:
         if "issuer" in currency:
-            fee_rate = await fetch_transfer_rate(self.client, currency)
+            fee_rate = await self.fetch_transfer_rate(currency.issuer)
             if fee_rate != 0:
                 currencies[currency].fee = fee_rate
 

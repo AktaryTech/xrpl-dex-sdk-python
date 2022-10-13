@@ -1,6 +1,5 @@
 from ..data import MarketsData
 from ..models import MarketSymbol, FetchMarketResponse, CurrencyCode, Market
-from ..utils import fetch_transfer_rate
 
 
 async def fetch_market(self, symbol: MarketSymbol) -> FetchMarketResponse:
@@ -23,8 +22,12 @@ async def fetch_market(self, symbol: MarketSymbol) -> FetchMarketResponse:
         return
 
     if market["base"] != "XRP":
-        market["base_fee"] = await fetch_transfer_rate(self.client, CurrencyCode(market["base"]))
+        market["base_fee"] = await self.fetch_transfer_rate(
+            CurrencyCode(market["base"]).issuer
+        )
     if market["quote"] != "XRP":
-        market["quote_fee"] = await fetch_transfer_rate(self.client, CurrencyCode(market["quote"]))
+        market["quote_fee"] = await self.fetch_transfer_rate(
+            CurrencyCode(market["quote"]).issuer
+        )
 
     return market

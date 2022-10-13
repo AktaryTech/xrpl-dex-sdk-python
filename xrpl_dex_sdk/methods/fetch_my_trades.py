@@ -25,7 +25,6 @@ from ..utils import (
     handle_response_error,
     get_order_side,
     parse_amount_value,
-    fetch_transfer_rate,
     get_taker_or_maker,
     get_market_symbol,
     get_amount_currency_code,
@@ -112,14 +111,22 @@ async def fetch_my_trades(
                     else None
                 )
 
-                if node == None or node["LedgerEntryType"] != "Offer" or "FinalFields" not in node:
+                if (
+                    node == None
+                    or node["LedgerEntryType"] != "Offer"
+                    or "FinalFields" not in node
+                ):
                     continue
 
                 offer: Offer = node["FinalFields"]
 
                 base_amount = offer[get_base_amount_key(side)]
                 base_currency = get_amount_currency_code(base_amount)
-                base_rate = await fetch_transfer_rate(self.client, base_currency)
+                base_rate = (
+                    await self.fetch_transfer_rate(base_currency.issuer)
+                    if base_currency.__getattribute__("issuer") != None
+                    else 0
+                )
                 base_amount_value = parse_amount_value(base_amount)
                 base_value = (
                     float(drops_to_xrp(str(base_amount_value)))
@@ -131,7 +138,11 @@ async def fetch_my_trades(
 
                 quote_amount = offer[get_quote_amount_key(side)]
                 quote_currency = get_amount_currency_code(quote_amount)
-                quote_rate = await fetch_transfer_rate(self.client, quote_currency)
+                quote_rate = (
+                    await self.fetch_transfer_rate(quote_currency.issuer)
+                    if quote_currency.__getattribute__("issuer") != None
+                    else 0
+                )
                 quote_amount_value = parse_amount_value(quote_amount)
                 quote_value = (
                     float(drops_to_xrp(str(quote_amount_value)))
@@ -146,7 +157,9 @@ async def fetch_my_trades(
                 cost = amount * price
 
                 fee_rate = quote_rate if side == OrderSide.Buy else base_rate
-                fee_cost = (quote_value if side == OrderSide.Buy else base_value) * fee_rate
+                fee_cost = (
+                    quote_value if side == OrderSide.Buy else base_value
+                ) * fee_rate
 
                 trade = Trade(
                     id=TradeId(tx["Account"], tx["Sequence"]),
@@ -161,7 +174,9 @@ async def fetch_my_trades(
                     takerOrMaker=get_taker_or_maker(side).value,
                     cost=round(cost, CURRENCY_PRECISION),
                     fee={
-                        "currency": str(base_currency if side == OrderSide.Buy else quote_currency),
+                        "currency": str(
+                            base_currency if side == OrderSide.Buy else quote_currency
+                        ),
                         "cost": round(fee_cost, CURRENCY_PRECISION),
                         "rate": round(fee_rate, CURRENCY_PRECISION),
                         "percentage": True,

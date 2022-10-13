@@ -25,7 +25,6 @@ from ..utils import (
     handle_response_error,
     get_order_side,
     parse_amount_value,
-    fetch_transfer_rate,
     get_taker_or_maker,
     get_amount_currency_code,
 )
@@ -67,7 +66,9 @@ async def fetch_trades(
 
         handle_response_error(ledger)
 
-        if since != None and ripple_time_to_posix(ledger["ledger"]["close_time"] >= since):
+        if since != None and ripple_time_to_posix(
+            ledger["ledger"]["close_time"] >= since
+        ):
             has_next_page = False
             continue
 
@@ -128,7 +129,11 @@ async def fetch_trades(
 
                     quote_amount = offer[get_quote_amount_key(side)]
                     quote_currency = get_amount_currency_code(quote_currency)
-                    quote_rate = await fetch_transfer_rate(self.client, quote_currency)
+                    quote_rate = (
+                        await self.fetch_transfer_rate(quote_currency.issuer)
+                        if "issuer" in quote_currency
+                        else 0
+                    )
                     quote_amount_value = parse_amount_value(quote_amount)
                     quote_value = (
                         float(drops_to_xrp(str(quote_amount_value)))
@@ -150,9 +155,15 @@ async def fetch_trades(
                     trade = Trade(
                         id=TradeId(transaction["Account"], transaction["Sequence"]),
                         order=OrderId(offer.Account, offer.Sequence),
-                        datetime=ripple_time_to_datetime(ledger["ledger"]["close_time"] or 0),
-                        timestamp=ripple_time_to_posix(ledger["ledger"]["close_time"] or 0),
-                        symbol=MarketSymbol(base_currency.code, quote_currency.code).symbol,
+                        datetime=ripple_time_to_datetime(
+                            ledger["ledger"]["close_time"] or 0
+                        ),
+                        timestamp=ripple_time_to_posix(
+                            ledger["ledger"]["close_time"] or 0
+                        ),
+                        symbol=MarketSymbol(
+                            base_currency.code, quote_currency.code
+                        ).symbol,
                         type=TradeType.Limit.value,
                         side=side,
                         amount=round(amount, CURRENCY_PRECISION),

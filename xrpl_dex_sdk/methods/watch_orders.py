@@ -31,7 +31,6 @@ from ..utils import (
     get_quote_amount_key,
     get_market_symbol,
     get_order_time_in_force,
-    fetch_transfer_rate,
     parse_amount_value,
     has_offer_create_flag,
     hash_offer_id,
@@ -101,7 +100,9 @@ async def watch_orders(
                     else TradeSide.Buy.value
                 )
 
-                base_amount = offer.TakerPays if side == TradeSide.Buy.value else offer.TakerGets
+                base_amount = (
+                    offer.TakerPays if side == TradeSide.Buy.value else offer.TakerGets
+                )
                 base_code = (
                     CurrencyCode(base_amount["currency"], base_amount["issuer"])
                     if "currency" in base_amount
@@ -114,13 +115,19 @@ async def watch_orders(
                     else base_amount_value
                 )
 
-                quote_amount = offer.TakerGets if side == TradeSide.Buy.value else offer.TakerPays
+                quote_amount = (
+                    offer.TakerGets if side == TradeSide.Buy.value else offer.TakerPays
+                )
                 quote_code = (
                     CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
                     if "currency" in quote_amount
                     else CurrencyCode("XRP")
                 )
-                quote_rate = await fetch_transfer_rate(self.client, quote_code)
+                quote_rate = (
+                    await self.fetch_transfer_rate(quote_code.issuer)
+                    if "issuer" in quote_code
+                    else 0
+                )
                 quote_amount_value = parse_amount_value(quote_amount)
                 quote_value = (
                     float(drops_to_xrp(str(quote_amount_value)))
@@ -171,14 +178,22 @@ async def watch_orders(
 
             order_time_in_force = get_order_time_in_force(transaction)
 
-            order_base_rate = await fetch_transfer_rate(self.client, order_symbol.base)
+            order_base_rate = (
+                await self.fetch_transfer_rate(order_symbol.base.issuer)
+                if "issuer" in order_symbol.base
+                else 0
+            )
             order_base_amount_value = parse_amount_value(order_base_amount)
             order_base_value = (
                 float(drops_to_xrp(str(order_base_amount_value)))
                 if isinstance(order_base_amount_value, int)
                 else order_base_amount_value
             )
-            order_quote_rate = await fetch_transfer_rate(self.client, order_symbol.quote)
+            order_quote_rate = (
+                await self.fetch_transfer_rate(order_symbol.quote.issuer)
+                if "issuer" in order_symbol.quote
+                else 0
+            )
             order_quote_amount_value = parse_amount_value(order_quote_amount)
             order_quote_value = (
                 float(drops_to_xrp(str(order_quote_amount_value)))
@@ -190,17 +205,23 @@ async def watch_orders(
             order_price = order_quote_value / order_amount
             order_actual_price = fill_price
 
-            order_average = total_fill_price / len(trades) if len(trades) > 0 else float(0)
+            order_average = (
+                total_fill_price / len(trades) if len(trades) > 0 else float(0)
+            )
 
             order_remaining = order_amount - filled
             order_cost = filled * order_actual_price
 
-            order_fee_rate = order_quote_rate if order_side == OrderSide.Buy else order_base_rate
+            order_fee_rate = (
+                order_quote_rate if order_side == OrderSide.Buy else order_base_rate
+            )
             order_fee_cost = filled * order_fee_rate
 
             order = Order(
                 id=order_id,
-                clientOrderId=hash_offer_id(transaction["Account"], transaction["Sequence"]),
+                clientOrderId=hash_offer_id(
+                    transaction["Account"], transaction["Sequence"]
+                ),
                 datetime=ripple_time_to_datetime(date or 0),
                 timestamp=ripple_time_to_posix(date or 0),
                 lastTradeTimestamp=ripple_time_to_posix(date or 0),

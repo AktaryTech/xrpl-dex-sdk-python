@@ -3,7 +3,7 @@ from xrpl import wallet
 from xrpl.asyncio import clients
 
 from . import methods
-from .models import Currencies, Issuers, Markets
+from .models import Currencies, Issuers, Markets, TransferRates
 from .constants import Networks
 
 
@@ -24,6 +24,7 @@ class SDK:
     currencies: Optional[Currencies] = None
     issuers: Optional[Issuers] = None
     markets: Optional[Markets] = None
+    transfer_rates: Optional[TransferRates] = None
 
     cancel_order = methods.cancel_order
     create_limit_buy_order = methods.create_limit_buy_order
@@ -53,6 +54,7 @@ class SDK:
     fetch_trading_fees = methods.fetch_trading_fees
     fetch_transaction_fee = methods.fetch_transaction_fee
     fetch_transaction_fees = methods.fetch_transaction_fees
+    fetch_transfer_rate = methods.fetch_transfer_rate
     load_currencies = methods.load_currencies
     load_issuers = methods.load_issuers
     load_markets = methods.load_markets
@@ -89,7 +91,9 @@ class SDK:
             params["json_rpc_url"]
             if "json_rpc_url" in params
             else (
-                Networks[params["network"]]["json_rpc"] if params["network"] in Networks else None
+                Networks[params["network"]]["json_rpc"]
+                if params["network"] in Networks
+                else None
             )
             if "network" in params
             else None
@@ -104,7 +108,11 @@ class SDK:
         self.ws_url = (
             params["ws_url"]
             if "ws_url" in params
-            else (Networks[params["network"]]["ws"] if params["network"] in Networks else None)
+            else (
+                Networks[params["network"]]["ws"]
+                if params["network"] in Networks
+                else None
+            )
             if "network" in params
             else None
         )
@@ -133,7 +141,9 @@ class SDK:
         )
 
         self.wallet = (
-            params["wallet"] if "wallet" in params else wallet.Wallet(params["wallet_secret"], 0)
+            params["wallet"]
+            if "wallet" in params
+            else wallet.Wallet(params["wallet_secret"], 0)
         )
 
         if (
@@ -141,4 +151,6 @@ class SDK:
             and "fund_testnet_wallet" in params
             and params["fund_testnet_wallet"] == True
         ):
-            self.wallet = wallet.generate_faucet_wallet(client=self.client, wallet=self.wallet)
+            self.wallet = wallet.generate_faucet_wallet(
+                client=self.client, wallet=self.wallet
+            )

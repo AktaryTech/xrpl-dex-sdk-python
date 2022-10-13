@@ -23,7 +23,6 @@ from ..models import (
     UnixTimestamp,
 )
 from ..utils import (
-    fetch_transfer_rate,
     get_most_recent_tx,
     hash_offer_id,
     has_offer_flag,
@@ -57,7 +56,9 @@ async def fetch_order(
         transactions.append(previous_txn_data)
 
     while previous_txn_id != None:
-        tx_response = await self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
+        tx_response = await self.client.request(
+            Tx.from_dict({"transaction": previous_txn_id})
+        )
         tx = tx_response.result
 
         if "error" in tx:
@@ -104,7 +105,9 @@ async def fetch_order(
                 else TradeSide.Buy.value
             )
 
-            base_amount = source.TakerPays if side == TradeSide.Buy.value else source.TakerGets
+            base_amount = (
+                source.TakerPays if side == TradeSide.Buy.value else source.TakerGets
+            )
             base_code = (
                 CurrencyCode(base_amount["currency"], base_amount["issuer"])
                 if "currency" in base_amount
@@ -117,13 +120,19 @@ async def fetch_order(
                 else base_amount_value
             )
 
-            quote_amount = source.TakerGets if side == TradeSide.Buy.value else source.TakerPays
+            quote_amount = (
+                source.TakerGets if side == TradeSide.Buy.value else source.TakerPays
+            )
             quote_code = (
                 CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
                 if "currency" in quote_amount
                 else CurrencyCode("XRP")
             )
-            quote_rate = await fetch_transfer_rate(self.client, quote_code)
+            quote_rate = (
+                await self.fetch_transfer_rate(quote_code.issuer)
+                if quote_code.__getattribute__("issuer") != None
+                else 0
+            )
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))
@@ -172,7 +181,10 @@ async def fetch_order(
             )
             trades.append(trade)
 
-        if transaction["Account"] == id.account and transaction["Sequence"] == id.sequence:
+        if (
+            transaction["Account"] == id.account
+            and transaction["Sequence"] == id.sequence
+        ):
             source = transaction
 
             if "Sequence" not in source:
@@ -186,7 +198,9 @@ async def fetch_order(
             )
 
             base_amount = (
-                source["TakerPays"] if side == OrderSide.Buy.value else source["TakerGets"]
+                source["TakerPays"]
+                if side == OrderSide.Buy.value
+                else source["TakerGets"]
             )
             base_code = (
                 CurrencyCode("XRP")
@@ -201,14 +215,20 @@ async def fetch_order(
             )
 
             quote_amount = (
-                source["TakerGets"] if side == OrderSide.Buy.value else source["TakerPays"]
+                source["TakerGets"]
+                if side == OrderSide.Buy.value
+                else source["TakerPays"]
             )
             quote_code = (
                 CurrencyCode("XRP")
                 if isinstance(quote_amount, str)
                 else CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
             )
-            quote_rate = await fetch_transfer_rate(self.client, quote_code)
+            quote_rate = (
+                await self.fetch_transfer_rate(quote_code.issuer)
+                if quote_code.__getattribute__("issuer") != None
+                else 0
+            )
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))
@@ -216,7 +236,9 @@ async def fetch_order(
                 else quote_amount_value
             )
 
-            order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled.value
+            order_time_in_force: OrderTimeInForce = (
+                OrderTimeInForce.GoodTillCanceled.value
+            )
             if (
                 source["Flags"] & OfferCreateFlags.TF_PASSIVE.value
             ) == OfferCreateFlags.TF_PASSIVE.value:
