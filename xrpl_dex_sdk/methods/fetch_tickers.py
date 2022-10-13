@@ -8,7 +8,7 @@ from ..models import (
 )
 
 
-def fetch_tickers(
+async def fetch_tickers(
     self,
     symbols: List[MarketSymbol],
     params: FetchTickerParams = FetchTickerParams(),
@@ -16,7 +16,7 @@ def fetch_tickers(
     tickers: List[Ticker] = []
 
     for symbol in symbols:
-        ticker = self.fetch_ticker(symbol, params)
+        ticker = await self.fetch_ticker(symbol, params)
         if ticker != None:
             tickers.append(ticker)
 

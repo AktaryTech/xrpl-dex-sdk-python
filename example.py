@@ -55,7 +55,15 @@ def write_to_out(data: Any) -> None:
 
 
 async def main() -> None:
-    client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
+    # client = xrpl_dex_sdk.Client(xrpl_dex_sdk.TESTNET)
+    sdk = xrpl_dex_sdk.SDK(
+        {
+            "network": xrpl_dex_sdk.constants.TESTNET,
+            "wallet_secret": "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs",
+        }
+    )
+
+    await sdk.watch_balance(foo)
     # await client.watch_status(foo)
     # await client.watch_order_book(foo, "XRP/EUR")
     # await client.watch_transactions(foo, ["rJ9D95MwHFHxDDyeBg4SG644wPYqyEGsE7"])

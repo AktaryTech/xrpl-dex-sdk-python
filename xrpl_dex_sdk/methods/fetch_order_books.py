@@ -8,7 +8,7 @@ from ..models import (
 )
 
 
-def fetch_order_books(
+async def fetch_order_books(
     self,
     symbols: List[MarketSymbol],
     limit: int = DEFAULT_LIMIT,
@@ -17,7 +17,7 @@ def fetch_order_books(
     order_books: FetchOrderBooksResponse = {}
 
     for symbol in symbols:
-        order_book = self.fetch_order_book(
+        order_book = await self.fetch_order_book(
             symbol=symbol,
             limit=limit,
             params=params.symbols[str(symbol)] if params.symbols != None else None,

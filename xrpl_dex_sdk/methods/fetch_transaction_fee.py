@@ -4,14 +4,14 @@ from ..models.methods.fetch_transaction_fee import FetchTransactionFeeResponse
 from ..models.common import CurrencyCode
 
 
-def fetch_transaction_fee(self, code: CurrencyCode) -> FetchTransactionFeeResponse:
-    fee_response = self.client.request(Fee())
+async def fetch_transaction_fee(self, code: CurrencyCode) -> FetchTransactionFeeResponse:
+    fee_response = await self.client.request(Fee())
     fee_result = fee_response.result
 
     if "error" in fee_result:
         raise Exception(fee_response["error"] + " " + fee_response["error_message"])
 
-    currencies = self.currencies if self.currencies != None else self.fetch_currencies()
+    currencies = self.currencies if self.currencies != None else await self.fetch_currencies()
 
     if code not in currencies:
         return

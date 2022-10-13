@@ -33,9 +33,15 @@ def test_version() -> None:
 
 def test_hash_offer_id() -> None:
     offer_id_hash_1 = hash_offer_id("rn5umFvUWKXqwrGJSRcV24wz9zZFiG7rsQ", 30419151)
-    assert offer_id_hash_1 == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+    assert (
+        offer_id_hash_1
+        == "0D5A1CD41A637B533D123EE3408F898875E0F8FCA743CF98599E347F55D606DC"
+    )
     offer_id_hash_2 = hash_offer_id("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
-    assert offer_id_hash_2 == "29B699A1C221904E43650999C5BA5C3B32E6416E4CA390E64EF4392FFACF4406"
+    assert (
+        offer_id_hash_2
+        == "29B699A1C221904E43650999C5BA5C3B32E6416E4CA390E64EF4392FFACF4406"
+    )
 
 
 def test_ids() -> None:
@@ -143,7 +149,8 @@ def test_create_limit_sell_order() -> None:
     assert tx != None
     assert tx["Account"] == sdk.wallet.classic_address
     assert (
-        tx["Flags"] & models.OfferCreateFlags.TF_SELL.value == models.OfferCreateFlags.TF_SELL.value
+        tx["Flags"] & models.OfferCreateFlags.TF_SELL.value
+        == models.OfferCreateFlags.TF_SELL.value
     )
     assert tx["TakerPays"] == xrp_to_drops(amount * price)
     assert tx["TakerGets"]["currency"] == test_currency
@@ -263,7 +270,9 @@ async def test_fetch_orders() -> None:
     )
     # expected_responses = [responses.fetch_order_responses[id.id]]
 
-    result = await sdk.fetch_orders(symbol, None, 1, models.FetchOrdersParams(search_limit=25))
+    result = await sdk.fetch_orders(
+        symbol, None, 1, models.FetchOrdersParams(search_limit=25)
+    )
 
     assert result != None
     # assert len(result) > 0
@@ -383,9 +392,10 @@ async def test_fetch_currencies() -> None:
     assert currencies == responses.fetch_currencies_response
 
 
-def test_fetch_fees() -> None:
+@pytest.mark.asyncio
+async def test_fetch_fees() -> None:
     sdk = SDK(sdk_test_params)
-    result = sdk.fetch_fees()
+    result = await sdk.fetch_fees()
     assert "transactions" in result
     transactions = result["transactions"]
     assert "code" in transactions[0]
@@ -409,11 +419,12 @@ def test_fetch_issuers() -> None:
     # assert issuers == responses.fetch_issuers_response
 
 
-def test_fetch_l2_order_book() -> None:
+@pytest.mark.asyncio
+async def test_fetch_l2_order_book() -> None:
     sdk = SDK(sdk_test_params)
     test_limit = 3
     test_symbol = models.MarketSymbol("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP")
-    order_book: models.OrderBook = sdk.fetch_l2_order_book(
+    order_book: models.OrderBook = await sdk.fetch_l2_order_book(
         symbol=test_symbol,
         limit=test_limit,
         params=models.FetchL2OrderBookParams(taker=sdk.wallet.classic_address),
@@ -451,11 +462,12 @@ async def test_fetch_markets() -> None:
     # assert markets == responses.fetch_markets_response
 
 
-def test_fetch_order_book() -> None:
+@pytest.mark.asyncio
+async def test_fetch_order_book() -> None:
     sdk = SDK(sdk_test_params)
     test_limit = 3
     test_symbol = models.MarketSymbol("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP")
-    order_book: models.OrderBook = sdk.fetch_order_book(
+    order_book: models.OrderBook = await sdk.fetch_order_book(
         symbol=test_symbol,
         limit=test_limit,
         params=models.FetchOrderBookParams(taker=sdk.wallet.classic_address),
@@ -469,16 +481,19 @@ def test_fetch_order_book() -> None:
     assert len(order_book.bids) + len(order_book.asks) == test_limit
 
 
-def test_fetch_order_books() -> None:
+@pytest.mark.asyncio
+async def test_fetch_order_books() -> None:
     sdk = SDK(sdk_test_params)
     test_limit = 3
     test_symbol = models.MarketSymbol("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP")
-    order_books: models.OrderBooks = sdk.fetch_order_books(
+    order_books: models.OrderBooks = await sdk.fetch_order_books(
         symbols=[test_symbol],
         limit=test_limit,
         params=models.FetchOrderBooksParams(
             symbols={
-                test_symbol.symbol: models.FetchOrderBookParams(taker=sdk.wallet.classic_address)
+                test_symbol.symbol: models.FetchOrderBookParams(
+                    taker=sdk.wallet.classic_address
+                )
             },
         ),
     )
@@ -501,10 +516,11 @@ async def test_fetch_status() -> None:
     assert status != None
 
 
-def test_fetch_trading_fee() -> None:
+@pytest.mark.asyncio
+async def test_fetch_trading_fee() -> None:
     sdk = SDK(sdk_test_params)
     test_symbol = models.MarketSymbol("XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")
-    trading_fee = sdk.fetch_trading_fee(test_symbol)
+    trading_fee = await sdk.fetch_trading_fee(test_symbol)
     assert "symbol" in trading_fee
     assert str(trading_fee["symbol"]) == "XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
     assert "base" in trading_fee
@@ -515,9 +531,10 @@ def test_fetch_trading_fee() -> None:
     assert trading_fee["percentage"] == True
 
 
-def test_fetch_trading_fees() -> None:
+@pytest.mark.asyncio
+async def test_fetch_trading_fees() -> None:
     sdk = SDK(sdk_test_params)
-    trading_fees = sdk.fetch_trading_fees()
+    trading_fees = await sdk.fetch_trading_fees()
 
     assert len(trading_fees) == 2
 
@@ -548,18 +565,24 @@ def test_fetch_trading_fees() -> None:
     assert trading_fee_2["percentage"] == True
 
 
-def test_fetch_transaction_fee() -> None:
+@pytest.mark.asyncio
+async def test_fetch_transaction_fee() -> None:
     sdk = SDK(sdk_test_params)
-    transaction_fee = sdk.fetch_transaction_fee("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")
+    transaction_fee = await sdk.fetch_transaction_fee(
+        "AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
+    )
     assert "code" in transaction_fee
     assert "current" in transaction_fee
     assert "transfer" in transaction_fee
     assert "info" in transaction_fee
 
 
-def test_fetch_transaction_fees() -> None:
+@pytest.mark.asyncio
+async def test_fetch_transaction_fees() -> None:
     sdk = SDK(sdk_test_params)
-    transaction_fees = sdk.fetch_transaction_fees(["AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"])
+    transaction_fees = await sdk.fetch_transaction_fees(
+        ["AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"]
+    )
     assert "code" in transaction_fees[0]
     assert transaction_fees[0]["code"] == "AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
     assert "current" in transaction_fees[0]
@@ -567,15 +590,17 @@ def test_fetch_transaction_fees() -> None:
     assert "transfer" in transaction_fees[0]
 
 
-def test_fetch_ticker() -> None:
+@pytest.mark.asyncio
+async def test_fetch_ticker() -> None:
     sdk = SDK(sdk_test_params)
-    ticker = sdk.fetch_ticker("TST+rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd/XRP")
+    ticker = await sdk.fetch_ticker("TST+rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd/XRP")
     assert ticker != None
 
 
-def test_fetch_tickers() -> None:
+@pytest.mark.asyncio
+async def test_fetch_tickers() -> None:
     sdk = SDK(sdk_test_params)
-    ticker = sdk.fetch_tickers(["TST+rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd/XRP"])
+    ticker = await sdk.fetch_tickers(["TST+rP9jPyP5kyvFRb6ZiRghAGw5u8SGAmU4bd/XRP"])
     assert ticker != None
     assert len(ticker) == 1
 
