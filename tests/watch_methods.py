@@ -66,7 +66,9 @@ async def main() -> None:
             params={"listener": order_book_listener},
         )
     )
-    asyncio.create_task(sdk.watch_orders(symbol=None, params={"listener": orders_listener}))
+    asyncio.create_task(
+        sdk.watch_orders(symbol=None, params={"listener": orders_listener})
+    )
     asyncio.create_task(sdk.watch_status(params={"listener": status_listener}))
     asyncio.create_task(
         sdk.watch_ticker(
