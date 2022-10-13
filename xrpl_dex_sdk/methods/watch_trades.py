@@ -1,107 +1,70 @@
-from typing import Any, Optional
+from pprint import pprint
+from typing import Any, Dict
+import uuid
 
-from xrpl.models.requests.account_tx import AccountTx
+from xrpl.asyncio.clients import AsyncWebsocketClient
+from xrpl.models import Subscribe, StreamParameter
 from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
-from ..constants import CURRENCY_PRECISION, DEFAULT_LIMIT
+from ..constants import CURRENCY_PRECISION
 from ..models import (
-    FetchTradesParams,
-    FetchTradesResponse,
-    Trade,
-    OrderId,
-    TradeId,
-    TradeType,
-    Trade,
-    Trades,
-    Offer,
+    WatchTradesParams,
     OrderSide,
-    TradeType,
+    Offer,
     MarketSymbol,
-    UnixTimestamp,
+    TradeId,
+    OrderId,
+    Trade,
+    TradeType,
 )
 from ..utils import (
+    get_amount_currency_code,
+    get_order_side,
+    get_market_symbol,
     get_base_amount_key,
     get_quote_amount_key,
-    handle_response_error,
-    get_order_side,
-    parse_amount_value,
     fetch_transfer_rate,
+    parse_amount_value,
     get_taker_or_maker,
-    get_market_symbol,
-    get_amount_currency_code,
 )
 
 
-async def fetch_my_trades(
+async def watch_trades(
     self,
     # Market symbol to fetch trades for
     symbol: MarketSymbol,
-    # Only return Trades since this date
-    since: Optional[UnixTimestamp] = None,
-    # Total number of Trades to return
-    limit: Optional[int] = DEFAULT_LIMIT,
-    # eslint-disable-next-line
-    params: FetchTradesParams = FetchTradesParams(),
-) -> FetchTradesResponse:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) == True else symbol
+    params: WatchTradesParams,
+) -> None:
+    symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
 
-    trades: Trades = []
+    if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
+        raise Exception("Error watching trades: Websockets client not initialized")
 
-    tx_count = 0
-    has_next_page = True
-    marker: Any = None
+    payload = Subscribe(
+        id=uuid.uuid4().hex,
+        streams=[StreamParameter.TRANSACTIONS],
+    )
 
-    while has_next_page == True:
-        account_tx_response = await self.client.request(
-            AccountTx.from_dict(
-                {
-                    "account": self.wallet.classic_address,
-                    "ledger_index_min": -1,
-                    "ledger_index_max": -1,
-                    "limit": DEFAULT_LIMIT,
-                    "marker": marker,
-                }
-            )
-        )
-        account_tx_result = account_tx_response.result
-        handle_response_error(account_tx_result)
+    async def trades_handler(message: Any):
+        if message["type"] == "transaction":
+            transaction = message["transaction"]
+            if (
+                transaction == None
+                or transaction["TransactionType"] != "OfferCreate"
+                or "meta" not in transaction
+                or "Sequence" not in transaction
+            ):
+                return
 
-        if account_tx_result["validated"] == False:
-            continue
-
-        if "marker" in account_tx_result:
-            marker = account_tx_result["marker"]
-
-        transactions = account_tx_result["transactions"]
-
-        if transactions == None:
-            continue
-
-        for transaction in transactions:
-            if "tx" not in transaction:
-                continue
-
-            tx = transaction["tx"]
-
-            if tx["TransactionType"] != "OfferCreate" or "Sequence" not in tx:
-                continue
-
-            if since != None and ripple_time_to_posix(tx["date"]) >= since:
-                continue
-
-            side = get_order_side(tx["Flags"])
+            side = get_order_side(transaction["Flags"])
 
             market_symbol = get_market_symbol(
-                tx[get_base_amount_key(OrderSide.Buy)]
-                if side == OrderSide.Buy
-                else tx[get_base_amount_key(OrderSide.Sell)],
-                tx[get_quote_amount_key(OrderSide.Buy)]
-                if side == OrderSide.Buy
-                else tx[get_quote_amount_key(OrderSide.Sell)],
+                transaction[get_base_amount_key(side)],
+                transaction[get_quote_amount_key(side)],
             )
 
             if market_symbol != symbol:
-                continue
+                return
 
             for affected_node in transaction["meta"]["AffectedNodes"]:
                 node = (
@@ -149,10 +112,10 @@ async def fetch_my_trades(
                 fee_cost = (quote_value if side == OrderSide.Buy else base_value) * fee_rate
 
                 trade = Trade(
-                    id=TradeId(tx["Account"], tx["Sequence"]),
+                    id=TradeId(transaction["Account"], transaction["Sequence"]),
                     order=OrderId(offer["Account"], offer["Sequence"]),
-                    datetime=ripple_time_to_datetime(tx["date"] or 0),
-                    timestamp=ripple_time_to_posix(tx["date"] or 0),
+                    datetime=ripple_time_to_datetime(transaction["date"] or 0),
+                    timestamp=ripple_time_to_posix(transaction["date"] or 0),
                     symbol=MarketSymbol(base_currency.code, quote_currency.code).symbol,
                     type=TradeType.Limit.value,
                     side=side,
@@ -171,22 +134,24 @@ async def fetch_my_trades(
                     info={"transaction": transaction},
                 )
 
-                trades.append(trade)
+                return trade
 
-                if len(trades) >= limit:
-                    break
+    async with self.websocket_client as websocket:
+        await websocket.send(payload)
+        initialized = False
+        async for message in websocket:
+            if initialized is False:
+                if message.get("status") == "success":
+                    initialized = True
+                    continue
+                else:
+                    raise Exception(message)
 
-            tx_count += 1
-            if tx_count >= params.search_limit:
-                break
+            trade = await trades_handler(message)
+            if trade != None:
+                if isinstance(params, Dict):
+                    params["listener"](trade)
+                else:
+                    params.listener(trade)
 
-        has_next_page = len(trades) < limit and tx_count < params.search_limit
-
-    if len(trades) > 0:
-
-        def sort_by_timestamp(trade: Trade):
-            return trade.order.sequence
-
-        trades.sort(reverse=False, key=sort_by_timestamp)
-
-    return trades
+    return {}

@@ -1,5 +1,6 @@
 from typing import Any, NamedTuple, Optional
-from xrpl import clients, wallet
+from xrpl import wallet
+from xrpl.asyncio import clients
 
 from . import methods
 from .models import Currencies, Issuers, Markets
@@ -12,16 +13,17 @@ class SDKParams(NamedTuple):
     wallet_secret: Optional[str]
     json_rpc_url: Optional[str]
     ws_url: Optional[str]
-    client: Optional[clients.JsonRpcClient]
+    client: Optional[clients.AsyncJsonRpcClient]
+    websocket_client: Optional[clients.AsyncWebsocketClient]
     wallet: Optional[wallet.Wallet]
     fund_testnet_wallet: Optional[bool] = False
 
 
 class SDK:
     # cache
-    currencies: Currencies = None
-    issuers: Issuers = None
-    markets: Markets = None
+    currencies: Optional[Currencies] = None
+    issuers: Optional[Issuers] = None
+    markets: Optional[Markets] = None
 
     cancel_order = methods.cancel_order
     create_limit_buy_order = methods.create_limit_buy_order
@@ -54,14 +56,14 @@ class SDK:
     load_currencies = methods.load_currencies
     load_issuers = methods.load_issuers
     load_markets = methods.load_markets
-    # watch_balance = methods.watch_balance
-    # watch_my_trades = methods.watch_my_trades
-    # watch_order_book = methods.watch_order_book
-    # watch_orders = methods.watch_orders
-    # watch_status = methods.watch_status
-    # watch_ticker = methods.watch_ticker
-    # watch_tickers = methods.watch_tickers
-    # watch_trades = methods.watch_trades
+    watch_balance = methods.watch_balance
+    watch_my_trades = methods.watch_my_trades
+    watch_order_book = methods.watch_order_book
+    watch_orders = methods.watch_orders
+    watch_status = methods.watch_status
+    watch_ticker = methods.watch_ticker
+    watch_tickers = methods.watch_tickers
+    watch_trades = methods.watch_trades
 
     def __init__(self, params: SDKParams) -> None:
 
@@ -114,7 +116,20 @@ class SDK:
                     break
 
         self.client = (
-            params["client"] if "client" in params else clients.JsonRpcClient(self.json_rpc_url)
+            params["client"]
+            if "client" in params
+            else clients.AsyncJsonRpcClient(self.json_rpc_url)
+            if self.json_rpc_url != None
+            else None
+        )
+        self.json_rpc_client = self.client
+
+        self.websocket_client = (
+            params["websocket_client"]
+            if "websocket_client" in params
+            else clients.AsyncWebsocketClient(self.ws_url)
+            if self.ws_url != None
+            else None
         )
 
         self.wallet = (

@@ -47,6 +47,7 @@ class Ticker(NamedTuple):
     info: Dict[str, Any]
 
 
-__all__ = [
-    "Ticker",
-]
+Tickers = Dict[MarketSymbol, Ticker]
+
+
+__all__ = ["Ticker", "Tickers"]

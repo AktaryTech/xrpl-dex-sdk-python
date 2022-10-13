@@ -1,5 +1,6 @@
+import pytest
 from typing import Any, Dict
-from xrpl.clients import JsonRpcClient
+from xrpl.asyncio import clients
 from xrpl.utils import xrp_to_drops
 from xrpl.wallet import generate_faucet_wallet
 
@@ -9,7 +10,10 @@ from .fixtures import responses
 
 
 test_json_rpc_url = constants.Networks[constants.TESTNET]["json_rpc"]
-test_client = JsonRpcClient(test_json_rpc_url)
+test_client = clients.AsyncJsonRpcClient(test_json_rpc_url)
+
+test_ws_url = constants.Networks[constants.TESTNET]["ws"]
+test_websocket_client = clients.AsyncWebsocketClient(test_ws_url)
 
 test_wallet_secret = "shCwGCyy17Ph4JdZ6jTsFssEpS6Fs"
 test_currency = "AKT"
@@ -161,9 +165,10 @@ def test_create_trust_line() -> None:
     assert create_result != None
 
 
-def test_fetch_balance() -> None:
+@pytest.mark.asyncio
+async def test_fetch_balance() -> None:
     sdk = SDK(sdk_test_params)
-    result = sdk.fetch_balance()
+    result = await sdk.fetch_balance()
     assert result != None
     assert "balances" in result
     assert "info" in result
@@ -171,12 +176,13 @@ def test_fetch_balance() -> None:
     assert result["info"]["account_info"]["Account"] == sdk.wallet.classic_address
 
 
-def test_fetch_order() -> None:
+@pytest.mark.asyncio
+async def test_fetch_order() -> None:
     sdk = SDK(sdk_test_params)
     id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
     # expected_response = responses.fetch_order_responses[id.id]
 
-    result = sdk.fetch_order(id)
+    result = await sdk.fetch_order(id)
 
     assert result != None
     # for field in expected_response.keys():
@@ -247,7 +253,8 @@ def test_fetch_order() -> None:
     #         assert str(actual_value) == str(expected_value)
 
 
-def test_fetch_orders() -> None:
+@pytest.mark.asyncio
+async def test_fetch_orders() -> None:
     sdk = SDK(sdk_test_params)
     # id = models.OrderId("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z", 31617670)
     symbol = models.MarketSymbol(
@@ -256,7 +263,7 @@ def test_fetch_orders() -> None:
     )
     # expected_responses = [responses.fetch_order_responses[id.id]]
 
-    result = sdk.fetch_orders(symbol, None, 1, models.FetchOrdersParams(search_limit=25))
+    result = await sdk.fetch_orders(symbol, None, 1, models.FetchOrdersParams(search_limit=25))
 
     assert result != None
     # assert len(result) > 0
@@ -323,49 +330,55 @@ def test_fetch_orders() -> None:
     #             assert str(actual_value) == str(expected_value)
 
 
-def test_fetch_open_orders() -> None:
+@pytest.mark.asyncio
+async def test_fetch_open_orders() -> None:
     sdk = SDK(sdk_test_params)
     symbol = models.MarketSymbol(
         "EUR+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
         "USD+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
     )
 
-    result = sdk.fetch_open_orders(symbol, None, 1, models.FetchOpenOrdersParams(search_limit=25))
+    result = await sdk.fetch_open_orders(
+        symbol, None, 1, models.FetchOpenOrdersParams(search_limit=25)
+    )
 
     assert result != None
 
 
-def test_fetch_closed_orders() -> None:
+@pytest.mark.asyncio
+async def test_fetch_closed_orders() -> None:
     sdk = SDK(sdk_test_params)
     symbol = models.MarketSymbol(
         "EUR+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
         "USD+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
     )
 
-    result = sdk.fetch_closed_orders(
+    result = await sdk.fetch_closed_orders(
         symbol, None, 1, models.FetchClosedOrdersParams(search_limit=25)
     )
 
     assert result != None
 
 
-def test_fetch_canceled_orders() -> None:
+@pytest.mark.asyncio
+async def test_fetch_canceled_orders() -> None:
     sdk = SDK(sdk_test_params)
     symbol = models.MarketSymbol(
         "EUR+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
         "USD+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP",
     )
 
-    result = sdk.fetch_canceled_orders(
+    result = await sdk.fetch_canceled_orders(
         symbol, None, 1, models.FetchCanceledOrdersParams(search_limit=25)
     )
 
     assert result != None
 
 
-def test_fetch_currencies() -> None:
+@pytest.mark.asyncio
+async def test_fetch_currencies() -> None:
     sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
-    currencies = sdk.fetch_currencies()
+    currencies = await sdk.fetch_currencies()
     assert currencies != None
     assert currencies == responses.fetch_currencies_response
 
@@ -414,9 +427,10 @@ def test_fetch_l2_order_book() -> None:
     assert len(order_book.bids) + len(order_book.asks) == test_limit
 
 
-def test_fetch_market() -> None:
+@pytest.mark.asyncio
+async def test_fetch_market() -> None:
     sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
-    market = sdk.fetch_market(
+    market = await sdk.fetch_market(
         models.MarketSymbol(
             "534F4C4F00000000000000000000000000000000+rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz/XRP"
         )
@@ -427,9 +441,10 @@ def test_fetch_market() -> None:
     # assert markets == responses.fetch_markets_response
 
 
-def test_fetch_markets() -> None:
+@pytest.mark.asyncio
+async def test_fetch_markets() -> None:
     sdk = SDK({"network": constants.MAINNET, "wallet_secret": test_wallet_secret})
-    markets = sdk.fetch_markets()
+    markets = await sdk.fetch_markets()
     print("markets")
     print(markets)
     assert markets != None
@@ -479,9 +494,10 @@ def test_fetch_order_books() -> None:
     assert len(order_book_1.bids) + len(order_book_1.asks) == test_limit
 
 
-def test_fetch_status() -> None:
+@pytest.mark.asyncio
+async def test_fetch_status() -> None:
     sdk = SDK(sdk_test_params)
-    status = sdk.fetch_status()
+    status = await sdk.fetch_status()
     assert status != None
 
 
@@ -564,12 +580,13 @@ def test_fetch_tickers() -> None:
     assert len(ticker) == 1
 
 
-def test_fetch_trades() -> None:
+@pytest.mark.asyncio
+async def test_fetch_trades() -> None:
     sdk = SDK(sdk_test_params)
     base_currency = "EUR+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"
     quote_currency = "CSC+rBZJzEisyXt2gvRWXLxHftFRkd1vJEpBQP"
     symbol = base_currency + "/" + quote_currency
-    trades = sdk.fetch_trades(
+    trades = await sdk.fetch_trades(
         symbol=symbol, limit=1, params=models.FetchTradesParams(search_limit=100)
     )
     assert trades != None
@@ -577,9 +594,12 @@ def test_fetch_trades() -> None:
     # assert len(trades) > 0
 
 
-def test_fetch_my_trades() -> None:
+@pytest.mark.asyncio
+async def test_fetch_my_trades() -> None:
     sdk = SDK(sdk_test_params)
     # TODO: mock up this response
-    my_trades = sdk.fetch_my_trades(symbol="XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B", limit=3)
+    my_trades = await sdk.fetch_my_trades(
+        symbol="XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B", limit=3
+    )
     assert my_trades != None
     assert len(my_trades) == 3

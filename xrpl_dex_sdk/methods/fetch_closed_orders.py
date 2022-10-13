@@ -10,14 +10,14 @@ from ..models import (
 )
 
 
-def fetch_closed_orders(
+async def fetch_closed_orders(
     self,
     symbol: Optional[MarketSymbol] = None,
     since: Optional[UnixTimestamp] = None,
     limit: Optional[int] = DEFAULT_LIMIT,
     params: FetchClosedOrdersParams = FetchClosedOrdersParams(),
 ) -> FetchClosedOrdersResponse:
-    orders = self.fetch_orders(
+    orders = await self.fetch_orders(
         symbol,
         since,
         limit,

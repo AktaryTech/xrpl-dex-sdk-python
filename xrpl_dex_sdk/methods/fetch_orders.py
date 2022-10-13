@@ -23,7 +23,7 @@ from ..utils import (
 )
 
 
-def fetch_orders(
+async def fetch_orders(
     self,
     symbol: Optional[MarketSymbol] = None,
     since: Optional[UnixTimestamp] = None,
@@ -45,7 +45,7 @@ def fetch_orders(
                 "ledger_index": "validated" if previous_ledger_hash == None else None,
             }
         )
-        ledger_response = self.client.request(ledger_request)
+        ledger_response = await self.client.request(ledger_request)
         ledger_result = ledger_response.result
 
         if "error" in ledger_result:
@@ -90,7 +90,7 @@ def fetch_orders(
 
                 order_id = OrderId(transaction["Account"], transaction["Sequence"])
 
-                order = self.fetch_order(order_id)
+                order = await self.fetch_order(order_id)
 
                 if order == None:
                     continue

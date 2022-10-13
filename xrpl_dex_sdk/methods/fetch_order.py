@@ -35,7 +35,7 @@ from ..utils import (
 )
 
 
-def fetch_order(
+async def fetch_order(
     self,
     id: OrderId,
     symbol: Optional[MarketSymbol] = None,
@@ -43,7 +43,7 @@ def fetch_order(
 ) -> FetchOrderResponse:
     transactions: List[Any] = []
 
-    previous_txn = get_most_recent_tx(self.client, id, params["search_limit"])
+    previous_txn = await get_most_recent_tx(self.client, id, params["search_limit"])
 
     if previous_txn == None:
         print("Could not find previous Transaction! Aborting...")
@@ -57,7 +57,7 @@ def fetch_order(
         transactions.append(previous_txn_data)
 
     while previous_txn_id != None:
-        tx_response = self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
+        tx_response = await self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
         tx = tx_response.result
 
         if "error" in tx:
@@ -123,7 +123,7 @@ def fetch_order(
                 if "currency" in quote_amount
                 else CurrencyCode("XRP")
             )
-            quote_rate = fetch_transfer_rate(self.client, quote_code)
+            quote_rate = await fetch_transfer_rate(self.client, quote_code)
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))
@@ -208,7 +208,7 @@ def fetch_order(
                 if isinstance(quote_amount, str)
                 else CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
             )
-            quote_rate = fetch_transfer_rate(self.client, quote_code)
+            quote_rate = await fetch_transfer_rate(self.client, quote_code)
             quote_amount_value = parse_amount_value(quote_amount)
             quote_value = (
                 float(drops_to_xrp(str(quote_amount_value)))
