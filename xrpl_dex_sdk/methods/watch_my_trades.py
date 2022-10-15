@@ -19,12 +19,13 @@ from ..models import (
 )
 from ..utils import (
     get_amount_currency_code,
-    get_order_side,
-    get_market_symbol,
+    parse_affected_node,
     get_base_amount_key,
+    get_trade_from_data,
     get_quote_amount_key,
     parse_amount_value,
     get_taker_or_maker,
+    get_market_symbol,
 )
 
 
@@ -58,98 +59,29 @@ async def watch_my_trades(
             ):
                 return
 
-            side = get_order_side(transaction["Flags"])
-
-            market_symbol = get_market_symbol(
-                transaction[get_base_amount_key(side)],
-                transaction[get_quote_amount_key(side)],
-            )
-
-            if market_symbol != symbol:
+            if get_market_symbol(transaction) != symbol:
                 return
 
             for affected_node in transaction["meta"]["AffectedNodes"]:
-                node = (
-                    affected_node["ModifiedNode"]
-                    if "ModifiedNode" in affected_node
-                    else affected_node["DeletedNode"]
-                    if "DeletedNode" in affected_node
-                    else None
-                )
-
-                if (
-                    node == None
-                    or node["LedgerEntryType"] != "Offer"
-                    or "FinalFields" not in node
-                ):
+                node = parse_affected_node(affected_node)
+                if node == None or "FinalFields" not in node:
                     continue
 
-                offer: Offer = node["FinalFields"]
+                offer = node["FinalFields"]
 
-                base_amount = offer[get_base_amount_key(side)]
-                base_currency = get_amount_currency_code(base_amount)
-                base_rate = (
-                    await self.fetch_transfer_rate(base_currency.issuer)
-                    if "issuer" in base_currency
-                    else 0
-                )
-                base_amount_value = parse_amount_value(base_amount)
-                base_value = (
-                    float(drops_to_xrp(str(base_amount_value)))
-                    if base_currency == "XRP"
-                    else base_amount_value
-                )
-                if base_value == 0:
-                    continue
-
-                quote_amount = offer[get_quote_amount_key(side)]
-                quote_currency = get_amount_currency_code(quote_amount)
-                quote_rate = (
-                    await self.fetch_transfer_rate(quote_currency.issuer)
-                    if "issuer" in quote_currency
-                    else 0
-                )
-                quote_amount_value = parse_amount_value(quote_amount)
-                quote_value = (
-                    float(drops_to_xrp(str(quote_amount_value)))
-                    if quote_currency == "XRP"
-                    else quote_amount_value
-                )
-                if quote_value == 0:
-                    continue
-
-                amount = base_value
-                price = quote_value / amount
-                cost = amount * price
-
-                fee_rate = quote_rate if side == OrderSide.Buy else base_rate
-                fee_cost = (
-                    quote_value if side == OrderSide.Buy else base_value
-                ) * fee_rate
-
-                trade = Trade(
-                    id=TradeId(transaction["Account"], transaction["Sequence"]),
-                    order=OrderId(offer["Account"], offer["Sequence"]),
-                    datetime=ripple_time_to_datetime(transaction["date"] or 0),
-                    timestamp=ripple_time_to_posix(transaction["date"] or 0),
-                    symbol=MarketSymbol(base_currency.code, quote_currency.code).symbol,
-                    type=TradeType.Limit.value,
-                    side=side,
-                    amount=round(amount, CURRENCY_PRECISION),
-                    price=round(price, CURRENCY_PRECISION),
-                    takerOrMaker=get_taker_or_maker(side).value,
-                    cost=round(cost, CURRENCY_PRECISION),
-                    fee={
-                        "currency": str(
-                            base_currency if side == OrderSide.Buy else quote_currency
-                        ),
-                        "cost": round(fee_cost, CURRENCY_PRECISION),
-                        "rate": round(fee_rate, CURRENCY_PRECISION),
-                        "percentage": True,
-                    }
-                    if fee_cost > 0
-                    else None,
-                    info={"transaction": transaction},
+                trade = await get_trade_from_data(
+                    self,
+                    {
+                        "date": transaction["date"],
+                        "Flags": offer["Flags"],
+                        "OrderAccount": offer["Account"],
+                        "OrderSequence": offer["Sequence"],
+                        "Account": transaction["Account"],
+                        "Sequence": transaction["Sequence"],
+                        "TakerPays": offer["TakerPays"],
+                        "TakerGets": offer["TakerGets"],
+                    },
+                    {transaction},
                 )
 
                 return trade

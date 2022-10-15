@@ -1,6 +1,5 @@
-from typing import Any, Coroutine, Dict, Optional
+from typing import Any, Dict, Optional
 
-from xrpl.asyncio.clients import AsyncJsonRpcClient
 from xrpl.models.requests.account_info import AccountInfo
 from xrpl.models.requests.account_lines import AccountLines
 from xrpl.models.requests.server_state import ServerState
@@ -12,7 +11,7 @@ from ..utils import handle_response_error
 
 async def fetch_balance(
     self, params: Optional[FetchBalanceParams] = {}
-) -> Coroutine[Any, Any, FetchBalanceResponse]:
+) -> FetchBalanceResponse:
     balances: Dict[str, Balance] = {}
     info: Dict[str, Any] = {}
 

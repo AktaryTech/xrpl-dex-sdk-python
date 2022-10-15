@@ -41,7 +41,9 @@ async def fetch_orders(
             {
                 "transactions": True,
                 "expand": True,
-                "ledger_hash": previous_ledger_hash if previous_ledger_hash != None else None,
+                "ledger_hash": previous_ledger_hash
+                if previous_ledger_hash != None
+                else None,
                 "ledger_index": "validated" if previous_ledger_hash == None else None,
             }
         )
@@ -49,7 +51,7 @@ async def fetch_orders(
         ledger_result = ledger_response.result
 
         if "error" in ledger_result:
-            print("Error: " + ledger_result["error_message"])
+            raise Exception("Error: " + ledger_result["error_message"])
             return
 
         ledger = ledger_result["ledger"]
@@ -70,45 +72,57 @@ async def fetch_orders(
             if tx_count >= params.search_limit:
                 break
 
-            if "Sequence" not in transaction:
+            if (
+                "Sequence" not in transaction
+                or "metaData" not in transaction
+                or (
+                    transaction["TransactionType"] != "OfferCancel"
+                    and transaction["TransactionType"] != "OfferCreate"
+                )
+            ):
                 continue
 
-            if transaction["TransactionType"] == "OfferCancel":
-                print()
-            elif transaction["TransactionType"] == "OfferCreate":
-                if symbol != None:
-                    tx_side = (
-                        OrderSide.Sell.value
-                        if has_offer_create_flag(transaction["Flags"], OfferCreateFlags.TF_SELL)
-                        else OrderSide.Buy.value
-                    )
-                    base_amount = transaction[get_base_amount_key(tx_side)]
-                    quote_amount = transaction[get_quote_amount_key(tx_side)]
-                    market_symbol = get_market_symbol(base_amount, quote_amount)
-                    if market_symbol != symbol:
-                        continue
-
-                order_id = OrderId(transaction["Account"], transaction["Sequence"])
-
-                order = await self.fetch_order(order_id)
-
-                if order == None:
+            if symbol:
+                tx_symbol: str = None
+                if transaction["TransactionType"] == "OfferCancel":
+                    for affected_node in transaction["metaData"]["AffectedNodes"]:
+                        if "DeletedNode" in affected_node:
+                            node = affected_node["DeletedNode"]
+                            if node["LedgerEntryType"] != "Offer":
+                                continue
+                            if (
+                                node["FinalFields"]["Account"] == transaction["Account"]
+                                and node["FinalFields"]["Sequence"]
+                                == transaction["OfferSequence"]
+                            ):
+                                tx_symbol = get_market_symbol(node["FinalFields"])
+                                break
+                else:
+                    tx_symbol = get_market_symbol(transaction)
+                if tx_symbol != symbol:
                     continue
 
-                if (
-                    order.status == OrderStatus.Open.value
-                    and params.show_open == False
-                    or order.status == OrderStatus.Closed.value
-                    and params.show_closed == False
-                    or order.status == OrderStatus.Canceled.value
-                    and params.show_canceled == False
-                ):
-                    continue
+            order_id = OrderId(transaction["Account"], transaction["Sequence"])
 
-                orders.append(order)
+            order = await self.fetch_order(order_id)
 
-                if len(orders) >= limit:
-                    break
+            if order == None:
+                continue
+
+            if (
+                order["status"] == OrderStatus.Open.value
+                and params.show_open == False
+                or order["status"] == OrderStatus.Closed.value
+                and params.show_closed == False
+                or order["status"] == OrderStatus.Canceled.value
+                and params.show_canceled == False
+            ):
+                continue
+
+            orders.append(order)
+
+            if len(orders) >= limit:
+                break
 
         has_next_page = len(orders) < limit and tx_count < params.search_limit
 

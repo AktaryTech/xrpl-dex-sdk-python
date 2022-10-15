@@ -1,10 +1,10 @@
 from xrpl.models.requests.server_state import ServerState
-from xrpl.utils import ripple_time_to_posix
 
 from ..models import (
     ExchangeStatusType,
     FetchStatusResponse,
 )
+from ..utils import server_time_to_posix
 
 
 async def fetch_status(self) -> FetchStatusResponse:
@@ -24,7 +24,7 @@ async def fetch_status(self) -> FetchStatusResponse:
 
     return FetchStatusResponse(
         status=status.value,
-        updated=ripple_time_to_posix,
+        updated=server_time_to_posix(server_state["time"]),
         eta="",
         url="",
         info={"server_state": server_state},

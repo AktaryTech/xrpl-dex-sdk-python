@@ -12,8 +12,12 @@ DEVNET: str = "DEVNET"
 MAINNET: str = "MAINNET"
 
 MAINNET_URL: str = os.getenv("XRPL_MAINNET_URL", "s1.ripple.com")
-MAINNET_FULL_HISTORY_1_URL: str = os.getenv("XRPL_MAINNET_FULL_HISTORY_1_URL", "xrplcluster.com")
-MAINNET_FULL_HISTORY_2_URL: str = os.getenv("XRPL_MAINNET_FULL_HISTORY_2_URL", "s2.ripple.com")
+MAINNET_FULL_HISTORY_1_URL: str = os.getenv(
+    "XRPL_MAINNET_FULL_HISTORY_1_URL", "xrplcluster.com"
+)
+MAINNET_FULL_HISTORY_2_URL: str = os.getenv(
+    "XRPL_MAINNET_FULL_HISTORY_2_URL", "s2.ripple.com"
+)
 TESTNET_URL: str = os.getenv("XRPL_TESTNET_URL", "s.altnet.rippletest.net")
 DEVNET_URL: str = os.getenv("XRPL_DEVNET_URL", "s.devnet.rippletest.net")
 NFT_DEVNET_URL: str = os.getenv("XRPL_NFT_DEVNET_URL", "xls20-sandbox.rippletest.net")
@@ -48,3 +52,5 @@ Networks: Dict[str, str] = {
         "ws": WS_DEVNET,
     },
 }
+
+SERVER_STATE_TIME_FORMAT: str = "%Y-%b-%d %H:%M:%S.%f %Z"

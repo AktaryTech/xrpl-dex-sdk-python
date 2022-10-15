@@ -36,20 +36,6 @@ def has_offer_create_flag(flags: int, target_flag: OfferCreateFlags) -> bool:
     return flags & target_flag.value == target_flag.value
 
 
-def get_market_symbol(base: Amount, quote: Amount) -> MarketSymbol:
-    base_code = (
-        CurrencyCode("XRP")
-        if isinstance(base, str)
-        else CurrencyCode(base["currency"], base["issuer"])
-    )
-    quote_code = (
-        CurrencyCode("XRP")
-        if isinstance(quote, str)
-        else CurrencyCode(quote["currency"], quote["issuer"])
-    )
-    return MarketSymbol(base_code.code, quote_code.code)
-
-
 #
 # Subscriptions
 #
@@ -86,6 +72,5 @@ __all__ = [
     "sort_by_previous_txn_lgr_seq",
     "has_offer_flag",
     "has_offer_create_flag",
-    "get_market_symbol",
     "subscribe",
 ]

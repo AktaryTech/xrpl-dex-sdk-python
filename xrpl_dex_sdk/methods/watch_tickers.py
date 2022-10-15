@@ -16,7 +16,7 @@ from ..utils import (
     has_offer_create_flag,
     get_base_amount_key,
     get_quote_amount_key,
-    get_market_symbol,
+    get_market_symbol_from_amount,
 )
 
 
@@ -53,7 +53,7 @@ async def watch_tickers(
             )
             base_amount = transaction[get_base_amount_key(side)]
             quote_amount = transaction[get_quote_amount_key(side)]
-            symbol = get_market_symbol(base_amount, quote_amount)
+            symbol = get_market_symbol_from_amount(base_amount, quote_amount)
 
             if symbol not in symbols:
                 return

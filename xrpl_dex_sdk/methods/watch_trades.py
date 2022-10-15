@@ -19,8 +19,8 @@ from ..models import (
 )
 from ..utils import (
     get_amount_currency_code,
-    get_order_side,
-    get_market_symbol,
+    get_order_side_from_flags,
+    get_market_symbol_from_amount,
     get_base_amount_key,
     get_quote_amount_key,
     parse_amount_value,
@@ -55,9 +55,9 @@ async def watch_trades(
             ):
                 return
 
-            side = get_order_side(transaction["Flags"])
+            side = get_order_side_from_flags(transaction["Flags"])
 
-            market_symbol = get_market_symbol(
+            market_symbol = get_market_symbol_from_amount(
                 transaction[get_base_amount_key(side)],
                 transaction[get_quote_amount_key(side)],
             )

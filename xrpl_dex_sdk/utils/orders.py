@@ -6,11 +6,17 @@ from xrpl.models.requests.ledger_entry import LedgerEntry
 from xrpl.models.requests.tx import Tx
 from xrpl.models.amounts import IssuedCurrencyAmount
 from xrpl.models.requests.account_tx import AccountTx
-from xrpl.utils import posix_to_ripple_time, drops_to_xrp
+from xrpl.utils import (
+    posix_to_ripple_time,
+    drops_to_xrp,
+    ripple_time_to_datetime,
+    ripple_time_to_posix,
+)
 
 
-from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
+from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT, CURRENCY_PRECISION
 from ..models import (
+    Amount,
     LedgerEntryTypes,
     CurrencyCode,
     OrderId,
@@ -19,13 +25,38 @@ from ..models import (
     TradeTakerOrMaker,
     TradeSide,
     Offer,
+    MarketSymbol,
+    Trade,
     OrderTimeInForce,
     OfferCreateFlags,
     OfferFlags,
     Node,
     TransactionMetadata,
 )
-from ..utils import hash_offer_id, omit, sort_by_date, subtract_amounts
+
+from .numbers import subtract_amounts, parse_amount_value
+from .data import omit, sort_by_date
+from .hashes import hash_offer_id
+
+
+def parse_affected_node(
+    affected_node: Node, entry_type: Optional[LedgerEntryTypes] = LedgerEntryTypes.Offer
+):
+    parsed_node = (
+        affected_node["CreatedNode"]
+        if "CreatedNode" in affected_node
+        else affected_node["ModifiedNode"]
+        if "ModifiedNode" in affected_node
+        else affected_node["DeletedNode"]
+        if "DeletedNode" in affected_node
+        else None
+    )
+
+    return (
+        parsed_node
+        if parsed_node != None and parsed_node["LedgerEntryType"] == entry_type.value
+        else None
+    )
 
 
 def order_to_json(input: NamedTuple) -> str:
@@ -76,7 +107,9 @@ def set_transaction_flags_to_number(tx: Any):
 
 def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
     order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled.value
-    if (input["Flags"] & OfferCreateFlags.TF_PASSIVE.value) == OfferCreateFlags.TF_PASSIVE.value:
+    if (
+        input["Flags"] & OfferCreateFlags.TF_PASSIVE.value
+    ) == OfferCreateFlags.TF_PASSIVE.value:
         order_time_in_force = OrderTimeInForce.PostOnly.value
     elif (
         input["Flags"] & OfferCreateFlags.TF_FILL_OR_KILL.value
@@ -90,10 +123,12 @@ def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
 
 
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
-    return TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    return (
+        TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
+    )
 
 
-def get_order_side(flags: int) -> OrderSide:
+def get_order_side_from_flags(flags: int) -> OrderSide:
     if flags & OfferFlags.LSF_SELL.value == OfferFlags.LSF_SELL.value:
         return OrderSide.Sell
     elif flags & OfferCreateFlags.TF_SELL.value == OfferCreateFlags.TF_SELL.value:
@@ -103,23 +138,25 @@ def get_order_side(flags: int) -> OrderSide:
 
 
 def get_order_side_from_offer(offer: Offer) -> OrderSide:
-    return "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
-
-
-def get_amount_currency_code(amount: Union[IssuedCurrencyAmount, str]):
     return (
-        CurrencyCode(amount["currency"], amount["issuer"])
-        if "currency" in amount
-        else CurrencyCode("XRP")
+        "sell" if (offer.Flags & OfferFlags.LSF_SELL) == OfferFlags.LSF_SELL else "buy"
     )
 
 
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    return (
+        "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
+    )
 
 
 def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
-    return "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    return (
+        "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
+    )
+
+
+def get_amount_currency_code(amount: Amount) -> CurrencyCode:
+    return "XRP" if isinstance(amount, str) else amount["currency"]
 
 
 def get_offer_base_value(offer: Offer) -> float:
@@ -137,7 +174,9 @@ def get_offer_quote_value(offer: Offer) -> float:
         if offer["Flags"] & OfferFlags.LSF_SELL.value == 0
         else offer["TakerPays"]
     )
-    return float(quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount))
+    return float(
+        quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount)
+    )
 
 
 def get_book_offer_taker_pays(book_offer: Offer):
@@ -171,7 +210,9 @@ def get_book_offer_quote_value(book_offer: Offer) -> float:
         if book_offer["Flags"] & OfferFlags.LSF_SELL.value == 0
         else get_book_offer_taker_pays(book_offer)
     )
-    return float(quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount))
+    return float(
+        quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount)
+    )
 
 
 #
@@ -190,12 +231,18 @@ def get_offer_from_node(node: Node) -> Offer:
 
     LedgerIndex = affected_node["LedgerIndex"]
     FinalFields = affected_node["FinalFields"]
-    PreviousTxnID = affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
-    PreviousFields = affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    PreviousTxnID = (
+        affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
+    )
+    PreviousFields = (
+        affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+    )
 
     offer_index = LedgerIndex
     offer_previous_txn_id = (
-        FinalFields["PreviousTxnID"] if "PreviousTxnID" in FinalFields else PreviousTxnID
+        FinalFields["PreviousTxnID"]
+        if "PreviousTxnID" in FinalFields
+        else PreviousTxnID
     )
 
     offer_taker_gets = (
@@ -231,7 +278,9 @@ def get_offer_from_node(node: Node) -> Offer:
 #
 # Returns an Offer Ledger object from a Transaction
 #
-def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}) -> Offer:
+def get_offer_from_tx(
+    transaction: Any, overrides: Optional[Dict[str, Any]] = {}
+) -> Offer:
     if transaction["TransactionType"] != "OfferCreate":
         return
 
@@ -244,8 +293,12 @@ def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}
         if "Sequence" in transaction
         else None
     )
-    TakerGets = overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
-    TakerPays = overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    TakerGets = (
+        overrides["TakerGets"] if "TakerGets" in overrides else transaction["TakerGets"]
+    )
+    TakerPays = (
+        overrides["TakerPays"] if "TakerPays" in overrides else transaction["TakerPays"]
+    )
     PreviousTxnID = overrides["PreviousTxnID"] if "PreviousTxnID" in overrides else ""
 
     if Sequence == None:
@@ -268,6 +321,210 @@ def get_offer_from_tx(transaction: Any, overrides: Optional[Dict[str, Any]] = {}
     )
 
     return offer
+
+
+#
+# Get Base and Quote Currency data
+# @param source Offer | Transaction
+# @returns Data object with Base/Quote information
+#
+def get_base_and_quote_data(source: Dict[str, Any]):
+    data: Dict[str, Any] = {}
+
+    data["side"] = get_order_side_from_flags(source["Flags"])
+    data["base_amount"] = source[get_base_amount_key(data["side"])]
+    base_amount_value = parse_amount_value(data["base_amount"])
+    data["base_value"] = (
+        float(drops_to_xrp(str(base_amount_value)))
+        if isinstance(base_amount_value, int)
+        else base_amount_value
+    )
+    if data["base_value"] == float(0):
+        return
+
+    data["quote_amount"] = source[get_quote_amount_key(data["side"])]
+    quote_amount_value = parse_amount_value(data["quote_amount"])
+    data["quote_value"] = (
+        float(drops_to_xrp(str(quote_amount_value)))
+        if isinstance(quote_amount_value, int)
+        else quote_amount_value
+    )
+    if data["quote_value"] == float(0):
+        return
+
+    data["symbol"] = MarketSymbol(
+        get_amount_currency_code(
+            data["base_amount"]["currency"]
+            if "currency" in data["base_amount"]
+            else data["base_amount"]
+        ),
+        get_amount_currency_code(
+            data["quote_amount"]["currency"]
+            if "currency" in data["quote_amount"]
+            else data["quote_amount"]
+        ),
+    )
+
+    return data
+
+
+#
+# Get Base and Quote Currency data
+# @param source Offer | Transaction
+# @returns Data object with Base/Quote information
+#
+async def get_shared_order_data(sdk, source: Dict[str, Any]):
+    data: Dict[str, Any] = get_base_and_quote_data(source)
+    if data == None:
+        return
+
+    data["base_currency"] = get_amount_currency_code(data["base_amount"])
+    data["base_issuer"] = (
+        data["base_amount"]["issuer"] if "issuer" in data["base_amount"] else None
+    )
+    data["base_rate"] = (
+        await sdk.fetch_transfer_rate(data["base_issuer"])
+        if data["base_issuer"] != None
+        else 0
+    )
+
+    data["quote_currency"] = get_amount_currency_code(data["quote_amount"])
+    data["quote_issuer"] = (
+        data["quote_amount"]["issuer"] if "issuer" in data["quote_amount"] else None
+    )
+    data["quote_rate"] = (
+        await sdk.fetch_transfer_rate(data["quote_issuer"])
+        if data["quote_issuer"] != None
+        else 0
+    )
+
+    data["amount"] = data["base_value"]
+    data["price"] = data["quote_value"] / data["base_value"]
+
+    data["fee_currency"] = (
+        data["quote_currency"]
+        if data["side"] == OrderSide.Buy
+        else data["base_currency"]
+    )
+    data["fee_rate"] = (
+        data["quote_rate"] if data["side"] == OrderSide.Buy else data["base_rate"]
+    )
+
+    return data
+
+
+#
+# Get Order fee from source data
+#
+def get_order_fee_from_data(fee_cost: float, source: Dict[str, Any]):
+    return (
+        {
+            "currency": str(source["quote_currency"]),
+            "cost": round(fee_cost, CURRENCY_PRECISION),
+            "rate": round(source["fee_rate"], CURRENCY_PRECISION),
+            "percentage": True,
+        }
+        if fee_cost > 0
+        else None
+    )
+
+
+#
+# Parse OrderSourceData into a CCXT Order object
+# @param this SDKContext
+# @param source OrderSourceData
+# @param info Record<string, any>
+# @returns Order
+#
+async def get_order_from_data(
+    sdk, input_data: Dict[str, Any], info: Dict[str, Any] = {}
+):
+    source_data = await get_shared_order_data(sdk, input_data)
+    if source_data == None:
+        return
+    data = {**input_data, **source_data}
+
+    actual_price = data["fill_price"]
+    average: float = (
+        data["total_fill_price"] / len(data["trades"]) if len(data["trades"]) > 0 else 0
+    )
+    remaining = data["amount"] - data["filled"]
+    cost = data["filled"] * actual_price
+
+    order = {
+        "id": OrderId(data["Account"], data["Sequence"]),
+        "client_order_id": hash_offer_id(data["Account"], data["Sequence"]),
+        "datetime": ripple_time_to_datetime(data["date"]).isoformat(),
+        "timestamp": ripple_time_to_posix(data["date"]),
+        "status": data["status"],
+        "symbol": data["symbol"],
+        "type": "limit",
+        "timeInForce": get_order_time_in_force(data),
+        "side": data["side"],
+        "amount": round(data["amount"], CURRENCY_PRECISION),
+        "price": round(data["price"], CURRENCY_PRECISION),
+        "average": round(average, CURRENCY_PRECISION),
+        "filled": round(data["filled"], CURRENCY_PRECISION),
+        "remaining": round(remaining, CURRENCY_PRECISION),
+        "cost": round(cost, CURRENCY_PRECISION),
+        "trades": data["trades"],
+        "info": info,
+    }
+
+    if len(data["trades"]):
+        order["last_trade_timestamp"] = data["trades"][-1]["timestamp"]
+
+    fee_cost = data["filled"] * data["fee_rate"]
+    fee = get_order_fee_from_data(fee_cost, data)
+    if fee:
+        order["fee"] = fee
+
+    return order
+
+
+#
+# Parse TradeSourceData into a CCXT Trade object
+# @param this SDKContext
+# @param source TradeSourceData
+# @param info Record<string, any>
+# @returns Trade
+#
+async def get_trade_from_data(
+    sdk, input_data: Dict[str, Any], info: Dict[str, Any] = {}
+):
+    source_data = await get_shared_order_data(sdk, input_data)
+    if source_data == None:
+        return
+    data = {**input_data, **source_data}
+
+    trade_id = OrderId(data["Account"], data["Sequence"])
+    order_id = OrderId(data["OrderAccount"], data["OrderSequence"])
+
+    cost = data["amount"] * data["price"]
+
+    trade: Trade = {
+        "id": trade_id,
+        "order": order_id,
+        "datetime": ripple_time_to_datetime(data["date"] or 0).isoformat(),
+        "timestamp": ripple_time_to_posix(data["date"] or 0),
+        "symbol": data["symbol"],
+        "type": "limit",
+        "side": data["side"],
+        "amount": round(data["amount"], CURRENCY_PRECISION),
+        "price": round(data["price"], CURRENCY_PRECISION),
+        "taker_or_maker": get_taker_or_maker(data["side"]),
+        "cost": round(cost, CURRENCY_PRECISION),
+        "info": info,
+    }
+
+    fee_cost = (
+        data["quote_value"] if data["side"] == OrderSide.Buy else data["base_value"]
+    ) * data["fee_rate"]
+    fee = get_order_fee_from_data(fee_cost, data)
+    if fee:
+        trade["fee"] = fee
+
+    return trade
 
 
 #
@@ -440,8 +697,11 @@ async def get_most_recent_tx(
 
 __all__ = [
     "set_transaction_flags_to_number",
+    "parse_affected_node",
     "get_amount_currency_code",
     "get_base_amount_key",
+    "get_order_from_data",
+    "get_trade_from_data",
     "get_offer_base_value",
     "get_order_time_in_force",
     "get_offer_quote_value",
@@ -450,7 +710,7 @@ __all__ = [
     "get_most_recent_tx",
     "get_offer_from_node",
     "get_offer_from_tx",
-    "get_order_side",
+    "get_order_side_from_flags",
     "get_order_side_from_offer",
     "get_quote_amount_key",
     "get_taker_or_maker",
