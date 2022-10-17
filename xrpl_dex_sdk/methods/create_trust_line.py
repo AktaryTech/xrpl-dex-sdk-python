@@ -6,9 +6,13 @@ from ..models.common import CurrencyCode
 from ..models.methods.create_trust_line import CreateTrustLineResponse
 
 
-def create_trust_line(self, code: CurrencyCode, limit_amount: str) -> CreateTrustLineResponse:
+def create_trust_line(
+    self, code: CurrencyCode, limit_amount: str
+) -> CreateTrustLineResponse:
     if code.code == "XRP":
         raise Exception("Error creating Trust Line: No line needed for XRP")
+    elif code.issuer == None:
+        raise Exception("Error creating Trust Line: Invalid code")
 
     trust_set_request = {
         "account": self.wallet.classic_address,

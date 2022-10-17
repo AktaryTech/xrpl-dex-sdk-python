@@ -1,10 +1,13 @@
-from typing import Any, Dict
+from typing import Union
+from time import time
+from datetime import datetime
 
 from xrpl.models.requests.book_offers import BookOffers
 
 from ..constants import CURRENCY_PRECISION
 from ..models import (
     FetchTickerParams,
+    Offer,
     FetchTickerResponse,
     MarketSymbol,
     Ticker,
@@ -21,15 +24,13 @@ async def fetch_ticker(
     symbol: MarketSymbol,
     params: FetchTickerParams = FetchTickerParams(),
 ) -> FetchTickerResponse:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) == True else symbol
+    high: Union[float, None] = None
+    low: Union[float, None] = None
 
-    high: float = None
-    low: float = None
-
-    bid: float = None
-    bid_volume: float = None
-    ask: float = None
-    ask_volume: float = None
+    bid: Union[float, None] = None
+    bid_volume: Union[float, None] = None
+    ask: Union[float, None] = None
+    ask_volume: Union[float, None] = None
 
     vwap_price: float = 0
     vwap_quantity: float = 0
@@ -75,8 +76,10 @@ async def fetch_ticker(
 
     book_offers.sort(reverse=False, key=sort_by_previous_txn_lgr_seq)
 
-    def get_book_offer_price(book_offer: Dict[str, Any]) -> float:
-        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(book_offer)
+    def get_book_offer_price(book_offer: Offer) -> float:
+        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(
+            book_offer
+        )
 
     open = get_book_offer_price(book_offers[1])
     close = get_book_offer_price(book_offers[len(book_offers) - 1])
@@ -114,16 +117,19 @@ async def fetch_ticker(
     percentage = change / open * 100
     average = (close + open) / 2
 
+    timestamp = round(time())
+    iso_timestamp = datetime.fromtimestamp(timestamp).isoformat()
+
     ticker = Ticker(
         symbol=symbol,
-        timestamp=None,
-        datetime=None,
-        high=round(high, CURRENCY_PRECISION),
-        low=round(low, CURRENCY_PRECISION),
-        bid=round(bid, CURRENCY_PRECISION),
-        bid_volume=round(bid_volume, CURRENCY_PRECISION),
-        ask=round(ask, CURRENCY_PRECISION),
-        ask_volume=round(ask_volume, CURRENCY_PRECISION),
+        timestamp=timestamp,
+        datetime=iso_timestamp,
+        high=round(high if high != None else 0, CURRENCY_PRECISION),
+        low=round(low if low != None else 0, CURRENCY_PRECISION),
+        bid=round(bid if bid != None else 0, CURRENCY_PRECISION),
+        bid_volume=round(bid_volume if bid_volume != None else 0, CURRENCY_PRECISION),
+        ask=round(ask if ask != None else 0, CURRENCY_PRECISION),
+        ask_volume=round(ask_volume if ask_volume != None else 0, CURRENCY_PRECISION),
         vwap=round(vwap, CURRENCY_PRECISION),
         open=round(open, CURRENCY_PRECISION),
         close=round(close, CURRENCY_PRECISION),

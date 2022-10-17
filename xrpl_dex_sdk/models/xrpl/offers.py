@@ -24,15 +24,15 @@ class Offer(NamedTuple):
 
 
 class OfferFlags(Enum):
-    LSF_PASSIVE: int = 65536
-    LSF_SELL: int = 131072
+    LSF_PASSIVE = 65536
+    LSF_SELL = 131072
 
 
 class OfferCreateFlags(Enum):
-    TF_FILL_OR_KILL: int = 262144
-    TF_IMMEDIATE_OR_CANCEL: int = 131072
-    TF_PASSIVE: int = 65536
-    TF_SELL: int = 524288
+    TF_FILL_OR_KILL = 262144
+    TF_IMMEDIATE_OR_CANCEL = 131072
+    TF_PASSIVE = 65536
+    TF_SELL = 524288
 
 
 __all__ = ["Offer", "OfferCreateFlags", "OfferFlags"]

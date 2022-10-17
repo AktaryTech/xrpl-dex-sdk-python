@@ -3,22 +3,17 @@ from typing import Any, Dict, List, Optional
 from xrpl.models.requests.ledger import Ledger
 from xrpl.utils import ripple_time_to_posix
 
-from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
+from ..constants import DEFAULT_LIMIT
 from ..models import (
     FetchOrdersParams,
     FetchOrdersResponse,
-    OfferCreateFlags,
     Order,
     OrderId,
     OrderStatus,
-    OrderSide,
     MarketSymbol,
     UnixTimestamp,
 )
 from ..utils import (
-    has_offer_create_flag,
-    get_quote_amount_key,
-    get_base_amount_key,
     get_market_symbol,
 )
 
@@ -27,13 +22,13 @@ async def fetch_orders(
     self,
     symbol: Optional[MarketSymbol] = None,
     since: Optional[UnixTimestamp] = None,
-    limit: Optional[int] = DEFAULT_LIMIT,
+    limit: int = DEFAULT_LIMIT,
     params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
     orders: List[Order] = []
 
     has_next_page = True
-    previous_ledger_hash: str = None
+    previous_ledger_hash: Optional[str] = None
     tx_count = int(0)
 
     while has_next_page == True:
@@ -83,7 +78,7 @@ async def fetch_orders(
                 continue
 
             if symbol:
-                tx_symbol: str = None
+                tx_symbol: Optional[MarketSymbol] = None
                 if transaction["TransactionType"] == "OfferCancel":
                     for affected_node in transaction["metaData"]["AffectedNodes"]:
                         if "DeletedNode" in affected_node:

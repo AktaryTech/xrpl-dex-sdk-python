@@ -27,15 +27,14 @@ async def fetch_order(
     self,
     id: OrderId,
     symbol: Optional[MarketSymbol] = None,
-    params: FetchOrderParams = {"search_limit": DEFAULT_SEARCH_LIMIT},
-) -> FetchOrderResponse:
+    params: FetchOrderParams = FetchOrderParams(),
+) -> Optional[FetchOrderResponse]:
     transactions: List[Any] = []
 
-    previous_txn = await get_most_recent_tx(self.client, id, params["search_limit"])
+    previous_txn = await get_most_recent_tx(self.client, id, params.search_limit)
 
     if previous_txn == None:
-        print("Could not find previous Transaction! Aborting...")
-        return
+        raise Exception("Couldn't find data for OrderId " + str(id))
 
     order_status = previous_txn["order_status"] or OrderStatus.Open
     previous_txn_id: str or None = previous_txn["previous_txn_id"]
@@ -51,8 +50,7 @@ async def fetch_order(
         tx = tx_response.result
 
         if "error" in tx:
-            print("Error: " + tx["error_message"])
-            return
+            raise Exception(tx["error"] + " " + tx["error_message"])
 
         previous_txn_data = parse_transaction(id, tx)
 
@@ -61,8 +59,8 @@ async def fetch_order(
             previous_txn_id = previous_txn_data["previous_txn_id"]
 
     trades: List[Trade] = []
-    order: Order or None = None
-    last_trade_timestamp: UnixTimestamp or None = None
+    order: Optional[Order] = None
+    last_trade_timestamp: Optional[UnixTimestamp] = None
     filled: float = 0
     fill_price: float = 0
     total_fill_price: float = fill_price

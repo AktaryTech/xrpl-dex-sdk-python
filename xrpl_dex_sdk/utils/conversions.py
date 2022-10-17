@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, NamedTuple, Optional
 from dateutil.parser import isoparse
 from time import strptime, strftime
 from xrpl.utils import ripple_time_to_posix, datetime_to_ripple_time
@@ -15,7 +15,14 @@ from .orders import (
 )
 
 
-def transfer_rate_to_decimal(rate: int) -> float:
+def to_dict(class_obj: NamedTuple) -> dict:
+    result = {}
+    for field in class_obj._fields:
+        result[field] = getattr(class_obj, field)
+    return result
+
+
+def transfer_rate_to_decimal(rate: int) -> Optional[float]:
     if rate == 0:
         return float(0)
     decimal = (rate - BILLION) / BILLION
@@ -24,7 +31,7 @@ def transfer_rate_to_decimal(rate: int) -> float:
     return decimal
 
 
-def decimal_to_transfer_rate(decimal: float) -> int:
+def decimal_to_transfer_rate(decimal: float) -> Optional[float]:
     rate = decimal * BILLION + BILLION
     if rate < BILLION or rate > (BILLION * 2):
         return
@@ -70,17 +77,18 @@ def get_market_symbol_from_amount(base: Amount, quote: Amount) -> MarketSymbol:
     base_code = (
         CurrencyCode("XRP")
         if isinstance(base, str)
-        else CurrencyCode(base["currency"], base["issuer"])
+        else CurrencyCode(base.currency, base.issuer)
     )
     quote_code = (
         CurrencyCode("XRP")
         if isinstance(quote, str)
-        else CurrencyCode(quote["currency"], quote["issuer"])
+        else CurrencyCode(quote.currency, quote.issuer)
     )
     return MarketSymbol(base_code.code, quote_code.code)
 
 
 __all__ = [
+    "to_dict",
     "transfer_rate_to_decimal",
     "decimal_to_transfer_rate",
     "server_time_to_posix",

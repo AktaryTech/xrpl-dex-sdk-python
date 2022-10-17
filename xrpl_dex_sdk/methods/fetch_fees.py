@@ -8,7 +8,7 @@ async def fetch_fees(self) -> FetchFeesResponse:
     )
     trading = await self.fetch_trading_fees()
 
-    return {
-        "transactions": transactions if transactions != None else [],
-        "trading": trading if trading != None else [],
-    }
+    return FetchFeesResponse(
+        transactions=transactions if transactions != None else [],
+        trading=trading if trading != None else [],
+    )

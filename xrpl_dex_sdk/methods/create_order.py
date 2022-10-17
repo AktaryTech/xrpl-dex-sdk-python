@@ -22,9 +22,11 @@ def create_order(
 ) -> CreateOrderResponse:
     base_amount = (
         IssuedCurrencyAmount(
-            currency=symbol.base.currency, issuer=symbol.base.issuer, value=str(amount)
+            currency=symbol.base.currency,
+            issuer=symbol.base.issuer,
+            value=str(amount),
         )
-        if symbol.base.currency != "XRP"
+        if symbol.base.issuer != None
         else xrp_to_drops(amount)
     )
     base_amount_key = get_base_amount_key(side)
@@ -35,7 +37,7 @@ def create_order(
             issuer=symbol.quote.issuer,
             value=str(amount * price),
         )
-        if symbol.quote.currency != "XRP"
+        if symbol.quote.issuer != None
         else xrp_to_drops(amount * price)
     )
 
@@ -47,12 +49,12 @@ def create_order(
     }
 
     for field in params._fields:
-        if params.__getattribute__(field) != None:
+        if getattr(params, field) != None:
             offer_create_request[field] = params.__getattribute__(field)
 
     if params.flags != None:
         for flag in params.flags:
-            flagEnum = OfferCreateFlags.__getattribute__(flag)
+            flagEnum = getattr(OfferCreateFlags, flag)
             if flagEnum != None and flagEnum != OfferCreateFlags.TF_SELL:
                 offer_create_request["flags"] = offer_create_request["flags"] | flagEnum
 
@@ -69,8 +71,9 @@ def create_order(
     offer_create_result = offer_create_response.result
 
     if "error" in offer_create_result:
-        print("error!")
-        return
+        raise Exception(
+            offer_create_result["error"] + " " + offer_create_result["error_message"]
+        )
 
     else:
         return CreateOrderResponse(

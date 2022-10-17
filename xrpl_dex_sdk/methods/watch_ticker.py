@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
@@ -19,7 +19,7 @@ async def watch_ticker(
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
 
-    ticker: Ticker = None
+    ticker: Optional[Ticker] = None
 
     payload = Subscribe(
         id=uuid.uuid4().hex,
@@ -35,7 +35,10 @@ async def watch_ticker(
                 return
 
             new_ticker = await self.fetch_ticker(
-                symbol, WatchTickerParams(search_limit=params.search_limit)
+                symbol,
+                WatchTickerParams(
+                    search_limit=params.search_limit, listener=params.listener
+                ),
             )
 
             if new_ticker == None:
@@ -46,7 +49,9 @@ async def watch_ticker(
             else:
                 for field in new_ticker._fields:
                     if field != "datetime" and field != "timestamp" and field != "info":
-                        if new_ticker.__getattribute__(field) != ticker.__getattribute__(field):
+                        if new_ticker.__getattribute__(
+                            field
+                        ) != ticker.__getattribute__(field):
                             return new_ticker
 
     async with self.websocket_client as websocket:
@@ -63,6 +68,6 @@ async def watch_ticker(
             new_ticker = await ticker_handler(message)
             if new_ticker != None:
                 if isinstance(params, Dict):
-                    params["listener"](new_ticker)
+                    params.listener(new_ticker)
                 else:
                     params.listener(new_ticker)

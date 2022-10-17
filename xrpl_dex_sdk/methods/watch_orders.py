@@ -3,28 +3,16 @@ import uuid
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
-from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
-from ..constants import CURRENCY_PRECISION
 from ..models import (
     WatchOrdersParams,
     MarketSymbol,
     Offer,
-    Node,
     OrderId,
-    Trades,
     Trade,
-    TradeSide,
-    TradeType,
-    CurrencyCode,
     Order,
-    OrderType,
     UnixTimestamp,
-    OfferCreateFlags,
     OrderStatus,
-    OfferFlags,
-    OrderSide,
-    XrplTimestamp,
 )
 from ..utils import parse_transaction, get_order_from_data, get_trade_from_data
 
@@ -57,9 +45,9 @@ async def watch_orders(
                 return
 
             trades: List[Trade] = []
-            order: Order or None = None
+            order: Optional[Order] = None
             order_status = OrderStatus.Open
-            last_trade_timestamp: UnixTimestamp or None = None
+            last_trade_timestamp: Optional[UnixTimestamp] = None
             filled: float = 0
             fill_price: float = 0
             total_fill_price: float = fill_price
@@ -116,207 +104,8 @@ async def watch_orders(
                         "TakerPays": transaction["TakerPays"],
                         "TakerGets": transaction["TakerGets"],
                     },
-                    {"transaction_data": transaction_data},
+                    {"transaction_data": txn_data},
                 )
-
-            # trade_offers: List[Offer] = []
-
-            # for affected_node in message["meta"]["AffectedNodes"]:
-            #     offer = get_offer_from_node(affected_node)
-            #     if offer != None and offer.Account != transaction["Account"]:
-            #         trade_offers.append(offer)
-
-            # order_id = OrderId(transaction["Account"], transaction["Sequence"])
-            # trades: Trades = []
-            # date: XrplTimestamp = transaction["date"]
-            # order: Order = None
-            # order_status: OrderStatus = OrderStatus.Open
-            # filled: float = 0
-            # fill_price: float = 0
-            # total_fill_price = fill_price
-
-            # order_side = (
-            #     OrderSide.Sell
-            #     if has_offer_create_flag(transaction["Flags"], OfferCreateFlags.TF_SELL)
-            #     else OrderSide.Buy
-            # )
-            # order_base_amount = transaction[get_base_amount_key(order_side)]
-            # order_quote_amount = transaction[get_quote_amount_key(order_side)]
-            # order_symbol = get_market_symbol_from_amount(
-            #     order_base_amount, order_quote_amount
-            # )
-
-            # if symbol != None and symbol != order_symbol:
-            #     return
-
-            # for offer in trade_offers:
-            #     side: TradeSide = (
-            #         TradeSide.Sell.value
-            #         if has_offer_flag(offer.Flags, OfferFlags.LSF_SELL)
-            #         else TradeSide.Buy.value
-            #     )
-
-            #     base_amount = (
-            #         offer.TakerPays if side == TradeSide.Buy.value else offer.TakerGets
-            #     )
-            #     base_code = (
-            #         CurrencyCode(base_amount["currency"], base_amount["issuer"])
-            #         if "currency" in base_amount
-            #         else CurrencyCode("XRP")
-            #     )
-            #     base_amount_value = parse_amount_value(base_amount)
-            #     base_value = (
-            #         float(drops_to_xrp(str(base_amount_value)))
-            #         if isinstance(base_amount_value, int)
-            #         else base_amount_value
-            #     )
-
-            #     quote_amount = (
-            #         offer.TakerGets if side == TradeSide.Buy.value else offer.TakerPays
-            #     )
-            #     quote_code = (
-            #         CurrencyCode(quote_amount["currency"], quote_amount["issuer"])
-            #         if "currency" in quote_amount
-            #         else CurrencyCode("XRP")
-            #     )
-            #     quote_rate = (
-            #         await self.fetch_transfer_rate(quote_code.issuer)
-            #         if "issuer" in quote_code
-            #         else 0
-            #     )
-            #     quote_amount_value = parse_amount_value(quote_amount)
-            #     quote_value = (
-            #         float(drops_to_xrp(str(quote_amount_value)))
-            #         if isinstance(quote_amount_value, int)
-            #         else quote_amount_value
-            #     )
-
-            #     amount = base_value
-            #     price = quote_value / amount
-            #     cost = amount * price
-
-            #     fee_rate = quote_rate
-            #     fee_cost = quote_value * fee_rate
-
-            #     filled = filled + amount
-            #     fill_price = price
-            #     total_fill_price = total_fill_price + fill_price
-
-            #     # trade_info: Dict[str, Any] = {}
-            #     # if transaction["Account"] != id.account:
-            #     #     trade_info["transaction"] = offer
-            #     # else:
-            #     #     trade_info["offer"] = offer
-
-            #     trade = Trade(
-            #         id=OrderId(offer.Account, offer.Sequence).id,
-            #         order=id.id,
-            #         datetime=ripple_time_to_datetime(date or 0),
-            #         timestamp=ripple_time_to_posix(date or 0),
-            #         symbol=MarketSymbol(base_code.code, quote_code.code).symbol,
-            #         type=TradeType.Limit.value,
-            #         side=side,
-            #         amount=round(amount, CURRENCY_PRECISION),
-            #         price=round(price, CURRENCY_PRECISION),
-            #         takerOrMaker=get_taker_or_maker(side).value,
-            #         cost=round(cost, CURRENCY_PRECISION),
-            #         fee={
-            #             "currency": str(quote_code),
-            #             "cost": round(fee_cost, CURRENCY_PRECISION),
-            #             "rate": round(fee_rate, CURRENCY_PRECISION),
-            #             "percentage": True,
-            #         }
-            #         if fee_cost > 0
-            #         else None,
-            #         info={"offer": offer},
-            #     )
-            #     trades.append(trade)
-
-            # order_time_in_force = get_order_time_in_force(transaction)
-
-            # order_base_rate = (
-            #     await self.fetch_transfer_rate(order_symbol.base.issuer)
-            #     if "issuer" in order_symbol.base
-            #     else 0
-            # )
-            # order_base_amount_value = parse_amount_value(order_base_amount)
-            # order_base_value = (
-            #     float(drops_to_xrp(str(order_base_amount_value)))
-            #     if isinstance(order_base_amount_value, int)
-            #     else order_base_amount_value
-            # )
-            # order_quote_rate = (
-            #     await self.fetch_transfer_rate(order_symbol.quote.issuer)
-            #     if "issuer" in order_symbol.quote
-            #     else 0
-            # )
-            # order_quote_amount_value = parse_amount_value(order_quote_amount)
-            # order_quote_value = (
-            #     float(drops_to_xrp(str(order_quote_amount_value)))
-            #     if isinstance(order_quote_amount_value, int)
-            #     else order_quote_amount_value
-            # )
-
-            # order_amount = order_base_value
-            # order_price = order_quote_value / order_amount
-            # order_actual_price = fill_price
-
-            # order_average = (
-            #     total_fill_price / len(trades) if len(trades) > 0 else float(0)
-            # )
-
-            # order_remaining = order_amount - filled
-            # order_cost = filled * order_actual_price
-
-            # order_fee_rate = (
-            #     order_quote_rate if order_side == OrderSide.Buy else order_base_rate
-            # )
-            # order_fee_cost = filled * order_fee_rate
-
-            # order = Order(
-            #     id=order_id,
-            #     clientOrderId=hash_offer_id(
-            #         transaction["Account"], transaction["Sequence"]
-            #     ),
-            #     datetime=ripple_time_to_datetime(date or 0),
-            #     timestamp=ripple_time_to_posix(date or 0),
-            #     lastTradeTimestamp=ripple_time_to_posix(date or 0),
-            #     status=order_status,
-            #     symbol=order_symbol,
-            #     type=OrderType.Limit.value,
-            #     timeInForce=order_time_in_force,
-            #     side=order_side,
-            #     amount=round(order_amount, CURRENCY_PRECISION),
-            #     price=round(order_price, CURRENCY_PRECISION),
-            #     average=round(order_average, CURRENCY_PRECISION),
-            #     filled=round(filled, CURRENCY_PRECISION),
-            #     remaining=round(order_remaining, CURRENCY_PRECISION),
-            #     cost=round(order_cost, CURRENCY_PRECISION),
-            #     trades=trades,
-            #     fee={
-            #         "currency": order_symbol.quote
-            #         if order_side == OrderSide.Buy
-            #         else order_symbol.base,
-            #         "cost": round(order_fee_cost, CURRENCY_PRECISION),
-            #         "rate": round(order_fee_rate, CURRENCY_PRECISION),
-            #         "percentage": True,
-            #     }
-            #     if order_fee_cost > 0
-            #     else None,
-            #     info={"transaction": message},
-            # )
-
-            # if (
-            #     order.status == OrderStatus.Open.value
-            #     and params.show_open == False
-            #     or order.status == OrderStatus.Closed.value
-            #     and params.show_closed == False
-            #     or order.status == OrderStatus.Canceled.value
-            #     and params.show_canceled == False
-            # ):
-            #     return
-
-            # return order
 
     async with self.websocket_client as websocket:
         await websocket.send(payload)
@@ -332,8 +121,8 @@ async def watch_orders(
             order = await orders_handler(message)
             if order != None:
                 if isinstance(params, Dict):
-                    params["listener"](order)
+                    params.listener(order)
                 else:
                     params.listener(order)
 
-    return {}
+    return

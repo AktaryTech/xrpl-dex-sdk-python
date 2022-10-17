@@ -1,3 +1,4 @@
+from typing import Optional
 from xrpl.models.requests.server_state import ServerState
 
 from ..models import (
@@ -7,7 +8,7 @@ from ..models import (
 from ..utils import server_time_to_posix
 
 
-async def fetch_status(self) -> FetchStatusResponse:
+async def fetch_status(self) -> Optional[FetchStatusResponse]:
     server_state_response = await self.client.request(ServerState())
     server_state_result = server_state_response.result
 
@@ -23,9 +24,9 @@ async def fetch_status(self) -> FetchStatusResponse:
         status = ExchangeStatusType.SHUTDOWN
 
     return FetchStatusResponse(
-        status=status.value,
+        status=status,
         updated=server_time_to_posix(server_state["time"]),
-        eta="",
+        eta=None,
         url="",
         info={"server_state": server_state},
     )

@@ -1,9 +1,9 @@
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Dict, Optional
 
 from ..common import CurrencyCode, MarketSymbol
 
 
-class Market(NamedTuple):
+class Market:
     # String literal for referencing within an exchange
     id: str
     # Unified Market Symbol

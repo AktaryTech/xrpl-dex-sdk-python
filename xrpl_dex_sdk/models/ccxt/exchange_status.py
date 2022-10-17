@@ -6,10 +6,10 @@ from ..common import CurrencyCode, UnixTimestamp
 
 
 class ExchangeStatusType(Enum):
-    OK: str = "ok"
-    SHUTDOWN: str = "shutdown"
-    ERROR: str = "error"
-    MAINTENANCE: str = "maintenance"
+    OK = "ok"
+    SHUTDOWN = "shutdown"
+    ERROR = "error"
+    MAINTENANCE = "maintenance"
 
 
 class ExchangeStatus(NamedTuple):

@@ -20,39 +20,39 @@ class OrderId:
 
 
 class OrderStatus(Enum):
-    Open: str = "open"
-    Closed: str = "closed"
-    Canceled: str = "canceled"
-    Expired: str = "expired"
-    Rejected: str = "rejected"
+    Open = "open"
+    Closed = "closed"
+    Canceled = "canceled"
+    Expired = "expired"
+    Rejected = "rejected"
 
 
 class OrderType(Enum):
-    Limit: str = "limit"
+    Limit = "limit"
 
 
 class OrderTimeInForce(Enum):
-    GoodTillCanceled: str = "GTC"
-    ImmediateOrCancel: str = "IOC"
-    FillOrKill: str = "FOK"
-    PostOnly: str = "PO"
+    GoodTillCanceled = "GTC"
+    ImmediateOrCancel = "IOC"
+    FillOrKill = "FOK"
+    PostOnly = "PO"
 
 
 class OrderSide(Enum):
-    Buy: str = "buy"
-    Sell: str = "sell"
+    Buy = "buy"
+    Sell = "sell"
 
 
 class Order(NamedTuple):
     id: OrderId
-    clientOrderId: Optional[str]
+    client_order_id: Optional[str]
     datetime: UnixISOTimestamp
     timestamp: UnixTimestamp
-    lastTradeTimestamp: UnixTimestamp
+    last_trade_timestamp: Optional[UnixTimestamp]
     status: OrderStatus
     symbol: MarketSymbol
     type: OrderType
-    timeInForce: Optional[OrderTimeInForce]
+    time_in_force: Optional[OrderTimeInForce]
     side: OrderSide
     amount: float
     price: float

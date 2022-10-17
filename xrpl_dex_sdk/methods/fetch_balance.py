@@ -5,18 +5,18 @@ from xrpl.models.requests.account_lines import AccountLines
 from xrpl.models.requests.server_state import ServerState
 from xrpl.utils import drops_to_xrp
 
-from ..models import FetchBalanceParams, FetchBalanceResponse, Balance
+from ..models import CurrencyCode, FetchBalanceParams, FetchBalanceResponse, Balance
 from ..utils import handle_response_error
 
 
 async def fetch_balance(
-    self, params: Optional[FetchBalanceParams] = {}
+    self, params: Optional[FetchBalanceParams] = FetchBalanceParams()
 ) -> FetchBalanceResponse:
-    balances: Dict[str, Balance] = {}
+    balances: Dict[CurrencyCode, Balance] = {}
     info: Dict[str, Any] = {}
 
     # get XRP balance
-    if "code" not in params or params["code"] == "XRP":
+    if getattr(params, "code") == None or getattr(params, "code") == "XRP":
         account_info_response = await self.client.request(
             AccountInfo.from_dict(
                 {"account": self.wallet.classic_address, "ledger_index": "validated"}
@@ -40,7 +40,9 @@ async def fetch_balance(
         free_xrp = float(drops_to_xrp(account_info["Balance"])) - used_xrp
         total_xrp = used_xrp + free_xrp
 
-        balances["XRP"] = {"free": free_xrp, "used": used_xrp, "total": total_xrp}
+        balances[CurrencyCode("XRP")] = Balance(
+            free=free_xrp, used=used_xrp, total=total_xrp
+        )
 
         info["account_info"] = account_info
         info["validated_ledger"] = validated_ledger
@@ -58,24 +60,24 @@ async def fetch_balance(
             handle_response_error(account_lines_result)
 
             for trust_line in account_lines_result["lines"]:
-                currency_code = trust_line.currency + "+" + trust_line["account"]
+                currency_code = CurrencyCode(trust_line.currency, trust_line["account"])
 
-                if "code" in params and currency_code != params["code"]:
+                if getattr(params, "code") != currency_code:
                     continue
 
                 used_balance = 0
                 free_balance = trust_line["balance"] - used_balance
                 total_balance = used_balance + free_balance
 
-                balances[currency_code] = {
-                    "free": free_balance,
-                    "used": used_balance,
-                    "total": total_balance,
-                }
+                balances[currency_code] = Balance(
+                    free=free_balance,
+                    used=used_balance,
+                    total=total_balance,
+                )
 
             info["account_lines"] = account_lines_response
 
             marker = account_lines_result["marker"]
             has_next_page = marker != None
 
-    return {"balances": balances, "info": info}
+    return FetchBalanceResponse(balances=balances, info=info)

@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class LedgerEntryTypes(Enum):
-    Offer: str = "Offer"
+    Offer = "Offer"
 
 
 __all__ = ["LedgerEntryTypes"]

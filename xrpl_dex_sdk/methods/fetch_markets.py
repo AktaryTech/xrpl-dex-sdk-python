@@ -1,8 +1,9 @@
+from typing import Optional
 from ..data import MarketsData
-from ..models import FetchMarketsResponse, CurrencyCode
+from ..models import FetchMarketsResponse
 
 
-async def fetch_markets(self) -> FetchMarketsResponse:
+async def fetch_markets(self) -> Optional[FetchMarketsResponse]:
     if self.markets != None:
         return self.markets
 
@@ -14,14 +15,16 @@ async def fetch_markets(self) -> FetchMarketsResponse:
     if markets == None:
         return
 
-    for market in markets:
-        if markets[market]["base"] != "XRP":
-            markets[market]["base_fee"] = await self.fetch_transfer_rate(
-                CurrencyCode(markets[market]["base"]).issuer
-            )
-        if markets[market]["quote"] != "XRP":
-            markets[market]["quote_fee"] = await self.fetch_transfer_rate(
-                CurrencyCode(markets[market]["quote"]).issuer
-            )
+    for market_symbol in markets:
+        market = markets[market_symbol]
+        if market == None:
+            continue
+
+        if market.base != "XRP":
+            market.base_fee = await self.fetch_transfer_rate(market.base.issuer)
+        if market.quote != "XRP":
+            market.quote_fee = await self.fetch_transfer_rate(market.quote.issuer)
+
+        markets[market_symbol] = market
 
     return markets

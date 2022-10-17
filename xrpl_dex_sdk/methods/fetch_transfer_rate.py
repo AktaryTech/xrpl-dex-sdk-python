@@ -18,9 +18,10 @@ async def fetch_transfer_rate(self, issuer: AccountAddress) -> float:
             transfer_rate = transfer_rate_to_decimal(
                 account_info_result["account_data"]["TransferRate"]
             )
-            if self.transfer_rates == None:
-                self.transfer_rates = {}
-            self.transfer_rates[issuer] = transfer_rate
-            return transfer_rate
+            if transfer_rate != None:
+                if self.transfer_rates == None:
+                    self.transfer_rates = {}
+                self.transfer_rates[issuer] = transfer_rate
+                return transfer_rate
 
     return 0

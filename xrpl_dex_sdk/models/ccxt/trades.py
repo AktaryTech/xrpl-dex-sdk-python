@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Any, Dict, List, NamedTuple, Optional
 
+from ..ccxt.orders import OrderId
+from ..ccxt.fees import Fee
 from ..common import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
 
 
@@ -18,24 +20,24 @@ class TradeId:
 
 
 class TradeType(Enum):
-    Limit: str = "limit"
+    Limit = "limit"
 
 
 class TradeSide(Enum):
-    Buy: str = "buy"
-    Sell: str = "sell"
+    Buy = "buy"
+    Sell = "sell"
 
 
 class TradeTakerOrMaker(Enum):
-    Taker: str = "taker"
-    Maker: str = "maker"
+    Taker = "taker"
+    Maker = "maker"
 
 
 class Trade(NamedTuple):
     # string trade id
     id: TradeId
     # string order id or undefined/None/null
-    order: TradeId
+    order: OrderId
     # ISO8601 datetime with milliseconds;
     datetime: UnixISOTimestamp
     # Unix timestamp in milliseconds
@@ -51,11 +53,11 @@ class Trade(NamedTuple):
     # float price in quote currency
     price: float
     # | 'maker'; string, 'taker' or 'maker'
-    takerOrMaker: TradeTakerOrMaker
+    taker_or_maker: TradeTakerOrMaker
     # total cost (including fees), `price * amount`
     cost: float
     # transfer fees
-    fee: Optional[float]
+    fee: Optional[Fee]
     # Raw response from exchange
     info: Dict[str, Any]
 

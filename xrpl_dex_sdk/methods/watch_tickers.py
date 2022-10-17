@@ -8,7 +8,6 @@ from ..models import (
     WatchTickersParams,
     MarketSymbol,
     OrderSide,
-    Ticker,
     OfferCreateFlags,
     Tickers,
 )
@@ -59,7 +58,10 @@ async def watch_tickers(
                 return
 
             new_ticker = await self.fetch_ticker(
-                symbol, WatchTickersParams(search_limit=params.search_limit)
+                symbol,
+                WatchTickersParams(
+                    search_limit=params.search_limit, listener=params.listener
+                ),
             )
 
             if new_ticker == None:
@@ -68,9 +70,9 @@ async def watch_tickers(
             if symbol in tickers:
                 for field in new_ticker._fields:
                     if field != "datetime" and field != "timestamp" and field != "info":
-                        if new_ticker.__getattribute__(field) != tickers[symbol].__getattribute__(
-                            field
-                        ):
+                        if new_ticker.__getattribute__(field) != tickers[
+                            symbol
+                        ].__getattribute__(field):
                             return new_ticker
             else:
                 tickers[symbol] = new_ticker
@@ -89,6 +91,6 @@ async def watch_tickers(
             new_ticker = await tickers_handler(message)
             if new_ticker != None:
                 if isinstance(params, Dict):
-                    params["listener"](new_ticker)
+                    params.listener(new_ticker)
                 else:
                     params.listener(new_ticker)

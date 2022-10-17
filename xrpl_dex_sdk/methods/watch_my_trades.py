@@ -1,30 +1,16 @@
-from pprint import pprint
-from typing import Any, Callable, Dict
+from typing import Any, Dict
 import uuid
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
-from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
-from ..constants import CURRENCY_PRECISION
 from ..models import (
     WatchMyTradesParams,
-    OrderSide,
-    Offer,
     MarketSymbol,
-    TradeId,
-    OrderId,
-    Trade,
-    TradeType,
 )
 from ..utils import (
-    get_amount_currency_code,
     parse_affected_node,
-    get_base_amount_key,
     get_trade_from_data,
-    get_quote_amount_key,
-    parse_amount_value,
-    get_taker_or_maker,
     get_market_symbol,
 )
 
@@ -81,7 +67,7 @@ async def watch_my_trades(
                         "TakerPays": offer["TakerPays"],
                         "TakerGets": offer["TakerGets"],
                     },
-                    {transaction},
+                    {"transaction": transaction},
                 )
 
                 return trade
@@ -100,8 +86,8 @@ async def watch_my_trades(
             trade = await my_trades_handler(message)
             if trade != None:
                 if isinstance(params, Dict):
-                    params["listener"](trade)
+                    params.listener(trade)
                 else:
                     params.listener(trade)
 
-    return {}
+    return

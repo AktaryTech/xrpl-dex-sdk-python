@@ -20,11 +20,11 @@ test_currency = "AKT"
 test_issuer = "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"
 test_currency_code = test_currency + "+" + test_issuer
 
-sdk_test_params: SDKParams = {
-    "network": constants.TESTNET,
-    "client": test_client,
-    "wallet_secret": test_wallet_secret,
-}
+sdk_test_params = SDKParams(
+    network=constants.TESTNET,
+    client=test_client,
+    wallet_secret=test_wallet_secret,
+)
 
 
 def test_version() -> None:
@@ -470,7 +470,8 @@ async def test_fetch_my_trades() -> None:
     sdk = SDK(sdk_test_params)
     # TODO: mock up this response
     my_trades = await sdk.fetch_my_trades(
-        symbol="XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B", limit=3
+        symbol=models.MarketSymbol("XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"),
+        limit=3,
     )
     assert my_trades != None
     assert len(my_trades) == 3

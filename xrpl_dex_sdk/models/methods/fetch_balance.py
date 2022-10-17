@@ -5,7 +5,7 @@ from ..common import CurrencyCode
 
 
 class FetchBalanceParams(NamedTuple):
-    code: Optional[CurrencyCode]
+    code: Optional[CurrencyCode] = None
 
 
 FetchBalanceResponse = Balances or None

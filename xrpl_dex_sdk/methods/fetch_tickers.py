@@ -1,8 +1,8 @@
 from typing import List
 
 from ..models import (
-    FetchTickerParams,
-    FetchTickerResponse,
+    FetchTickersParams,
+    FetchTickersResponse,
     MarketSymbol,
     Ticker,
 )
@@ -11,8 +11,8 @@ from ..models import (
 async def fetch_tickers(
     self,
     symbols: List[MarketSymbol],
-    params: FetchTickerParams = FetchTickerParams(),
-) -> FetchTickerResponse:
+    params: FetchTickersParams = FetchTickersParams(),
+) -> FetchTickersResponse:
     tickers: List[Ticker] = []
 
     for symbol in symbols:

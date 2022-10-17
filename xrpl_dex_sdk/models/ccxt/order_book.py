@@ -8,9 +8,9 @@ OrderBookEntry = List[float]
 
 
 class OrderBookLevel(Enum):
-    L1: str = "L1"
-    L2: str = "L2"
-    L3: str = "L3"
+    L1 = "L1"
+    L2 = "L2"
+    L3 = "L3"
 
 
 class OrderBook(NamedTuple):

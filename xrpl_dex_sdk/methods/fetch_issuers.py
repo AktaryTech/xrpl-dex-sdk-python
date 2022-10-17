@@ -1,8 +1,9 @@
+from typing import Union
 from ..data import IssuersData
 from ..models import Issuers
 
 
-def fetch_issuers(self) -> Issuers:
+def fetch_issuers(self) -> Union[Issuers, None]:
     if self.issuers != None:
         return self.issuers
 

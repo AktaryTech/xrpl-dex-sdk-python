@@ -3,7 +3,7 @@ from typing import Any, Optional
 from xrpl.models.requests.account_tx import AccountTx
 from xrpl.utils import ripple_time_to_posix
 
-from ..constants import DEFAULT_LIMIT
+from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchTradesParams,
     FetchTradesResponse,
@@ -29,11 +29,14 @@ async def fetch_my_trades(
     # Only return Trades since this date
     since: Optional[UnixTimestamp] = None,
     # Total number of Trades to return
-    limit: Optional[int] = DEFAULT_LIMIT,
+    limit: Optional[int] = None,
     # eslint-disable-next-line
     params: FetchTradesParams = FetchTradesParams(),
 ) -> FetchTradesResponse:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) == True else symbol
+    limit = limit if limit != None else DEFAULT_LIMIT
+    search_limit = (
+        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
+    )
 
     trades: Trades = []
 
@@ -87,19 +90,19 @@ async def fetch_my_trades(
                 if node == None or "FinalFields" not in node:
                     continue
 
-                offer: Offer = node["FinalFields"]
+                offer: Offer = getattr(node, "FinalFields")
 
                 trade = await get_trade_from_data(
                     self,
                     {
                         "date": tx["date"],
-                        "Flags": offer["Flags"],
-                        "OrderAccount": offer["Account"],
-                        "OrderSequence": offer["Sequence"],
+                        "Flags": offer.Flags,
+                        "OrderAccount": offer.Account,
+                        "OrderSequence": offer.Sequence,
                         "Account": tx["Account"],
                         "Sequence": tx["Sequence"],
-                        "TakerPays": offer["TakerPays"],
-                        "TakerGets": offer["TakerGets"],
+                        "TakerPays": offer.TakerPays,
+                        "TakerGets": offer.TakerGets,
                     },
                     {"transaction": transaction},
                 )
@@ -110,15 +113,15 @@ async def fetch_my_trades(
                         break
 
             tx_count += 1
-            if tx_count >= params.search_limit:
+            if tx_count >= search_limit:
                 break
 
-        has_next_page = len(trades) < limit and tx_count < params.search_limit
+        has_next_page = len(trades) < limit and tx_count < search_limit
 
     if len(trades) > 0:
 
         def sort_by_timestamp(trade: Trade):
-            return trade["timestamp"]
+            return trade.timestamp
 
         trades.sort(reverse=False, key=sort_by_timestamp)
 
