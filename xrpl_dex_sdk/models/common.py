@@ -1,75 +1,113 @@
-from typing import Optional, Union
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
 
-from .common import MarketSymbol
-
+from .base_model import BaseModel
+from .required import REQUIRED
+from ..constants import ISO_CURRENCY_REGEX, HEX_CURRENCY_REGEX
 
 AccountAddress = str
 IssuerAddress = AccountAddress
 
 
-class CurrencyCode:
-    def __init__(self, code: str, issuer: Optional[str] = None) -> None:
-        if isinstance(code, str) == False:
-            raise Exception(
-                "Error creating CurrencyCode: provided value is not a string"
-            )
-        currency_issuer_pair = [code, issuer] if issuer != None else code.split("+")
-        if currency_issuer_pair[0] == None:
-            raise Exception(
-                "Error creating CurrencyCode: " + code + " is not a valid code"
-            )
-        self.currency = currency_issuer_pair[0]
-        self.issuer = (
-            currency_issuer_pair[1] if len(currency_issuer_pair) == 2 else None
-        )
-        self.code = self.currency
-        if self.issuer != None:
-            self.code += "+" + self.issuer
+@dataclass(frozen=True)
+class OrderId(BaseModel):
+    account: AccountAddress = REQUIRED
+    sequence: int = REQUIRED
 
-    def __repr__(self) -> str:
-        return self.code
+    @classmethod
+    def from_string(cls, id: str):
+        try:
+            [account, sequence] = id.split(":")
+            return cls(account=account, sequence=sequence)
+        except:
+            raise Exception(f"Invalid OrderId: {id}")
+
+    def to_id(self) -> str:
+        return self.account + ":" + str(self.sequence)
 
     def __str__(self) -> str:
-        return self.code
+        return self.to_id()
 
 
-class MarketSymbol:
-    def __init__(self, symbol: str, quote_symbol: Optional[str] = None) -> None:
-        if isinstance(symbol, str) == False:
-            raise Exception(
-                "Error creating MarketSymbol: provided value is not a string"
-            )
+@dataclass(frozen=True)
+class TradeId(BaseModel):
+    account: AccountAddress = REQUIRED
+    sequence: int = REQUIRED
 
-        base_quote_pair = (
-            [symbol, quote_symbol] if quote_symbol != None else symbol.split("/")
-        )
-        if (
-            len(base_quote_pair) == 1
-            or base_quote_pair[0] == None
-            or base_quote_pair[1] == None
-        ):
-            raise Exception(
-                "Error creating MarketSymbol: " + symbol + " is not a valid symbol"
-            )
-        self.base = CurrencyCode(base_quote_pair[0])
-        self.quote = CurrencyCode(base_quote_pair[1])
-        self.symbol = base_quote_pair[0] + "/" + base_quote_pair[1]
+    @classmethod
+    def from_string(cls, id: str):
+        try:
+            [account, sequence] = id.split(":")
+            return cls(account=account, sequence=sequence)
+        except:
+            raise Exception(f"Invalid TradeId: {id}")
 
-    def __repr__(self) -> str:
-        return self.symbol
+    def to_id(self) -> str:
+        return self.account + ":" + str(self.sequence)
 
     def __str__(self) -> str:
-        return self.symbol
+        return self.to_id()
 
-    def __eq__(self, other_symbol: Optional[Union[MarketSymbol, str]]) -> bool:
-        if other_symbol == None:
-            return False
-        other_symbol = (
-            MarketSymbol(other_symbol)
-            if isinstance(other_symbol, str)
-            else other_symbol
+
+@dataclass(frozen=True)
+class CurrencyCode(BaseModel):
+    currency: str = REQUIRED
+    issuer: Optional[str] = None
+
+    @classmethod
+    def from_string(cls, code: str):
+        code_arr = code.split("+")
+        if len(code_arr) < 1 or len(code_arr) > 2:
+            raise Exception(f"Invalid currency code: {code}")
+        currency = code_arr[0]
+        issuer = code_arr[1] if len(code_arr) == 2 else None
+        return cls(currency=currency, issuer=issuer)
+
+    def to_code(self) -> str:
+        return self.currency + ("+" + self.issuer if self.issuer != None else "")
+
+    def is_xrp(self) -> bool:
+        return self.currency.upper() == "XRP"
+
+    def has_issuer(self) -> bool:
+        return self.issuer != None
+
+    def _get_errors(self: "CurrencyCode") -> Dict[str, str]:
+        errors = super()._get_errors()
+        if self.currency.upper() == "XRP" and self.issuer != None:
+            errors["currency"] = "XRP does not require an Issuer"
+        elif not self._is_valid_currency(self.currency):
+            errors["currency"] = f"Invalid currency: {self.currency}"
+        return errors
+
+    def _is_valid_currency(self, value: str) -> bool:
+        return bool(
+            ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value)
         )
-        return self.symbol == other_symbol.symbol
+
+    def __str__(self) -> str:
+        return self.to_code()
+
+
+@dataclass(frozen=True)
+class MarketSymbol(BaseModel):
+    base: CurrencyCode = REQUIRED
+    quote: CurrencyCode = REQUIRED
+
+    @classmethod
+    def from_string(cls, symbol: str):
+        symbol_arr = symbol.split("/")
+        if len(symbol_arr) != 2:
+            raise Exception(f"Invalid market symbol: {symbol}")
+        base = CurrencyCode.from_string(symbol_arr[0])
+        quote = CurrencyCode.from_string(symbol_arr[1])
+        return cls(base=base, quote=quote)
+
+    def to_symbol(self) -> str:
+        return f"{str(self.base)}/{str(self.quote)}"
+
+    def __str__(self) -> str:
+        return self.to_symbol()
 
 
 UnixTimestamp = int  # milliseconds since start of Unix epoch (1/1/1970)
@@ -79,6 +117,8 @@ XrplTimestamp = int  # milliseconds since start of XRPL epoch (1/1/2000)
 __all__ = [
     "AccountAddress",
     "IssuerAddress",
+    "OrderId",
+    "TradeId",
     "CurrencyCode",
     "MarketSymbol",
     "UnixTimestamp",

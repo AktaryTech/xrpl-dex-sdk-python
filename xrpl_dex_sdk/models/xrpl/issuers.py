@@ -1,20 +1,25 @@
-from typing import Dict, List, NamedTuple
+from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 from ..common import CurrencyCode, AccountAddress
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
-class IssuerCurrency(NamedTuple):
-    code: CurrencyCode
-    issuer: AccountAddress
+@dataclass(frozen=True)
+class IssuerCurrency(BaseModel):
+    code: CurrencyCode = REQUIRED
+    issuer: AccountAddress = REQUIRED
 
 
-class Issuer(NamedTuple):
-    name: str
-    trusted: bool
-    website: str
-    addresses: List[AccountAddress]
-    currencies: List[CurrencyCode]
-    transfer_rate: float
+@dataclass(frozen=True)
+class Issuer(BaseModel):
+    name: str = REQUIRED
+    trusted: bool = REQUIRED
+    website: Optional[str] = None
+    addresses: List[AccountAddress] = REQUIRED
+    currencies: List[CurrencyCode] = REQUIRED
+    transfer_rate: Optional[float] = 0
 
 
 Issuers = Dict[str, Issuer]

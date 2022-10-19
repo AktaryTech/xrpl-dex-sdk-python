@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, NamedTuple, Optional
+from typing import Any, Dict, Optional
 
-from ...constants import CURRENCY_PRECISION
-from ..common import CurrencyCode, UnixTimestamp
+from ..common import UnixTimestamp
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
 class ExchangeStatusType(Enum):
@@ -12,11 +14,12 @@ class ExchangeStatusType(Enum):
     MAINTENANCE = "maintenance"
 
 
-class ExchangeStatus(NamedTuple):
+@dataclass(frozen=True)
+class ExchangeStatus(BaseModel):
     # Status is one of 'ok', 'shutdown', 'error', 'maintenance'
-    status: ExchangeStatusType
+    status: ExchangeStatusType = REQUIRED
     # Raw response from exchange
-    info: Dict[str, Any]
+    info: Dict[str, Any] = REQUIRED
     # Integer, last updated timestamp in milliseconds if updated via the API
     updated: Optional[UnixTimestamp] = None
     # When the maintenance or outage is expected to end

@@ -4,22 +4,22 @@ from time import strptime, strftime
 from xrpl.utils import ripple_time_to_posix, datetime_to_ripple_time
 
 from ..constants import BILLION, SERVER_STATE_TIME_FORMAT
-from ..models.common import CurrencyCode, MarketSymbol, IssuerAddress
-from ..models.xrpl import Amount
+from ..models.common import (
+    CurrencyCode,
+    MarketSymbol,
+    IssuerAddress,
+)
+from ..models.xrpl import (
+    Amount,
+    IssuedCurrencyAmount,
+)
 
-# from ..models import Amount, IssuerAddress, CurrencyCode, MarketSymbol
+
 from .orders import (
     get_base_amount_key,
     get_quote_amount_key,
     get_order_side_from_flags,
 )
-
-
-def to_dict(class_obj: NamedTuple) -> dict:
-    result = {}
-    for field in class_obj._fields:
-        result[field] = getattr(class_obj, field)
-    return result
 
 
 def transfer_rate_to_decimal(rate: int) -> Optional[float]:
@@ -62,9 +62,27 @@ def server_time_to_posix(server_time: str) -> int:
 #
 def get_market_symbol(source: Dict[str, Any]):
     side = get_order_side_from_flags(source["Flags"])
-    return get_market_symbol_from_amount(
-        source[get_base_amount_key(side)], source[get_quote_amount_key(side)]
+    base_data = source[get_base_amount_key(side)]
+    base_amount = (
+        base_data
+        if isinstance(base_data, str)
+        else IssuedCurrencyAmount(
+            currency=base_data["currency"],
+            issuer=base_data["issuer"],
+            value=base_data["value"],
+        )
     )
+    quote_data = source[get_quote_amount_key(side)]
+    quote_amount = (
+        quote_data
+        if isinstance(quote_data, str)
+        else IssuedCurrencyAmount(
+            currency=quote_data["currency"],
+            issuer=quote_data["issuer"],
+            value=quote_data["value"],
+        )
+    )
+    return get_market_symbol_from_amount(base_amount, quote_amount)
 
 
 #
@@ -74,21 +92,17 @@ def get_market_symbol(source: Dict[str, Any]):
 # * @returns
 #
 def get_market_symbol_from_amount(base: Amount, quote: Amount) -> MarketSymbol:
-    base_code = (
-        CurrencyCode("XRP")
+    return MarketSymbol(
+        CurrencyCode.from_string("XRP")
         if isinstance(base, str)
-        else CurrencyCode(base.currency, base.issuer)
-    )
-    quote_code = (
-        CurrencyCode("XRP")
+        else CurrencyCode(base.currency, base.issuer),
+        CurrencyCode.from_string("XRP")
         if isinstance(quote, str)
-        else CurrencyCode(quote.currency, quote.issuer)
+        else CurrencyCode(quote.currency, quote.issuer),
     )
-    return MarketSymbol(base_code.code, quote_code.code)
 
 
 __all__ = [
-    "to_dict",
     "transfer_rate_to_decimal",
     "decimal_to_transfer_rate",
     "server_time_to_posix",

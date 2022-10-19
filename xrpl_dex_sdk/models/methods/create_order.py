@@ -11,7 +11,7 @@ class CreateOrderParams(NamedTuple):
     account_txn_id: Optional[str] = None
     fee: Optional[str] = None
     # Order behavior (via XRPL OfferCreateFlags) */
-    flags: Dict[str, bool] = None
+    flags: Optional[Dict[str, bool]] = None
     last_ledger_sequence: Optional[int] = None
     # Additional arbitrary information used to identify this transaction */
     memos: Optional[List[Memo]] = None

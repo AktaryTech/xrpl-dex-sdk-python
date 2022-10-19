@@ -11,7 +11,7 @@ from ..utils import handle_response_error
 
 async def fetch_balance(
     self, params: Optional[FetchBalanceParams] = FetchBalanceParams()
-) -> FetchBalanceResponse:
+) -> Optional[FetchBalanceResponse]:
     balances: Dict[CurrencyCode, Balance] = {}
     info: Dict[str, Any] = {}
 

@@ -1,23 +1,26 @@
-from typing import Optional
+from typing import Optional, Union
 from xrpl.models.requests.fee import Fee
 
 from ..models.methods.fetch_transaction_fee import FetchTransactionFeeResponse
 from ..models.common import CurrencyCode
 from ..models.ccxt import TransactionFee
+from ..utils import handle_response_error
 
 
 async def fetch_transaction_fee(
-    self, code: CurrencyCode
+    self, code: Union[CurrencyCode, str]
 ) -> Optional[FetchTransactionFeeResponse]:
+    code = CurrencyCode.from_string(code) if isinstance(code, str) else code
+
     fee_response = await self.client.request(Fee())
     fee_result = fee_response.result
-
-    if "error" in fee_result:
-        raise Exception(fee_response["error"] + " " + fee_response["error_message"])
+    handle_response_error(fee_result)
 
     currencies = (
         self.currencies if self.currencies != None else await self.fetch_currencies()
     )
+
+    print(await self.fetch_currencies())
 
     if code not in currencies:
         return
@@ -25,6 +28,6 @@ async def fetch_transaction_fee(
     return TransactionFee(
         code=code,
         current=fee_result["drops"]["open_ledger_fee"],
-        transfer=currencies[code].get("fee", 0),
+        transfer=currencies[code].fee,
         info={"fee": fee_result, "currency": currencies[code]},
     )

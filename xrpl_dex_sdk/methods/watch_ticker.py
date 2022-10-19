@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
 
+from ..constants import DEFAULT_SEARCH_LIMIT
 from ..models import (
     WatchTickerParams,
     MarketSymbol,

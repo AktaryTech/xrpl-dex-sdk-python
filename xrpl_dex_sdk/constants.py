@@ -1,6 +1,7 @@
+import re
 from enum import Enum
 import os
-from typing import Dict
+from typing import Dict, Final, Pattern
 
 
 DEFAULT_LIMIT: int = int(os.getenv("XRPL_DEFAULT_LIMIT", 20))
@@ -66,3 +67,17 @@ Networks: Dict[str, Dict[str, str]] = {
 }
 
 SERVER_STATE_TIME_FORMAT: str = "%Y-%b-%d %H:%M:%S.%f %Z"
+
+ISO_CURRENCY_REGEX: Final[Pattern[str]] = re.compile("[A-Za-z0-9]{3}")
+"""
+Matches ISO currencies like "USD" or "EUR" in the format allowed by XRPL.
+
+:meta private:
+"""
+
+HEX_CURRENCY_REGEX: Final[Pattern[str]] = re.compile("[A-F0-9]{40}")
+"""
+Matches hex-encoded currencies in the format allowed by XRPL.
+
+:meta private:
+"""

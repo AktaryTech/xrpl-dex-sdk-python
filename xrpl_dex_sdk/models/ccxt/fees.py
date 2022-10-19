@@ -1,13 +1,17 @@
+from dataclasses import dataclass
 from typing import Any, Dict, List, NamedTuple, Optional
 
 from ..common import CurrencyCode, MarketSymbol
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
-class Fee(NamedTuple):
+@dataclass(frozen=True)
+class Fee(BaseModel):
     # Fee currency
-    currency: CurrencyCode
-    # The fee cost (base_fee # rate)
-    cost: float
+    currency: CurrencyCode = REQUIRED
+    # The fee cost (base_fee * rate)
+    cost: float = REQUIRED
     # The fee rate, 0.05% = 0.0005, 1% = 0.01, ...
     rate: Optional[float] = None
     # Whether the fee rate is a percentage or flat rate
@@ -17,29 +21,31 @@ class Fee(NamedTuple):
 #
 # This is returned by `fetchTransactionFee(s)`
 #
-class TransactionFee(NamedTuple):
+@dataclass(frozen=True)
+class TransactionFee(BaseModel):
     # The currency being transacted #
-    code: CurrencyCode
+    code: CurrencyCode = REQUIRED
     # The current cost in drops of XRP to send a transaction #
-    current: int
+    current: int = REQUIRED
     # The transfer fee (if any) for the given issuers #
-    transfer: float
+    transfer: Optional[float] = None
     # Raw response from exchange
-    info: Dict[str, Any]
+    info: Dict[str, Any] = REQUIRED
 
 
 #
 # This is returned by `fetchTradingFee(s)`
 #
-class TradingFee(NamedTuple):
+@dataclass(frozen=True)
+class TradingFee(BaseModel):
     # Unified Market Symbol #
-    symbol: MarketSymbol
+    symbol: MarketSymbol = REQUIRED
     # Fee rate for base token #
-    base: float
+    base: float = REQUIRED
     # Fee rate for quote token #
-    quote: float
+    quote: float = REQUIRED
     # Raw response from exchange
-    info: Dict[str, Any]
+    info: Dict[str, Any] = REQUIRED
     # Whether the fees are a percentage or flat rate #
     percentage: Optional[bool] = True
 
@@ -47,9 +53,10 @@ class TradingFee(NamedTuple):
 #
 # This is returned by `fetchFees`
 #
-class FeeSchedule(NamedTuple):
-    transactions: List[TransactionFee]
-    trading: List[TradingFee]
+@dataclass(frozen=True)
+class FeeSchedule(BaseModel):
+    transactions: List[TransactionFee] = REQUIRED
+    trading: List[TradingFee] = REQUIRED
 
 
 __all__ = ["Fee", "TransactionFee", "TradingFee", "FeeSchedule"]

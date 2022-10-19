@@ -12,6 +12,7 @@ from ..models import (
     Trades,
     Offer,
     MarketSymbol,
+    Node,
     UnixTimestamp,
 )
 from ..utils import (
@@ -87,22 +88,24 @@ async def fetch_my_trades(
 
             for affected_node in transaction["meta"]["AffectedNodes"]:
                 node = parse_affected_node(affected_node)
-                if node == None or "FinalFields" not in node:
+                if node == None:
                     continue
 
-                offer: Offer = getattr(node, "FinalFields")
+                offer_fields = getattr(node, "FinalFields")
+                if offer_fields == None:
+                    continue
 
                 trade = await get_trade_from_data(
                     self,
                     {
                         "date": tx["date"],
-                        "Flags": offer.Flags,
-                        "OrderAccount": offer.Account,
-                        "OrderSequence": offer.Sequence,
+                        "Flags": offer_fields["Flags"],
+                        "OrderAccount": offer_fields["Account"],
+                        "OrderSequence": offer_fields["Sequence"],
                         "Account": tx["Account"],
                         "Sequence": tx["Sequence"],
-                        "TakerPays": offer.TakerPays,
-                        "TakerGets": offer.TakerGets,
+                        "TakerPays": offer_fields["TakerPays"],
+                        "TakerGets": offer_fields["TakerGets"],
                     },
                     {"transaction": transaction},
                 )

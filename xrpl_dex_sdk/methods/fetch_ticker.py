@@ -4,15 +4,17 @@ from datetime import datetime
 
 from xrpl.models.requests.book_offers import BookOffers
 
-from ..constants import CURRENCY_PRECISION
+from ..constants import CURRENCY_PRECISION, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchTickerParams,
     Offer,
     FetchTickerResponse,
+    LedgerEntryTypes,
     MarketSymbol,
     Ticker,
 )
 from ..utils import (
+    handle_response_error,
     sort_by_previous_txn_lgr_seq,
     get_book_offer_base_value,
     get_book_offer_quote_value,
@@ -20,10 +22,10 @@ from ..utils import (
 
 
 async def fetch_ticker(
-    self,
-    symbol: MarketSymbol,
-    params: FetchTickerParams = FetchTickerParams(),
+    self, symbol: MarketSymbol, params: FetchTickerParams = FetchTickerParams()
 ) -> FetchTickerResponse:
+    search_limit = params.search_limit if params.search_limit else DEFAULT_SEARCH_LIMIT
+
     high: Union[float, None] = None
     low: Union[float, None] = None
 
@@ -49,28 +51,26 @@ async def fetch_ticker(
     bids_response = await self.client.request(
         BookOffers.from_dict(
             {
-                "limit": params.search_limit + 1,
+                "limit": search_limit + 1,
                 "taker_pays": base_amount,
                 "taker_gets": quote_amount,
             }
         )
     )
     bids_result = bids_response.result
-    if "error" in bids_result:
-        raise Exception(bids_result["error"] + " " + bids_result["error_message"])
+    handle_response_error(bids_result)
 
     asks_response = await self.client.request(
         BookOffers.from_dict(
             {
-                "limit": params.search_limit + 1,
+                "limit": search_limit + 1,
                 "taker_pays": quote_amount,
                 "taker_gets": base_amount,
             }
         )
     )
     asks_result = asks_response.result
-    if "error" in asks_result:
-        raise Exception(asks_result["error"] + " " + asks_result["error_message"])
+    handle_response_error(asks_result)
 
     book_offers = bids_result["offers"] + asks_result["offers"]
 
@@ -81,11 +81,19 @@ async def fetch_ticker(
             book_offer
         )
 
-    open = get_book_offer_price(book_offers[1])
-    close = get_book_offer_price(book_offers[len(book_offers) - 1])
-    previous_close = get_book_offer_price(book_offers[0])
+    open = get_book_offer_price(
+        Offer.from_dict(
+            {
+                **book_offers[1],
+                "LedgerEntryType": LedgerEntryTypes(book_offers[1]["LedgerEntryType"]),
+            }
+        )
+    )
+    close = get_book_offer_price(Offer.from_dict(book_offers[len(book_offers) - 1]))
+    previous_close = get_book_offer_price(Offer.from_dict(book_offers[0]))
 
-    for book_offer in book_offers:
+    for book_offer_dict in book_offers:
+        book_offer = Offer.from_dict(book_offer_dict)
         price = get_book_offer_price(book_offer)
 
         if high == None or price > high:

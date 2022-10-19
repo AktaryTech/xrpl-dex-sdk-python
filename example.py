@@ -88,3 +88,78 @@
 
 # # RAW
 # # print(client.fetch_trades("r41R8dEUQgFvkMnwcDKQ1bC3ty6L1pNfib"))
+
+from dataclasses import dataclass
+from typing import (
+    Dict,
+    Optional,
+)
+from xrpl_dex_sdk.constants import ISO_CURRENCY_REGEX, HEX_CURRENCY_REGEX
+from xrpl_dex_sdk.models import BaseModel, REQUIRED
+
+
+@dataclass(frozen=True)
+class CurrencyCode(BaseModel):
+    currency: str = REQUIRED
+    issuer: Optional[str] = None
+
+    # @classmethod
+    # def from_str(cls, code_str: str):
+    #     [currency, *issuer] = code_str.split("+")
+    #     code_dict = {"currency": currency}
+    #     if len(issuer) > 0:
+    #         code_dict["issuer"] = issuer[0]
+    #     return cls.from_dict(code_dict)
+
+    def _get_errors(self: "CurrencyCode") -> Dict[str, str]:
+        errors = super()._get_errors()
+        if self.currency.upper() == "XRP" and self.issuer != None:
+            errors["currency"] = "XRP does not require an Issuer"
+        elif not self._is_valid_currency(self.currency):
+            errors["currency"] = f"Invalid currency: {self.currency}"
+        return errors
+
+    def _is_valid_currency(self, value: str) -> bool:
+        return bool(
+            ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value)
+        )
+
+    def _get_code(self) -> str:
+        return self.currency + ("+" + self.issuer if self.issuer != None else "")
+
+    # def __init__(self, code: str, issuer: Optional[str] = None) -> None:
+    #     if isinstance(code, str) == False:
+    #         raise Exception(
+    #             "Error creating CurrencyCode: provided value is not a string"
+    #         )
+    #     currency_issuer_pair = [code, issuer] if issuer != None else code.split("+")
+    #     if currency_issuer_pair[0] == None:
+    #         raise Exception(
+    #             "Error creating CurrencyCode: " + code + " is not a valid code"
+    #         )
+    #     self.currency = currency_issuer_pair[0]
+    #     self.issuer = (
+    #         currency_issuer_pair[1] if len(currency_issuer_pair) == 2 else None
+    #     )
+    #     self.code = self.currency
+    #     if self.issuer != None:
+    #         self.code += "+" + self.issuer
+
+    # def __repr__(self) -> str:
+    #     return self._get_code()
+
+    def __str__(self) -> str:
+        return self._get_code()
+
+
+def main() -> None:
+    code = CurrencyCode.from_dict({"currency": "USD", "issuer": "r12345"})
+
+    print("\n Code")
+    print(code)
+    print(code.to_json())
+    print(isinstance(code.to_json(), str))
+    print("\n")
+
+
+main()

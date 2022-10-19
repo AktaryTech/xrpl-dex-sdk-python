@@ -134,7 +134,7 @@ async def watch_trades(
                     side=side,
                     amount=round(amount, CURRENCY_PRECISION),
                     price=round(price, CURRENCY_PRECISION),
-                    takerOrMaker=get_taker_or_maker(side).value,
+                    taker_or_maker=get_taker_or_maker(side).value,
                     cost=round(cost, CURRENCY_PRECISION),
                     fee={
                         "currency": str(

@@ -9,9 +9,7 @@ from ..models import (
 
 
 async def fetch_tickers(
-    self,
-    symbols: List[MarketSymbol],
-    params: FetchTickersParams = FetchTickersParams(),
+    self, symbols: List[MarketSymbol], params: FetchTickersParams = FetchTickersParams()
 ) -> FetchTickersResponse:
     tickers: List[Ticker] = []
 

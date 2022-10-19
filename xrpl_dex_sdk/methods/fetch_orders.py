@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from xrpl.models.requests.ledger import Ledger
 from xrpl.utils import ripple_time_to_posix
 
-from ..constants import DEFAULT_LIMIT
+from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchOrdersParams,
     FetchOrdersResponse,
@@ -14,6 +14,7 @@ from ..models import (
     UnixTimestamp,
 )
 from ..utils import (
+    handle_response_error,
     get_market_symbol,
 )
 
@@ -25,6 +26,9 @@ async def fetch_orders(
     limit: int = DEFAULT_LIMIT,
     params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
+    search_limit = (
+        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
+    )
     orders: List[Order] = []
 
     has_next_page = True
@@ -44,6 +48,7 @@ async def fetch_orders(
         )
         ledger_response = await self.client.request(ledger_request)
         ledger_result = ledger_response.result
+        handle_response_error(ledger_result)
 
         if "error" in ledger_result:
             raise Exception("Error: " + ledger_result["error_message"])
@@ -64,7 +69,7 @@ async def fetch_orders(
 
         for transaction in transactions:
             tx_count += 1
-            if tx_count >= params.search_limit:
+            if tx_count >= search_limit:
                 break
 
             if (
@@ -119,6 +124,6 @@ async def fetch_orders(
             if len(orders) >= limit:
                 break
 
-        has_next_page = len(orders) < limit and tx_count < params.search_limit
+        has_next_page = len(orders) < limit and tx_count < search_limit
 
     return orders

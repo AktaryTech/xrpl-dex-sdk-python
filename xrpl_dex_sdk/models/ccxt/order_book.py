@@ -1,7 +1,10 @@
+from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, List, NamedTuple, Optional
 
 from ..common import MarketSymbol, UnixISOTimestamp, UnixTimestamp
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
 OrderBookEntry = List[float]
@@ -13,11 +16,12 @@ class OrderBookLevel(Enum):
     L3 = "L3"
 
 
-class OrderBook(NamedTuple):
-    symbol: MarketSymbol
-    nonce: int
-    bids: List[OrderBookEntry] = []
-    asks: List[OrderBookEntry] = []
+@dataclass(frozen=True)
+class OrderBook(BaseModel):
+    symbol: MarketSymbol = REQUIRED
+    nonce: Optional[int] = 0
+    bids: List[OrderBookEntry] = REQUIRED
+    asks: List[OrderBookEntry] = REQUIRED
     level: Optional[OrderBookLevel] = OrderBookLevel.L2
     timestamp: Optional[UnixTimestamp] = None
     datetime: Optional[UnixISOTimestamp] = None

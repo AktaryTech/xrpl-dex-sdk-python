@@ -1,11 +1,11 @@
 import json
-from typing import Any, Dict, List, NamedTuple, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 from xrpl.asyncio.clients import AsyncJsonRpcClient
-from xrpl.models import BookOffers
 from xrpl.models.requests.ledger_entry import LedgerEntry
 from xrpl.models.requests.tx import Tx
-from xrpl.models.amounts import IssuedCurrencyAmount
+
+# from xrpl.models import IssuedCurrencyAmount, Amount
 from xrpl.models.requests.account_tx import AccountTx
 from xrpl.utils import (
     posix_to_ripple_time,
@@ -18,6 +18,7 @@ from xrpl.utils import (
 from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT, CURRENCY_PRECISION
 from ..models import (
     Amount,
+    IssuedCurrencyAmount,
     LedgerEntryTypes,
     CurrencyCode,
     OrderId,
@@ -43,72 +44,61 @@ from ..models import (
 from .numbers import subtract_amounts, parse_amount_value
 from .data import omit, sort_by_date
 from .hashes import hash_offer_id
+from .errors import handle_response_error
 
 
 def parse_affected_node(
-    affected_node: Node, entry_type: Optional[LedgerEntryTypes] = LedgerEntryTypes.Offer
-):
-    parsed_node = (
-        getattr(affected_node, "CreatedNode")
-        if "CreatedNode" in affected_node
-        else getattr(affected_node, "ModifiedNode")
-        if "ModifiedNode" in affected_node
-        else getattr(affected_node, "DeletedNode")
-        if "DeletedNode" in affected_node
-        else None
-    )
+    affected_node: dict,
+    entry_type: Optional[LedgerEntryTypes] = LedgerEntryTypes.Offer,
+) -> Optional[Node]:
+    entry_type = LedgerEntryTypes.Offer if entry_type == None else entry_type
 
-    return (
-        parsed_node
-        if parsed_node != None and parsed_node["LedgerEntryType"] == entry_type
-        else None
-    )
-
-
-def order_to_json(input: NamedTuple) -> str:
-    output: Dict[str, Any] = {}
-    for field in input._fields:
-        if field == "fee":
-            if input.__getattribute__(field) == None:
-                continue
-            else:
-                output[field] = input.__getattribute__(field)
-        if field == "trades":
-            trades = []
-            for _trade in input.__getattribute__(field):
-                trade: Dict[str, Any] = {}
-                for trade_field in _trade._fields:
-                    if trade_field == "info" or trade_field == "fee":
-                        trade[trade_field] = _trade.__getattribute__(trade_field)
-                    else:
-                        trade[trade_field] = str(_trade.__getattribute__(trade_field))
-                trades.append(trade)
-            output[field] = trades
-        elif field == "info" or field == "timestamp" or field == "lastTradeTimestamp":
-            output[field] = input.__getattribute__(field)
-        else:
-            output[field] = str(input.__getattribute__(field))
-    return json.dumps(output)
-
-
-def set_transaction_flags_to_number(tx: Any):
-    if "Flags" not in tx or tx["Flags"] == None:
-        tx["Flags"] = 0
-        return tx
-
-    elif isinstance(tx["Flags"], int):
-        return tx
-
-    else:
-        if tx["TransactionType"] == "OfferCreate":
-            flags = 0
-            for flag in tx["Flags"]:
-                print("flag")
-                print(flag)
-                if getattr(OfferCreateFlags, flag) != None:
-                    flags = tx["Flags"] | getattr(OfferCreateFlags, flag)
-            tx["Flags"] = flags
-            return tx
+    if "CreatedNode" in affected_node:
+        node_data: Dict[str, Any] = affected_node["CreatedNode"]
+        if node_data["LedgerEntryType"] != entry_type.value:
+            return
+        return Node(
+            type="CreatedNode",
+            LedgerEntryType=node_data["LedgerEntryType"],
+            LedgerIndex=node_data["LedgerIndex"],
+            NewFields=node_data["NewFields"],
+        )
+    elif "ModifiedNode" in affected_node:
+        node_data: Dict[str, Any] = affected_node["ModifiedNode"]
+        if node_data["LedgerEntryType"] != entry_type.value:
+            return
+        return Node(
+            type="ModifiedNode",
+            LedgerEntryType=node_data["LedgerEntryType"],
+            LedgerIndex=node_data["LedgerIndex"],
+            FinalFields=node_data["FinalFields"]
+            if "FinalFields" in node_data
+            else None,
+            PreviousFields=node_data["PreviousFields"]
+            if "PreviousFields" in node_data
+            else None,
+            PreviousTxnID=node_data["PreviousTxnID"]
+            if "PreviousTxnID" in node_data
+            else None,
+            PreviousTxnLgrSeq=node_data["PreviousTxnLgrSeq"]
+            if "PreviousTxnLgrSeq" in node_data
+            else None,
+        )
+    elif "DeletedNode" in affected_node:
+        node_data: Dict[str, Any] = affected_node["DeletedNode"]
+        if node_data["LedgerEntryType"] != entry_type.value:
+            return
+        return Node(
+            type="DeletedNode",
+            LedgerEntryType=node_data["LedgerEntryType"],
+            LedgerIndex=node_data["LedgerIndex"],
+            FinalFields=node_data["FinalFields"]
+            if "FinalFields" in node_data
+            else None,
+            PreviousFields=node_data["PreviousFields"]
+            if "PreviousFields" in node_data
+            else None,
+        )
 
 
 def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
@@ -143,14 +133,6 @@ def get_order_side_from_flags(flags: int) -> OrderSide:
         return OrderSide.Buy
 
 
-def get_order_side_from_offer(offer: Offer) -> OrderSide:
-    return (
-        OrderSide.Sell
-        if (offer.Flags & OfferFlags.LSF_SELL.value) == OfferFlags.LSF_SELL.value
-        else OrderSide.Buy
-    )
-
-
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
     return (
         "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
@@ -167,31 +149,9 @@ def get_amount_currency_code(amount: Amount) -> CurrencyCode:
     return (
         CurrencyCode("XRP")
         if isinstance(amount, str)
+        else CurrencyCode(amount["currency"])
+        if isinstance(amount, dict)
         else CurrencyCode(amount.currency)
-    )
-
-
-def get_offer_base_value(offer: Offer) -> float:
-    amount = (
-        offer.TakerPays
-        if offer.Flags & OfferFlags.LSF_SELL.value == 0
-        else offer.TakerGets
-    )
-    return float(
-        drops_to_xrp(amount) if isinstance(amount, str) else getattr(amount, "value")
-    )
-
-
-def get_offer_quote_value(offer: Offer) -> float:
-    quote_amount = (
-        offer.TakerGets
-        if offer.Flags & OfferFlags.LSF_SELL.value == 0
-        else offer.TakerPays
-    )
-    return float(
-        drops_to_xrp(quote_amount)
-        if isinstance(quote_amount, str)
-        else getattr(quote_amount, "value")
     )
 
 
@@ -238,48 +198,47 @@ def get_book_offer_quote_value(book_offer: Offer) -> float:
 #
 # Returns an Offer Ledger object from an AffectedNode
 #
-def get_offer_from_node(node: Node) -> Optional[Offer]:
-    affected_node = (
-        getattr(node, "CreatedNode")
-        if "CreatedNode" in node
-        else getattr(node, "ModifiedNode")
-        if "ModifiedNode" in node
-        else getattr(node, "DeletedNode")
-        if "DeletedNode" in node
-        else None
-    )
+def get_offer_from_node(node: dict) -> Optional[Offer]:
+    # affected_node = (
+    #     node["CreatedNode"]
+    #     if "CreatedNode" in node
+    #     else node["ModifiedNode"]
+    #     if "ModifiedNode" in node
+    #     else node["DeletedNode"]
+    #     if "DeletedNode" in node
+    #     else None
+    # )
 
-    if (
-        affected_node == None
-        or affected_node["LedgerEntryType"] != LedgerEntryTypes.Offer.value
-        or "FinalFields" not in affected_node
-    ):
+    # if (
+    #     affected_node == None
+    #     or affected_node["LedgerEntryType"] != LedgerEntryTypes.Offer.value
+    #     or "FinalFields" not in affected_node
+    # ):
+    #     return
+    affected_node = parse_affected_node(node, LedgerEntryTypes.Offer)
+
+    if affected_node == None or affected_node.FinalFields == None:
         return
 
-    LedgerIndex = affected_node["LedgerIndex"]
-    FinalFields = affected_node["FinalFields"]
-    # PreviousTxnID = affected_node["PreviousTxnID"]
-    # PreviousFields = affected_node["PreviousFields"]
+    LedgerIndex = affected_node.LedgerIndex
+    FinalFields = affected_node.FinalFields
     PreviousTxnID = (
-        affected_node["PreviousTxnID"] if "PreviousTxnID" in affected_node else None
+        affected_node.PreviousTxnID
+        if affected_node.PreviousTxnID != None
+        else FinalFields["PreviousTxnID"]
     )
     PreviousFields = (
-        affected_node["PreviousFields"] if "PreviousFields" in affected_node else None
+        affected_node.PreviousFields if affected_node.PreviousFields != None else None
     )
 
     offer_index = LedgerIndex
-    # offer_previous_txn_id = (
-    #     FinalFields["PreviousTxnID"]
-    #     if "PreviousTxnID" in FinalFields
-    #     else PreviousTxnID
-    # )
 
-    offer_taker_gets = (
+    taker_gets = (
         subtract_amounts(PreviousFields["TakerGets"], FinalFields["TakerGets"])
         if PreviousFields != None
         else FinalFields["TakerGets"]
     )
-    offer_taker_pays = (
+    taker_pays = (
         subtract_amounts(PreviousFields["TakerPays"], FinalFields["TakerPays"])
         if PreviousFields != None
         else FinalFields["TakerPays"]
@@ -292,11 +251,11 @@ def get_offer_from_node(node: Node) -> Optional[Offer]:
         Flags=FinalFields["Flags"],
         LedgerEntryType=LedgerEntryTypes.Offer,
         OwnerNode="0",
-        PreviousTxnID=offer_previous_txn_id,
+        PreviousTxnID=PreviousTxnID,
         PreviousTxnLgrSeq=0,
         Sequence=FinalFields["Sequence"],
-        TakerGets=offer_taker_gets,
-        TakerPays=offer_taker_pays,
+        TakerGets=taker_gets,
+        TakerPays=taker_pays,
         index=offer_index,
         Expiration=None,
     )
@@ -377,8 +336,17 @@ def get_base_and_quote_data(source: Dict[str, Any]):
     data: Dict[str, Any] = {}
 
     data["side"] = get_order_side_from_flags(source["Flags"])
+
     data["base_amount"] = source[get_base_amount_key(data["side"])]
-    base_amount_value = parse_amount_value(data["base_amount"])
+    base_amount_value = parse_amount_value(
+        IssuedCurrencyAmount(
+            currency=data["base_amount"]["currency"],
+            issuer=data["base_amount"]["issuer"],
+            value=data["base_amount"]["value"],
+        )
+        if "issuer" in data["base_amount"]
+        else data["base_amount"]
+    )
     data["base_value"] = (
         float(drops_to_xrp(str(base_amount_value)))
         if isinstance(base_amount_value, int)
@@ -388,7 +356,15 @@ def get_base_and_quote_data(source: Dict[str, Any]):
         return
 
     data["quote_amount"] = source[get_quote_amount_key(data["side"])]
-    quote_amount_value = parse_amount_value(data["quote_amount"])
+    quote_amount_value = parse_amount_value(
+        IssuedCurrencyAmount(
+            currency=data["quote_amount"]["currency"],
+            issuer=data["quote_amount"]["issuer"],
+            value=data["quote_amount"]["value"],
+        )
+        if "issuer" in data["quote_amount"]
+        else data["quote_amount"]
+    )
     data["quote_value"] = (
         float(drops_to_xrp(str(quote_amount_value)))
         if isinstance(quote_amount_value, int)
@@ -500,7 +476,7 @@ async def get_order_from_data(
         client_order_id=hash_offer_id(data["Account"], data["Sequence"]),
         datetime=ripple_time_to_datetime(data["date"]).isoformat(),
         timestamp=ripple_time_to_posix(data["date"]),
-        last_trade_timestamp=data["trades"][-1]["timestamp"]
+        last_trade_timestamp=data["trades"][-1].timestamp
         if len(data["trades"])
         else None,
         status=data["status"],
@@ -575,39 +551,64 @@ def parse_transaction(id: OrderId, transaction: Any) -> Optional[Dict[str, Any]]
 
     previous_txn_hash: Optional[str] = None
     tx: Any = None
-    metadata: Optional[Union[str, TransactionMetadata]] = None
+    metadata: Optional[Union[TransactionMetadata, str]] = None
 
     if "result" in transaction:
         if transaction["result"]["TransactionType"] != "OfferCreate":
             return
         tx = transaction["result"]
-        metadata = transaction["meta"]
+        metadata = TransactionMetadata(
+            AffectedNodes=transaction["meta"]["AffectedNodes"],
+            TransactionIndex=transaction["meta"]["TransactionIndex"],
+            TransactionResult=transaction["meta"]["TransactionResult"],
+            DeliveredAmount=None,
+            delivered_amount=None,
+        )
     elif "tx" in transaction:
         if transaction["tx"]["TransactionType"] != "OfferCreate":
             return
         tx = transaction["tx"]
-        metadata = transaction["meta"]
+        metadata = TransactionMetadata(
+            AffectedNodes=transaction["meta"]["AffectedNodes"],
+            TransactionIndex=transaction["meta"]["TransactionIndex"],
+            TransactionResult=transaction["meta"]["TransactionResult"],
+            DeliveredAmount=None,
+            delivered_amount=None,
+        )
     elif "metaData" in transaction:
         if transaction["TransactionType"] != "OfferCreate":
             return
         tx = omit(transaction, {"metaData"})
-        metadata = transaction["metaData"]
+        metadata = TransactionMetadata(
+            AffectedNodes=transaction["metaData"]["AffectedNodes"],
+            TransactionIndex=transaction["metaData"]["TransactionIndex"],
+            TransactionResult=transaction["metaData"]["TransactionResult"],
+            DeliveredAmount=None,
+            delivered_amount=None,
+        )
     elif "meta" in transaction:
         if transaction["TransactionType"] != "OfferCreate":
             return
         tx = omit(transaction, {"meta"})
         metadata = transaction["meta"]
+        metadata = TransactionMetadata(
+            AffectedNodes=transaction["meta"]["AffectedNodes"],
+            TransactionIndex=transaction["meta"]["TransactionIndex"],
+            TransactionResult=transaction["meta"]["TransactionResult"],
+            DeliveredAmount=None,
+            delivered_amount=None,
+        )
 
     if tx == None:
         print("Could not get Transaction data! Skipping...")
         return
-    if "hash" not in tx:
+    elif "hash" not in tx:
         print('Property "hash" not found on Transaction! Skipping...')
         return
-    if metadata == None:
+    elif metadata == None:
         print("Metadata not found! Skipping...")
         return
-    if isinstance(metadata, str):
+    elif isinstance(metadata, str):
         print("Metadata is not an object! Skipping...")
         return
 
@@ -675,12 +676,10 @@ async def get_most_recent_tx(
             Tx.from_dict({"transaction": ledger_offer["node"]["PreviousTxnID"]})
         )
         tx = tx_response.result
+        handle_response_error(tx)
 
         if tx == None:
             print("No Transaction data!")
-            return
-        if "error" in tx:
-            print("Error: " + tx["error"]["error_message"])
             return
 
         previous_txn_data = parse_transaction(id, tx)
@@ -713,6 +712,7 @@ async def get_most_recent_tx(
             )
             account_tx_response = await client.request(account_tx_request)
             account_tx = account_tx_response.result
+            handle_response_error(account_tx)
 
             if account_tx == None:
                 return {"order_status": order_status}
@@ -739,24 +739,19 @@ async def get_most_recent_tx(
 
 
 __all__ = [
-    "set_transaction_flags_to_number",
     "parse_affected_node",
     "get_amount_currency_code",
     "get_base_amount_key",
     "get_order_from_data",
     "get_trade_from_data",
-    "get_offer_base_value",
     "get_order_time_in_force",
-    "get_offer_quote_value",
     "get_book_offer_base_value",
     "get_book_offer_quote_value",
     "get_most_recent_tx",
     "get_offer_from_node",
     "get_offer_from_tx",
     "get_order_side_from_flags",
-    "get_order_side_from_offer",
     "get_quote_amount_key",
     "get_taker_or_maker",
-    "order_to_json",
     "parse_transaction",
 ]

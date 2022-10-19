@@ -16,6 +16,7 @@ from ..models import (
 )
 from ..utils import (
     get_most_recent_tx,
+    handle_response_error,
     parse_transaction,
     sort_by_date,
     get_trade_from_data,
@@ -29,9 +30,10 @@ async def fetch_order(
     symbol: Optional[MarketSymbol] = None,
     params: FetchOrderParams = FetchOrderParams(),
 ) -> Optional[FetchOrderResponse]:
+    search_limit = params.search_limit if params.search_limit else DEFAULT_SEARCH_LIMIT
     transactions: List[Any] = []
 
-    previous_txn = await get_most_recent_tx(self.client, id, params.search_limit)
+    previous_txn = await get_most_recent_tx(self.client, id, search_limit)
 
     if previous_txn == None:
         raise Exception("Couldn't find data for OrderId " + str(id))
@@ -48,6 +50,7 @@ async def fetch_order(
             Tx.from_dict({"transaction": previous_txn_id})
         )
         tx = tx_response.result
+        handle_response_error(tx)
 
         if "error" in tx:
             raise Exception(tx["error"] + " " + tx["error_message"])

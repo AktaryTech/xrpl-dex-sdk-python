@@ -1,7 +1,7 @@
-from typing import Optional
 from ..ccxt import Market
 
 
-FetchMarketResponse = Optional[Market]
+FetchMarketResponse = Market
+
 
 __all__ = ["FetchMarketResponse"]

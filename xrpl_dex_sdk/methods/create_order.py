@@ -7,6 +7,7 @@ from ..models.common import MarketSymbol
 from ..models.ccxt.orders import OrderId, OrderSide, OrderType
 from ..models.methods.create_order import CreateOrderParams, CreateOrderResponse
 from ..models.xrpl import OfferCreateFlags
+from ..utils.errors import handle_response_error
 from ..utils.orders import get_base_amount_key
 
 
@@ -69,6 +70,7 @@ def create_order(
         client=self.client,
     )
     offer_create_result = offer_create_response.result
+    handle_response_error(offer_create_result)
 
     if "error" in offer_create_result:
         raise Exception(

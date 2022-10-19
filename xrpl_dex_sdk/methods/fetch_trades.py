@@ -53,7 +53,6 @@ async def fetch_trades(
 
         ledger_response = await self.client.request(Ledger.from_dict(ledger_request))
         ledger = ledger_response.result
-
         handle_response_error(ledger)
 
         if since != None and ripple_time_to_posix(
@@ -77,22 +76,24 @@ async def fetch_trades(
 
             for affected_node in transaction["metaData"]["AffectedNodes"]:
                 node = parse_affected_node(affected_node)
-                if node == None or "FinalFields" not in node:
+                if node == None:
                     continue
 
-                offer: Offer = node["FinalFields"]
+                offer_fields = getattr(node, "FinalFields")
+                if offer_fields == None:
+                    continue
 
                 trade = await get_trade_from_data(
                     self,
                     {
                         "date": ledger["ledger"]["close_time"],
-                        "Flags": offer.Flags,
-                        "OrderAccount": offer.Account,
-                        "OrderSequence": offer.Sequence,
+                        "Flags": offer_fields["Flags"],
+                        "OrderAccount": offer_fields["Account"],
+                        "OrderSequence": offer_fields["Sequence"],
                         "Account": transaction["Account"],
                         "Sequence": transaction["Sequence"],
-                        "TakerPays": offer.TakerPays,
-                        "TakerGets": offer.TakerGets,
+                        "TakerPays": offer_fields["TakerPays"],
+                        "TakerGets": offer_fields["TakerGets"],
                     },
                     {"transaction": transaction},
                 )

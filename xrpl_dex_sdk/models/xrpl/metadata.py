@@ -1,36 +1,55 @@
-from typing import Any, Dict, NamedTuple, Optional, Union
+from dataclasses import dataclass
+from typing import Any, Dict, Optional
+
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
-class _CreatedNode(NamedTuple):
-    LedgerEntryType: str
-    LedgerIndex: str
-    NewFields: Dict[str, Any]
+@dataclass(frozen=True)
+class CreatedNode(BaseModel):
+    LedgerEntryType: str = REQUIRED
+    LedgerIndex: str = REQUIRED
+    NewFields: Dict[str, Any] = REQUIRED
 
 
-CreatedNode = Dict["CreatedNode", _CreatedNode]
+@dataclass(frozen=True)
+class ModifiedNode(BaseModel):
+    LedgerEntryType: str = REQUIRED
+    LedgerIndex: str = REQUIRED
+    FinalFields: Optional[Dict[str, Any]] = None
+    PreviousFields: Optional[Dict[str, Any]] = None
+    PreviousTxnID: Optional[str] = None
+    PreviousTxnLgrSeq: Optional[int] = None
 
 
-class _ModifiedNode(NamedTuple):
-    LedgerEntryType: str
-    LedgerIndex: str
-    FinalFields: Optional[Dict[str, Any]]
-    PreviousFields: Optional[Dict[str, Any]]
-    PreviousTxnID: Optional[str]
-    PreviouTxnLgrSeq: Optional[int]
+@dataclass(frozen=True)
+class DeletedNode(BaseModel):
+    LedgerEntryType: str = REQUIRED
+    LedgerIndex: str = REQUIRED
+    FinalFields: Dict[str, Any] = REQUIRED
+    PreviousFields: Optional[Dict[str, Any]] = None
 
 
-ModifiedNode = Dict["ModifiedNode", _ModifiedNode]
+@dataclass(frozen=True)
+class Node(BaseModel):
+    type: str = REQUIRED
+    LedgerEntryType: str = REQUIRED
+    LedgerIndex: str = REQUIRED
+    NewFields: Optional[Dict[str, Any]] = None
+    FinalFields: Optional[Dict[str, Any]] = None
+    PreviousFields: Optional[Dict[str, Any]] = None
+    PreviousTxnID: Optional[str] = None
+    PreviousTxnLgrSeq: Optional[int] = None
 
+    def _get_errors(self: "Node") -> Dict[str, str]:
+        errors = super()._get_errors()
+        if type == "CreatedNode":
+            if self.NewFields == None:
+                errors["node"] = "CreatedNode requires a NewFields property"
+        elif type == "DeletedNode":
+            if self.FinalFields == None:
+                errors["node"] = "DeletedNode requires a FinalFields property"
+        return errors
 
-class _DeletedNode(NamedTuple):
-    LedgerEntryType: str
-    LedgerIndex: str
-    FinalFields: Dict[str, Any]
-    PreviousFields: Optional[Dict[str, Any]]
-
-
-DeletedNode = Dict["DeletedNode", _DeletedNode]
-
-Node = Union[CreatedNode, ModifiedNode, DeletedNode]
 
 __all__ = ["CreatedNode", "ModifiedNode", "DeletedNode", "Node"]

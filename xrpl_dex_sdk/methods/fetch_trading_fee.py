@@ -5,9 +5,7 @@ from ..models.ccxt.markets import Market
 from ..models.ccxt.fees import TradingFee
 
 
-async def fetch_trading_fee(
-    self, symbol: MarketSymbol
-) -> Optional[FetchTradingFeeResponse]:
+async def fetch_trading_fee(self, symbol: MarketSymbol) -> Optional[FetchTradingFeeResponse]:
     market: Market = await self.fetch_market(symbol)
 
     if market == None:
