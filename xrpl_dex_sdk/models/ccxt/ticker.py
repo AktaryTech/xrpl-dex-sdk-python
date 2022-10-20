@@ -1,53 +1,50 @@
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from enum import Enum
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from ..common import MarketSymbol, UnixISOTimestamp, UnixTimestamp
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class Ticker(BaseModel):
+class Ticker(NamedTuple):
     # symbol of the market ('BTC/USD', 'ETH/BTC', ...)
-    symbol: MarketSymbol = REQUIRED
+    symbol: MarketSymbol
     # (64-bit Unix Timestamp in milliseconds since Epoch 1 Jan 1970)
-    timestamp: UnixTimestamp = REQUIRED
+    timestamp: UnixTimestamp
     # ISO8601 datetime str with milliseconds
-    datetime: UnixISOTimestamp = REQUIRED
+    datetime: UnixISOTimestamp
     # highest price
-    high: float = REQUIRED
+    high: float
     # lowest price
-    low: float = REQUIRED
+    low: float
     # current best bid (buy) price
-    bid: float = REQUIRED
+    bid: float
     # current best bid (buy) amount (may be missing or undefined)
-    bid_volume: Optional[float] = None
+    bid_volume: Optional[float]
     # current best ask (sell) price
-    ask: float = REQUIRED
+    ask: float
     # current best ask (sell) amount (may be missing or undefined)
-    ask_volume: Optional[float] = None
+    ask_volume: Optional[float]
     # volume weighed average price
-    vwap: float = REQUIRED
+    vwap: float
     # opening price
-    open: float = REQUIRED
+    open: float
     # price of last trade (closing price for current period)
-    close: float = REQUIRED
+    close: float
     # same as `close`, duplicated for convenience
-    last: float = REQUIRED
+    last: float
     # closing price for the previous period
-    previous_close: float = REQUIRED
+    previous_close: float
     # absolute change, `last - open`
-    change: float = REQUIRED
+    change: float
     # relative change, `(change/open) * 100`
-    percentage: float = REQUIRED
+    percentage: float
     # average price, `(last + open) / 2`
-    average: float = REQUIRED
+    average: float
     # volume of base currency traded for last 24 hours
-    base_volume: float = REQUIRED
+    base_volume: float
     # volume of quote currency traded for last 24 hours
-    quote_volume: float = REQUIRED
+    quote_volume: float
     # the original non-modified unparsed reply from exchange API
-    info: dict = REQUIRED
+    info: Dict[str, Any]
 
 
 Tickers = Dict[MarketSymbol, Ticker]

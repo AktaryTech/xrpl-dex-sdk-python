@@ -1,19 +1,17 @@
-from dataclasses import dataclass
-from typing import Dict
+from typing import Any, Dict, NamedTuple
 
 from ..common import CurrencyCode
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class Balance(BaseModel):
-    free: float = REQUIRED
-    used: float = REQUIRED
-    total: float = REQUIRED
+class Balance(NamedTuple):
+    free: float
+    used: float
+    total: float
 
 
-Balances = Dict[CurrencyCode, Balance]
+class Balances(NamedTuple):
+    balances: Dict[CurrencyCode, Balance]
+    info: Dict[str, Any]
 
 
 __all__ = ["Balance", "Balances"]

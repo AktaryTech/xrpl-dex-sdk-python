@@ -1,17 +1,13 @@
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from ..common import CurrencyCode, MarketSymbol
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class Fee(BaseModel):
+class Fee(NamedTuple):
     # Fee currency
-    currency: CurrencyCode = REQUIRED
-    # The fee cost (base_fee * rate)
-    cost: float = REQUIRED
+    currency: CurrencyCode
+    # The fee cost (base_fee # rate)
+    cost: float
     # The fee rate, 0.05% = 0.0005, 1% = 0.01, ...
     rate: Optional[float] = None
     # Whether the fee rate is a percentage or flat rate
@@ -21,31 +17,29 @@ class Fee(BaseModel):
 #
 # This is returned by `fetchTransactionFee(s)`
 #
-@dataclass(frozen=True)
-class TransactionFee(BaseModel):
+class TransactionFee(NamedTuple):
     # The currency being transacted #
-    code: CurrencyCode = REQUIRED
+    code: CurrencyCode
     # The current cost in drops of XRP to send a transaction #
-    current: int = REQUIRED
+    current: int
     # The transfer fee (if any) for the given issuers #
-    transfer: Optional[float] = None
+    transfer: float
     # Raw response from exchange
-    info: dict = REQUIRED
+    info: Dict[str, Any]
 
 
 #
 # This is returned by `fetchTradingFee(s)`
 #
-@dataclass(frozen=True)
-class TradingFee(BaseModel):
+class TradingFee(NamedTuple):
     # Unified Market Symbol #
-    symbol: MarketSymbol = REQUIRED
+    symbol: MarketSymbol
     # Fee rate for base token #
-    base: float = REQUIRED
+    base: float
     # Fee rate for quote token #
-    quote: float = REQUIRED
+    quote: float
     # Raw response from exchange
-    info: dict = REQUIRED
+    info: Dict[str, Any]
     # Whether the fees are a percentage or flat rate #
     percentage: Optional[bool] = True
 
@@ -53,10 +47,9 @@ class TradingFee(BaseModel):
 #
 # This is returned by `fetchFees`
 #
-@dataclass(frozen=True)
-class FeeSchedule(BaseModel):
-    transactions: List[TransactionFee] = REQUIRED
-    trading: List[TradingFee] = REQUIRED
+class FeeSchedule(NamedTuple):
+    transactions: List[TransactionFee]
+    trading: List[TradingFee]
 
 
 __all__ = ["Fee", "TransactionFee", "TradingFee", "FeeSchedule"]

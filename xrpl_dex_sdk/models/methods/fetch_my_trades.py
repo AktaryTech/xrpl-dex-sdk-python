@@ -1,13 +1,10 @@
-from dataclasses import dataclass
-from typing import Optional
+from typing import NamedTuple, Optional
 
-from ..ccxt import Trades
+from ...models.ccxt import Trades
 from ...constants import DEFAULT_SEARCH_LIMIT
-from ..base_model import BaseModel
 
 
-@dataclass(frozen=True)
-class FetchMyTradesParams(BaseModel):
+class FetchMyTradesParams(NamedTuple):
     # Max items to search through looking for Trades before giving up
     search_limit: Optional[int] = DEFAULT_SEARCH_LIMIT
 

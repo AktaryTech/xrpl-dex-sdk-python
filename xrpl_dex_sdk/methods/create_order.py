@@ -1,22 +1,13 @@
 from xrpl.utils import xrp_to_drops
 from xrpl.transaction import safe_sign_and_submit_transaction
+from xrpl.models.amounts.issued_currency_amount import IssuedCurrencyAmount
 from xrpl.models.transactions import OfferCreate
-from xrpl.models.amounts import (
-    Amount as XrplAmount,
-    IssuedCurrencyAmount as XrplIssuedCurrencyAmount,
-)
 
-from ..models import (
-    MarketSymbol,
-    BigNumberish,
-    OrderId,
-    OrderSide,
-    OrderType,
-    CreateOrderParams,
-    CreateOrderResponse,
-    OfferCreateFlags,
-)
-from ..utils import handle_response_error, get_base_amount_key
+from ..models.common import MarketSymbol
+from ..models.ccxt.orders import OrderId, OrderSide, OrderType
+from ..models.methods.create_order import CreateOrderParams, CreateOrderResponse
+from ..models.xrpl import OfferCreateFlags
+from ..utils.orders import get_base_amount_key
 
 
 def create_order(
@@ -25,31 +16,26 @@ def create_order(
     side: OrderSide,
     # unused - always "limit"
     type: OrderType,
-    amount: BigNumberish,
-    price: BigNumberish,
+    amount: float,
+    price: float,
     params: CreateOrderParams = CreateOrderParams(),
 ) -> CreateOrderResponse:
-    amount = float(amount)
-    price = float(price)
-
     base_amount = (
-        XrplIssuedCurrencyAmount(
-            currency=symbol.base.currency,
-            issuer=symbol.base.issuer,
-            value=amount,
+        IssuedCurrencyAmount(
+            currency=symbol.base.currency, issuer=symbol.base.issuer, value=str(amount)
         )
-        if symbol.base.issuer
+        if symbol.base.currency != "XRP"
         else xrp_to_drops(amount)
     )
     base_amount_key = get_base_amount_key(side)
 
     quote_amount = (
-        XrplIssuedCurrencyAmount(
+        IssuedCurrencyAmount(
             currency=symbol.quote.currency,
             issuer=symbol.quote.issuer,
-            value=amount * price,
+            value=str(amount * price),
         )
-        if symbol.quote.issuer != None
+        if symbol.quote.currency != "XRP"
         else xrp_to_drops(amount * price)
     )
 
@@ -60,13 +46,13 @@ def create_order(
         "taker_pays": base_amount if base_amount_key == "TakerPays" else quote_amount,
     }
 
-    for field in params.__dataclass_fields__:
-        if getattr(params, field) != None:
+    for field in params._fields:
+        if params.__getattribute__(field) != None:
             offer_create_request[field] = params.__getattribute__(field)
 
     if params.flags != None:
         for flag in params.flags:
-            flagEnum = getattr(OfferCreateFlags, flag)
+            flagEnum = OfferCreateFlags.__getattribute__(flag)
             if flagEnum != None and flagEnum != OfferCreateFlags.TF_SELL:
                 offer_create_request["flags"] = offer_create_request["flags"] | flagEnum
 
@@ -78,13 +64,13 @@ def create_order(
     offer_create_response = safe_sign_and_submit_transaction(
         transaction=OfferCreate.from_dict(offer_create_request),
         wallet=self.wallet,
-        client=self.sync_client,
+        client=self.client,
     )
     offer_create_result = offer_create_response.result
-    handle_response_error(offer_create_result)
 
     if "error" in offer_create_result:
-        raise Exception(offer_create_result["error"] + " " + offer_create_result["error_message"])
+        print("error!")
+        return
 
     else:
         return CreateOrderResponse(

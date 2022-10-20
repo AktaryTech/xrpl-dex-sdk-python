@@ -1,4 +1,5 @@
-from ..models import FetchTradingFeesResponse, Markets
+from ..models.methods.fetch_trading_fees import FetchTradingFeesResponse
+from ..models.ccxt.markets import Markets
 
 
 async def fetch_trading_fees(self) -> FetchTradingFeesResponse:

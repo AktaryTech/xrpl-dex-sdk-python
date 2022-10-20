@@ -13,23 +13,23 @@ import base58
 # See [LedgerNameSpace enum](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/LedgerFormats.h#L100).
 #
 class LedgerNameSpaces(Enum):
-    account = "a"
-    dirNode = "d"
-    generatorMap = "g"
-    rippleState = "r"
-    offer = "o"
-    ownerDir = "O"
-    bookDir = "B"
-    contract = "c"
-    skipList = "s"
-    escrow = "u"
-    amendment = "f"
-    feeSettings = "e"
-    ticket = "T"
-    signerList = "S"
-    paychan = "x"
-    check = "C"
-    depositPreauth = "p"
+    account: str = "a"
+    dirNode: str = "d"
+    generatorMap: str = "g"
+    rippleState: str = "r"
+    offer: str = "o"
+    ownerDir: str = "O"
+    bookDir: str = "B"
+    contract: str = "c"
+    skipList: str = "s"
+    escrow: str = "u"
+    amendment: str = "f"
+    feeSettings: str = "e"
+    ticket: str = "T"
+    signerList: str = "S"
+    paychan: str = "x"
+    check: str = "C"
+    depositPreauth: str = "p"
 
 
 def sha_512_half(hex: str) -> str:
@@ -58,6 +58,3 @@ def hash_offer_id(address: str, sequence: int) -> str:
     offer_id_hash = sha_512_half((prefix + base58_address.hex() + hex_sequence))
 
     return offer_id_hash
-
-
-__all__ = ["LedgerNameSpaces", "sha_512_half", "hash_offer_id"]

@@ -20,9 +20,9 @@ async def fetch_order_books(
         order_book = await self.fetch_order_book(
             symbol=symbol,
             limit=limit,
-            params=params.symbols[symbol] if params.symbols != None else None,
+            params=params.symbols[str(symbol)] if params.symbols != None else None,
         )
         if order_book != None:
-            order_books[symbol] = order_book
+            order_books[str(symbol)] = order_book
 
     return order_books

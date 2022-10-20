@@ -1,15 +1,14 @@
-from typing import Union
-from ..data import issuers_data
+from ..data import IssuersData
 from ..models import Issuers
 
 
-def fetch_issuers(self) -> Union[Issuers, None]:
+def fetch_issuers(self) -> Issuers:
     if self.issuers != None:
         return self.issuers
 
-    if self.params.network == None:
+    if self.network == None:
         return
 
-    issuers: Issuers = issuers_data[self.params.network]
+    issuers: Issuers = IssuersData[self.network]
 
     return issuers

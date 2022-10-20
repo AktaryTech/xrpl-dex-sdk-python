@@ -1,58 +1,50 @@
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, NamedTuple, Optional
 
-from .currency import Amount
+from .common import Amount
 from .metadata import Node
 from ..common import UnixTimestamp, XrplTimestamp
 from ..xrpl import Offer
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class TransactionMetadata(BaseModel):
-    AffectedNodes: List[Node] = REQUIRED
-    TransactionIndex: int = REQUIRED
-    TransactionResult: str = REQUIRED
-    DeliveredAmount: Optional[Amount] = None
-    delivered_amount: Optional[Union[Amount, str]] = None
+class TransactionMetadata(NamedTuple):
+    AffectedNodes: List[Node]
+    TransactionIndex: int
+    TransactionResult: str
+    DeliveredAmount: Optional[Amount]
+    delivered_amount: Optional[Amount or str]
 
 
-@dataclass(frozen=True)
-class Warning(BaseModel):
-    id: int = REQUIRED
-    message: str = REQUIRED
-    details: Dict[str, str] = REQUIRED
+class Warning(NamedTuple):
+    id: int
+    message: str
+    details: Dict[str, str]
 
 
-@dataclass(frozen=True)
-class BaseTxResponse(BaseModel):
-    id: Union[int, str] = REQUIRED
-    status: Optional[str] = None
-    type: str = REQUIRED
-    result: Any = REQUIRED
-    warning: Optional[str] = None
-    warnings: Optional[List[Warning]] = None
-    forwarded: Optional[bool] = None
-    api_version: Optional[int] = None
+class BaseTxResponse(NamedTuple):
+    id: int or str
+    status: Optional[str]
+    type: str
+    result: Any
+    warning: Optional[str]
+    warnings: Optional[List[Warning]]
+    forwarded: Optional[bool]
+    api_version: Optional[int]
 
 
-@dataclass(frozen=True)
-class TxResult(BaseModel):
-    hash: str = REQUIRED
-    ledger_index: int = REQUIRED
-    meta: Union[TransactionMetadata, str] = REQUIRED
-    validated: bool = REQUIRED
-    date: XrplTimestamp = REQUIRED
+class TxResult(NamedTuple):
+    hash: str
+    ledger_index: int
+    meta: TransactionMetadata or str
+    validated: bool
+    date: XrplTimestamp
 
 
-@dataclass(frozen=True)
-class TransactionData(BaseModel):
-    transaction: Any = REQUIRED
-    metadata: TransactionMetadata = REQUIRED
-    offers: List[Offer] = REQUIRED
-    previous_txn_id: Optional[str] = None
-    date: UnixTimestamp = REQUIRED
+class TransactionData(NamedTuple):
+    transaction: Any
+    metadata: TransactionMetadata
+    offers: List[Offer]
+    previous_txn_id: Optional[str]
+    date: UnixTimestamp
 
 
 __all__ = [

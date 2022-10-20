@@ -1,15 +1,11 @@
-from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable, NamedTuple, Optional
 
 from ...constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class WatchOrdersParams(BaseModel):
+class WatchOrdersParams(NamedTuple):
     # Listener to send balance updates to
-    listener: Callable = REQUIRED
+    listener: Callable
     # Number of results to return
     limit: Optional[int] = DEFAULT_LIMIT
     # Max Transactions to search through looking for Order data before giving up

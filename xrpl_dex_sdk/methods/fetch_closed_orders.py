@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
+from ..constants import DEFAULT_LIMIT
 from ..models import (
     FetchOrdersParams,
     FetchClosedOrdersParams,
@@ -21,13 +21,7 @@ async def fetch_closed_orders(
         symbol,
         since,
         limit,
-        FetchOrdersParams(
-            search_limit=params.search_limit
-            if params.search_limit != None
-            else DEFAULT_SEARCH_LIMIT,
-            show_open=False,
-            show_canceled=False,
-        ),
+        FetchOrdersParams(search_limit=params.search_limit, show_open=False, show_canceled=False),
     )
 
     return orders

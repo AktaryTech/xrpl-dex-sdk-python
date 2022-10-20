@@ -12,14 +12,14 @@ def cancel_order(
         "account": self.wallet.classic_address,
         "offer_sequence": id.sequence,
     }
-    for field in params.__dataclass_fields__:
+    for field in params._fields:
         if params.__getattribute__(field) != None:
             offer_cancel_request[field] = params.__getattribute__(field)
 
     offer_cancel_result = safe_sign_and_submit_transaction(
         transaction=OfferCancel.from_dict(offer_cancel_request),
         wallet=self.wallet,
-        client=self.sync_client,
+        client=self.client,
     )
 
     return CancelOrderResponse(id=id, info={"OfferCancel": offer_cancel_result})

@@ -1,37 +1,28 @@
-from typing import Optional
-from ..data import markets_data
-from ..models import CurrencyCode, MarketSymbol, FetchMarketsResponse, Market, Markets
+from ..data import MarketsData
+from ..models import FetchMarketsResponse, CurrencyCode
+from ..utils import fetch_transfer_rate
 
 
-async def fetch_markets(self) -> Optional[FetchMarketsResponse]:
+async def fetch_markets(self) -> FetchMarketsResponse:
     if self.markets != None:
         return self.markets
 
-    if self.params.network == None:
+    if self.network == None:
         return
 
-    markets: Markets = {}
+    markets = MarketsData[self.network]
 
-    network_markets = markets_data[self.params.network]
+    if markets == None:
+        return
 
-    if network_markets == None:
-        raise Exception(f"No markets list for network {self.params.network}!")
-
-    for market_symbol in network_markets:
-        market_data = network_markets[market_symbol]
-
-        market = {
-            "id": market_data["id"],
-            "symbol": MarketSymbol.from_string(market_data["symbol"]),
-            "base": CurrencyCode.from_string(market_data["base"]),
-            "quote": CurrencyCode.from_string(market_data["quote"]),
-        }
-
-        if not market["base"].is_xrp():
-            market["base_fee"] = await self.fetch_transfer_rate(market["base"].issuer)
-        if not market["quote"].is_xrp():
-            market["quote_fee"] = await self.fetch_transfer_rate(market["quote"].issuer)
-
-        markets[market["symbol"]] = Market.from_dict(market)
+    for market in markets:
+        if markets[market]["base"] != "XRP":
+            markets[market]["base_fee"] = await fetch_transfer_rate(
+                self.client, CurrencyCode(markets[market]["base"])
+            )
+        if markets[market]["quote"] != "XRP":
+            markets[market]["quote_fee"] = await fetch_transfer_rate(
+                self.client, CurrencyCode(markets[market]["quote"])
+            )
 
     return markets

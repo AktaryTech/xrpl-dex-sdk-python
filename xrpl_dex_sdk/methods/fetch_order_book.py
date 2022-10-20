@@ -14,7 +14,6 @@ from ..models import (
     OrderSide,
     MarketSymbol,
 )
-from ..utils import handle_response_error
 
 
 async def fetch_order_book(
@@ -51,7 +50,6 @@ async def fetch_order_book(
 
     book_offers_response = await self.client.request(BookOffers.from_dict(book_offers_request))
     book_offers_result = book_offers_response.result
-    handle_response_error(book_offers_result)
 
     offers = book_offers_result["offers"]
     level: OrderBookLevel = OrderBookLevel.L2

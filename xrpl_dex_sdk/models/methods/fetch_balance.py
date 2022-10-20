@@ -1,21 +1,13 @@
-from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import NamedTuple, Optional
 
-from ..ccxt import Balances
+from ...models.ccxt import Balances
 from ..common import CurrencyCode
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class FetchBalanceParams(BaseModel):
-    code: Optional[CurrencyCode] = None
+class FetchBalanceParams(NamedTuple):
+    code: Optional[CurrencyCode]
 
 
-@dataclass(frozen=True)
-class FetchBalanceResponse(BaseModel):
-    balances: Balances = REQUIRED
-    info: dict = REQUIRED
-
+FetchBalanceResponse = Balances or None
 
 __all__ = ["FetchBalanceParams", "FetchBalanceResponse"]

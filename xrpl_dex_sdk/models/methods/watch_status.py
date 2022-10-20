@@ -1,13 +1,9 @@
-from dataclasses import dataclass
 from typing import Callable, NamedTuple
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class WatchStatusParams(BaseModel):
+class WatchStatusParams(NamedTuple):
     # Listener to send balance updates to
-    listener: Callable = REQUIRED
+    listener: Callable
 
 
 __all__ = ["WatchStatusParams"]

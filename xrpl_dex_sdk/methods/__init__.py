@@ -27,7 +27,6 @@ from .fetch_trading_fee import fetch_trading_fee
 from .fetch_trading_fees import fetch_trading_fees
 from .fetch_transaction_fee import fetch_transaction_fee
 from .fetch_transaction_fees import fetch_transaction_fees
-from .fetch_transfer_rate import fetch_transfer_rate
 from .load_currencies import load_currencies
 from .load_issuers import load_issuers
 from .load_markets import load_markets
@@ -70,7 +69,6 @@ __all__ = [
     "fetch_trading_fees",
     "fetch_transaction_fee",
     "fetch_transaction_fees",
-    "fetch_transfer_rate",
     "load_currencies",
     "load_issuers",
     "load_markets",

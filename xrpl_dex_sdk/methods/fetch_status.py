@@ -1,17 +1,15 @@
-from typing import Optional
 from xrpl.models.requests.server_state import ServerState
+from xrpl.utils import ripple_time_to_posix
 
 from ..models import (
     ExchangeStatusType,
     FetchStatusResponse,
 )
-from ..utils import server_time_to_posix, handle_response_error
 
 
-async def fetch_status(self) -> Optional[FetchStatusResponse]:
+async def fetch_status(self) -> FetchStatusResponse:
     server_state_response = await self.client.request(ServerState())
     server_state_result = server_state_response.result
-    handle_response_error(server_state_result)
 
     if "error" in server_state_result:
         print(server_state_result["error_message"])
@@ -25,9 +23,9 @@ async def fetch_status(self) -> Optional[FetchStatusResponse]:
         status = ExchangeStatusType.SHUTDOWN
 
     return FetchStatusResponse(
-        status=status,
-        updated=server_time_to_posix(server_state["time"]),
-        eta=None,
+        status=status.value,
+        updated=ripple_time_to_posix,
+        eta="",
         url="",
         info={"server_state": server_state},
     )

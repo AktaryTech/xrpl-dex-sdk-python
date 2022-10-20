@@ -1,15 +1,11 @@
-from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict, NamedTuple, Optional
 
 from ...constants import CURRENCY_PRECISION
 from ..common import CurrencyCode
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class Currency(BaseModel):
-    code: CurrencyCode = REQUIRED
+class Currency(NamedTuple):
+    code: CurrencyCode
     fee: Optional[float] = None
     name: Optional[str] = None
     issuer_name: Optional[str] = None

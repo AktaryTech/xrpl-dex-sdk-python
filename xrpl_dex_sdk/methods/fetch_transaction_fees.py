@@ -1,5 +1,6 @@
 from typing import List
-from ..models import CurrencyCode, FetchTransactionFeesResponse
+from ..models.methods.fetch_transaction_fees import FetchTransactionFeesResponse
+from ..models.common import CurrencyCode
 
 
 async def fetch_transaction_fees(self, codes: List[CurrencyCode]) -> FetchTransactionFeesResponse:

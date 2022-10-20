@@ -29,6 +29,6 @@ async def watch_status(self, params: WatchStatusParams) -> None:
             new_status = await self.fetch_status()
             if new_status != None:
                 if isinstance(params, Dict):
-                    params.listener(new_status)
+                    params["listener"](new_status)
                 else:
                     params.listener(new_status)

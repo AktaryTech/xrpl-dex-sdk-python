@@ -2,17 +2,17 @@ from enum import Enum
 
 
 class XrplErrorTypes(Enum):
-    ENTRY_NOT_FOUND = "entryNotFound"
-    NO_CLOSED_LEDGER = "noClosed"
-    NO_CURRENT_LEDGER = "noCurrent"
-    NO_NETWORK = "noNetwork"
-    TOO_BUSY = "tooBusy"
-    TXN_NOT_FOUND = "txnNotFound"
+    ENTRY_NOT_FOUND: str = "entryNotFound"
+    NO_CLOSED_LEDGER: str = "noClosed"
+    NO_CURRENT_LEDGER: str = "noCurrent"
+    NO_NETWORK: str = "noNetwork"
+    TOO_BUSY: str = "tooBusy"
+    TXN_NOT_FOUND: str = "txnNotFound"
 
 
 class XrplTransactionErrorTypes(Enum):
-    NO_ISSUER = "tecNO_ISSUER"
-    UNFUNDED_OFFER = "tecUNFUNDED_OFFER"
+    NO_ISSUER: str = "tecNO_ISSUER"
+    UNFUNDED_OFFER: str = "tecUNFUNDED_OFFER"
 
 
 __all__ = ["XrplErrorTypes", "XrplTransactionErrorTypes"]

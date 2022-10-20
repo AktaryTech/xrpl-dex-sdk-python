@@ -1,23 +1,34 @@
 from typing import Any, Optional
 
 from xrpl.models.requests.account_tx import AccountTx
-from xrpl.utils import ripple_time_to_posix
+from xrpl.utils import drops_to_xrp, ripple_time_to_datetime, ripple_time_to_posix
 
-from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
+from ..constants import CURRENCY_PRECISION, DEFAULT_LIMIT
 from ..models import (
     FetchTradesParams,
     FetchTradesResponse,
     Trade,
+    OrderId,
+    TradeId,
+    TradeType,
     Trade,
     Trades,
+    Offer,
+    OrderSide,
+    TradeType,
     MarketSymbol,
     UnixTimestamp,
 )
 from ..utils import (
+    get_base_amount_key,
+    get_quote_amount_key,
     handle_response_error,
+    get_order_side,
+    parse_amount_value,
+    fetch_transfer_rate,
+    get_taker_or_maker,
     get_market_symbol,
-    get_trade_from_data,
-    parse_affected_node,
+    get_amount_currency_code,
 )
 
 
@@ -28,12 +39,11 @@ async def fetch_my_trades(
     # Only return Trades since this date
     since: Optional[UnixTimestamp] = None,
     # Total number of Trades to return
-    limit: Optional[int] = None,
+    limit: Optional[int] = DEFAULT_LIMIT,
     # eslint-disable-next-line
     params: FetchTradesParams = FetchTradesParams(),
 ) -> FetchTradesResponse:
-    limit = limit if limit != None else DEFAULT_LIMIT
-    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
+    symbol = MarketSymbol(symbol) if isinstance(symbol, str) == True else symbol
 
     trades: Trades = []
 
@@ -56,11 +66,11 @@ async def fetch_my_trades(
         account_tx_result = account_tx_response.result
         handle_response_error(account_tx_result)
 
-        if "marker" in account_tx_result:
-            marker = account_tx_result["marker"]
-
         if account_tx_result["validated"] == False:
             continue
+
+        if "marker" in account_tx_result:
+            marker = account_tx_result["marker"]
 
         transactions = account_tx_result["transactions"]
 
@@ -76,52 +86,106 @@ async def fetch_my_trades(
             if tx["TransactionType"] != "OfferCreate" or "Sequence" not in tx:
                 continue
 
-            if get_market_symbol(tx) != symbol:
+            if since != None and ripple_time_to_posix(tx["date"]) >= since:
                 continue
 
-            if since != None and ripple_time_to_posix(tx["date"]) >= since:
-                has_next_page = False
+            side = get_order_side(tx["Flags"])
+
+            market_symbol = get_market_symbol(
+                tx[get_base_amount_key(OrderSide.Buy)]
+                if side == OrderSide.Buy
+                else tx[get_base_amount_key(OrderSide.Sell)],
+                tx[get_quote_amount_key(OrderSide.Buy)]
+                if side == OrderSide.Buy
+                else tx[get_quote_amount_key(OrderSide.Sell)],
+            )
+
+            if market_symbol != symbol:
                 continue
 
             for affected_node in transaction["meta"]["AffectedNodes"]:
-                node = parse_affected_node(affected_node)
-                if node == None:
-                    continue
-
-                offer_fields = getattr(node, "FinalFields")
-                if offer_fields == None:
-                    continue
-
-                trade = await get_trade_from_data(
-                    self,
-                    {
-                        "date": tx["date"],
-                        "Flags": offer_fields["Flags"],
-                        "OrderAccount": offer_fields["Account"],
-                        "OrderSequence": offer_fields["Sequence"],
-                        "Account": tx["Account"],
-                        "Sequence": tx["Sequence"],
-                        "TakerPays": offer_fields["TakerPays"],
-                        "TakerGets": offer_fields["TakerGets"],
-                    },
-                    {"transaction": transaction},
+                node = (
+                    affected_node["ModifiedNode"]
+                    if "ModifiedNode" in affected_node
+                    else affected_node["DeletedNode"]
+                    if "DeletedNode" in affected_node
+                    else None
                 )
 
-                if trade != None:
-                    trades.append(trade)
-                    if len(trades) >= limit:
-                        break
+                if node == None or node["LedgerEntryType"] != "Offer" or "FinalFields" not in node:
+                    continue
+
+                offer: Offer = node["FinalFields"]
+
+                base_amount = offer[get_base_amount_key(side)]
+                base_currency = get_amount_currency_code(base_amount)
+                base_rate = await fetch_transfer_rate(self.client, base_currency)
+                base_amount_value = parse_amount_value(base_amount)
+                base_value = (
+                    float(drops_to_xrp(str(base_amount_value)))
+                    if base_currency == "XRP"
+                    else base_amount_value
+                )
+                if base_value == 0:
+                    continue
+
+                quote_amount = offer[get_quote_amount_key(side)]
+                quote_currency = get_amount_currency_code(quote_amount)
+                quote_rate = await fetch_transfer_rate(self.client, quote_currency)
+                quote_amount_value = parse_amount_value(quote_amount)
+                quote_value = (
+                    float(drops_to_xrp(str(quote_amount_value)))
+                    if quote_currency == "XRP"
+                    else quote_amount_value
+                )
+                if quote_value == 0:
+                    continue
+
+                amount = base_value
+                price = quote_value / amount
+                cost = amount * price
+
+                fee_rate = quote_rate if side == OrderSide.Buy else base_rate
+                fee_cost = (quote_value if side == OrderSide.Buy else base_value) * fee_rate
+
+                trade = Trade(
+                    id=TradeId(tx["Account"], tx["Sequence"]),
+                    order=OrderId(offer["Account"], offer["Sequence"]),
+                    datetime=ripple_time_to_datetime(tx["date"] or 0),
+                    timestamp=ripple_time_to_posix(tx["date"] or 0),
+                    symbol=MarketSymbol(base_currency.code, quote_currency.code).symbol,
+                    type=TradeType.Limit.value,
+                    side=side,
+                    amount=round(amount, CURRENCY_PRECISION),
+                    price=round(price, CURRENCY_PRECISION),
+                    takerOrMaker=get_taker_or_maker(side).value,
+                    cost=round(cost, CURRENCY_PRECISION),
+                    fee={
+                        "currency": str(base_currency if side == OrderSide.Buy else quote_currency),
+                        "cost": round(fee_cost, CURRENCY_PRECISION),
+                        "rate": round(fee_rate, CURRENCY_PRECISION),
+                        "percentage": True,
+                    }
+                    if fee_cost > 0
+                    else None,
+                    info={"transaction": transaction},
+                )
+
+                trades.append(trade)
+
+                if len(trades) >= limit:
+                    break
 
             tx_count += 1
-            if tx_count >= search_limit:
+            if tx_count >= params.search_limit:
                 break
 
-        has_next_page = len(trades) < limit and tx_count < search_limit
+        has_next_page = len(trades) < limit and tx_count < params.search_limit
 
     if len(trades) > 0:
 
         def sort_by_timestamp(trade: Trade):
-            return trade.timestamp
+            return trade.order.sequence
 
         trades.sort(reverse=False, key=sort_by_timestamp)
 

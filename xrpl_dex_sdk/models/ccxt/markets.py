@@ -1,25 +1,21 @@
-from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, List, NamedTuple, Optional
 
 from ..common import CurrencyCode, MarketSymbol
-from ..base_model import BaseModel
-from ..required import REQUIRED
 
 
-@dataclass(frozen=True)
-class Market(BaseModel):
+class Market(NamedTuple):
     # String literal for referencing within an exchange
-    id: str = REQUIRED
+    id: str
     # Unified Market Symbol
-    symbol: MarketSymbol = REQUIRED
+    symbol: MarketSymbol
     # Base token
-    base: CurrencyCode = REQUIRED
+    base: CurrencyCode
     # Quote token
-    quote: CurrencyCode = REQUIRED
+    quote: CurrencyCode
     # Base token transfer fee
-    base_fee: Optional[float] = float(0)
+    base_fee: float = 0
     # Quote token transfer fee
-    quote_fee: Optional[float] = float(0)
+    quote_fee: float = 0
     # Whether transfer fees are percentages
     percentage: Optional[bool] = True
 

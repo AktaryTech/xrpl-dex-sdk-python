@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Dict, List, Set, cast
+from typing import Any, Dict, List
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
@@ -7,11 +7,16 @@ from xrpl.models import Subscribe, StreamParameter
 from ..models import (
     WatchTickersParams,
     MarketSymbol,
+    OrderSide,
+    Ticker,
+    OfferCreateFlags,
     Tickers,
 )
 from ..utils import (
+    has_offer_create_flag,
+    get_base_amount_key,
+    get_quote_amount_key,
     get_market_symbol,
-    omit,
 )
 
 
@@ -41,26 +46,34 @@ async def watch_tickers(
 
             transaction = message["transaction"]
 
-            symbol = get_market_symbol(transaction)
+            side = (
+                OrderSide.Sell
+                if has_offer_create_flag(transaction["Flags"], OfferCreateFlags.TF_SELL)
+                else OrderSide.Buy
+            )
+            base_amount = transaction[get_base_amount_key(side)]
+            quote_amount = transaction[get_quote_amount_key(side)]
+            symbol = get_market_symbol(base_amount, quote_amount)
 
-            if symbol == None or symbol not in symbols:
+            if symbol not in symbols:
                 return
 
-            new_ticker = await self.fetch_ticker(symbol, params)
+            new_ticker = await self.fetch_ticker(
+                symbol, WatchTickersParams(search_limit=params.search_limit)
+            )
 
             if new_ticker == None:
                 return
 
             if symbol in tickers:
-                omitted_fields = cast(Set, ["datetime", "timestamp", "info"])
-                if omit(tickers[symbol].to_dict(), omitted_fields) != omit(
-                    new_ticker.to_dict(), omitted_fields
-                ):
-                    tickers[symbol] = new_ticker
-                    return new_ticker
+                for field in new_ticker._fields:
+                    if field != "datetime" and field != "timestamp" and field != "info":
+                        if new_ticker.__getattribute__(field) != tickers[symbol].__getattribute__(
+                            field
+                        ):
+                            return new_ticker
             else:
                 tickers[symbol] = new_ticker
-                return new_ticker
 
     async with self.websocket_client as websocket:
         await websocket.send(payload)
@@ -76,6 +89,6 @@ async def watch_tickers(
             new_ticker = await tickers_handler(message)
             if new_ticker != None:
                 if isinstance(params, Dict):
-                    params.listener(new_ticker)
+                    params["listener"](new_ticker)
                 else:
                     params.listener(new_ticker)
