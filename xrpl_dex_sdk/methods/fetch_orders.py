@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from xrpl.models.requests.ledger import Ledger
 from xrpl.utils import ripple_time_to_posix
@@ -7,18 +7,14 @@ from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchOrdersParams,
     FetchOrdersResponse,
-    OfferCreateFlags,
     Order,
     OrderId,
     OrderStatus,
-    OrderSide,
     MarketSymbol,
     UnixTimestamp,
 )
 from ..utils import (
-    has_offer_create_flag,
-    get_quote_amount_key,
-    get_base_amount_key,
+    handle_response_error,
     get_market_symbol,
 )
 
@@ -27,13 +23,14 @@ async def fetch_orders(
     self,
     symbol: Optional[MarketSymbol] = None,
     since: Optional[UnixTimestamp] = None,
-    limit: Optional[int] = DEFAULT_LIMIT,
+    limit: int = DEFAULT_LIMIT,
     params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
     orders: List[Order] = []
 
     has_next_page = True
-    previous_ledger_hash: str = None
+    previous_ledger_hash: Optional[str] = None
     tx_count = int(0)
 
     while has_next_page == True:
@@ -47,10 +44,7 @@ async def fetch_orders(
         )
         ledger_response = await self.client.request(ledger_request)
         ledger_result = ledger_response.result
-
-        if "error" in ledger_result:
-            print("Error: " + ledger_result["error_message"])
-            return
+        handle_response_error(ledger_result)
 
         ledger = ledger_result["ledger"]
 
@@ -67,49 +61,60 @@ async def fetch_orders(
 
         for transaction in transactions:
             tx_count += 1
-            if tx_count >= params.search_limit:
+            if tx_count >= search_limit:
                 break
 
-            if "Sequence" not in transaction:
+            if (
+                "Sequence" not in transaction
+                or "metaData" not in transaction
+                or (
+                    transaction["TransactionType"] != "OfferCancel"
+                    and transaction["TransactionType"] != "OfferCreate"
+                )
+            ):
                 continue
 
-            if transaction["TransactionType"] == "OfferCancel":
-                print()
-            elif transaction["TransactionType"] == "OfferCreate":
-                if symbol != None:
-                    tx_side = (
-                        OrderSide.Sell.value
-                        if has_offer_create_flag(transaction["Flags"], OfferCreateFlags.TF_SELL)
-                        else OrderSide.Buy.value
-                    )
-                    base_amount = transaction[get_base_amount_key(tx_side)]
-                    quote_amount = transaction[get_quote_amount_key(tx_side)]
-                    market_symbol = get_market_symbol(base_amount, quote_amount)
-                    if market_symbol != symbol:
-                        continue
-
-                order_id = OrderId(transaction["Account"], transaction["Sequence"])
-
-                order = await self.fetch_order(order_id)
-
-                if order == None:
+            if symbol:
+                tx_symbol: Optional[MarketSymbol] = None
+                if transaction["TransactionType"] == "OfferCancel":
+                    for affected_node in transaction["metaData"]["AffectedNodes"]:
+                        if "DeletedNode" in affected_node:
+                            node = affected_node["DeletedNode"]
+                            if node["LedgerEntryType"] != "Offer":
+                                continue
+                            if (
+                                node["FinalFields"]["Account"] == transaction["Account"]
+                                and node["FinalFields"]["Sequence"] == transaction["OfferSequence"]
+                            ):
+                                tx_symbol = get_market_symbol(node["FinalFields"])
+                                break
+                else:
+                    tx_symbol = get_market_symbol(transaction)
+                if tx_symbol != symbol:
                     continue
 
-                if (
-                    order.status == OrderStatus.Open.value
-                    and params.show_open == False
-                    or order.status == OrderStatus.Closed.value
-                    and params.show_closed == False
-                    or order.status == OrderStatus.Canceled.value
-                    and params.show_canceled == False
-                ):
-                    continue
+            order_id = OrderId(transaction["Account"], transaction["Sequence"])
 
-                orders.append(order)
+            order: Optional[Order] = await self.fetch_order(order_id)
 
-                if len(orders) >= limit:
-                    break
+            if order == None:
+                continue
 
-        has_next_page = len(orders) < limit and tx_count < params.search_limit
+            if (
+                order.status == OrderStatus.Open.value
+                and params.show_open == False
+                or order.status == OrderStatus.Closed.value
+                and params.show_closed == False
+                or order.status == OrderStatus.Canceled.value
+                and params.show_canceled == False
+            ):
+                continue
+
+            orders.append(order)
+
+            if len(orders) >= limit:
+                break
+
+        has_next_page = len(orders) < limit and tx_count < search_limit
 
     return orders

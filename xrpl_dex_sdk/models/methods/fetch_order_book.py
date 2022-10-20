@@ -1,15 +1,18 @@
-from typing import NamedTuple, Optional, Union
+from dataclasses import dataclass
+from typing import Optional, Union
 
 from ..ccxt.order_book import OrderBook
 from ..common import AccountAddress
 from ...constants import DEFAULT_SEARCH_LIMIT
+from ..base_model import BaseModel
 
 #
 # Request parameters for a fetch_order_book call
 #
 # @category Parameters
 #
-class FetchOrderBookParams(NamedTuple):
+@dataclass(frozen=True)
+class FetchOrderBookParams(BaseModel):
     # Max Orders to search through while gathering Order Book data
     search_limit: Optional[int] = DEFAULT_SEARCH_LIMIT
     # Get order book from the given ledger

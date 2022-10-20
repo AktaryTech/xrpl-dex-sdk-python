@@ -1,66 +1,64 @@
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, Dict, List, Optional
 
-from ..common import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
-
-
-class TradeId:
-    def __init__(self, account: AccountAddress, sequence: int) -> None:
-        self.account = account
-        self.sequence = sequence
-        self.id = account + ":" + str(sequence)
-
-    def __repr__(self) -> str:
-        return self.id
-
-    def __str__(self) -> str:
-        return self.id
+from .fees import Fee
+from ..common import (
+    MarketSymbol,
+    UnixISOTimestamp,
+    UnixTimestamp,
+    OrderId,
+    TradeId,
+)
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
 class TradeType(Enum):
-    Limit: str = "limit"
+    Limit = "limit"
 
 
 class TradeSide(Enum):
-    Buy: str = "buy"
-    Sell: str = "sell"
+    Buy = "buy"
+    Sell = "sell"
 
 
 class TradeTakerOrMaker(Enum):
-    Taker: str = "taker"
-    Maker: str = "maker"
+    Taker = "taker"
+    Maker = "maker"
 
 
-class Trade(NamedTuple):
+@dataclass(frozen=True)
+class Trade(BaseModel):
     # string trade id
-    id: TradeId
+    id: TradeId = REQUIRED
     # string order id or undefined/None/null
-    order: TradeId
+    order: OrderId = REQUIRED
     # ISO8601 datetime with milliseconds;
-    datetime: UnixISOTimestamp
+    datetime: UnixISOTimestamp = REQUIRED
     # Unix timestamp in milliseconds
-    timestamp: UnixTimestamp
+    timestamp: UnixTimestamp = REQUIRED
     # symbol in CCXT format
-    symbol: MarketSymbol
+    symbol: MarketSymbol = REQUIRED
     # order type, 'market', 'limit', ... or undefined/None/null
-    type: Optional[TradeType]
+    type: Optional[TradeType] = TradeType.Limit
     # direction of the trade, 'buy' or 'sell'
-    side: TradeSide
+    side: TradeSide = REQUIRED
     # amount of base currency
-    amount: float
+    amount: float = REQUIRED
     # float price in quote currency
-    price: float
+    price: float = REQUIRED
     # | 'maker'; string, 'taker' or 'maker'
-    takerOrMaker: TradeTakerOrMaker
+    taker_or_maker: TradeTakerOrMaker = REQUIRED
     # total cost (including fees), `price * amount`
-    cost: float
+    cost: float = REQUIRED
     # transfer fees
-    fee: Optional[float]
+    fee: Optional[Fee] = None
     # Raw response from exchange
-    info: Dict[str, Any]
+    info: dict = REQUIRED
 
 
 Trades = List[Trade]
 
 
-__all__ = ["TradeId", "TradeType", "TradeSide", "TradeTakerOrMaker", "Trade", "Trades"]
+__all__ = ["TradeType", "TradeSide", "TradeTakerOrMaker", "Trade", "Trades"]

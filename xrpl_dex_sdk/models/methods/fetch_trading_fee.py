@@ -1,6 +1,6 @@
 from ...models.ccxt import TradingFee
 
 
-FetchTradingFeeResponse = TradingFee or None
+FetchTradingFeeResponse = TradingFee
 
 __all__ = ["FetchTradingFeeResponse"]

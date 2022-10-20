@@ -1,72 +1,62 @@
+from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, Dict, List, Optional
 
-from ..common import AccountAddress, MarketSymbol, UnixISOTimestamp, UnixTimestamp
+from ..common import OrderId, MarketSymbol, UnixISOTimestamp, UnixTimestamp
 from .fees import Fee
 from .trades import Trade
-
-
-class OrderId:
-    def __init__(self, account: AccountAddress, sequence: int) -> None:
-        self.account = account
-        self.sequence = sequence
-        self.id = account + ":" + str(sequence)
-
-    def __repr__(self) -> str:
-        return self.id
-
-    def __str__(self) -> str:
-        return self.id
+from ..base_model import BaseModel
+from ..required import REQUIRED
 
 
 class OrderStatus(Enum):
-    Open: str = "open"
-    Closed: str = "closed"
-    Canceled: str = "canceled"
-    Expired: str = "expired"
-    Rejected: str = "rejected"
+    Open = "open"
+    Closed = "closed"
+    Canceled = "canceled"
+    Expired = "expired"
+    Rejected = "rejected"
 
 
 class OrderType(Enum):
-    Limit: str = "limit"
+    Limit = "limit"
 
 
 class OrderTimeInForce(Enum):
-    GoodTillCanceled: str = "GTC"
-    ImmediateOrCancel: str = "IOC"
-    FillOrKill: str = "FOK"
-    PostOnly: str = "PO"
+    GoodTillCanceled = "GTC"
+    ImmediateOrCancel = "IOC"
+    FillOrKill = "FOK"
+    PostOnly = "PO"
 
 
 class OrderSide(Enum):
-    Buy: str = "buy"
-    Sell: str = "sell"
+    Buy = "buy"
+    Sell = "sell"
 
 
-class Order(NamedTuple):
-    id: OrderId
-    clientOrderId: Optional[str]
-    datetime: UnixISOTimestamp
-    timestamp: UnixTimestamp
-    lastTradeTimestamp: UnixTimestamp
-    status: OrderStatus
-    symbol: MarketSymbol
-    type: OrderType
-    timeInForce: Optional[OrderTimeInForce]
-    side: OrderSide
-    amount: float
-    price: float
-    average: Optional[float]
-    filled: float
-    remaining: float
-    cost: float
-    trades: List[Trade]
-    fee: Optional[Fee]
-    info: Dict[str, Any]
+@dataclass(frozen=True)
+class Order(BaseModel):
+    id: OrderId = REQUIRED
+    client_order_id: Optional[str] = None
+    datetime: UnixISOTimestamp = REQUIRED
+    timestamp: UnixTimestamp = REQUIRED
+    last_trade_timestamp: Optional[UnixTimestamp] = None
+    status: OrderStatus = REQUIRED
+    symbol: MarketSymbol = REQUIRED
+    type: OrderType = REQUIRED
+    time_in_force: Optional[OrderTimeInForce] = None
+    side: OrderSide = REQUIRED
+    amount: float = REQUIRED
+    price: float = REQUIRED
+    average: Optional[float] = None
+    filled: float = REQUIRED
+    remaining: float = REQUIRED
+    cost: float = REQUIRED
+    trades: List[Trade] = REQUIRED
+    fee: Optional[Fee] = None
+    info: dict = REQUIRED
 
 
 __all__ = [
-    "OrderId",
     "OrderStatus",
     "OrderType",
     "OrderTimeInForce",

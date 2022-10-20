@@ -1,10 +1,13 @@
-from typing import List, NamedTuple, Optional
+from dataclasses import dataclass
+from typing import List, Optional
 
-from ...models.ccxt import Order
+from ..base_model import BaseModel
+from ..ccxt import Order
 from ...constants import DEFAULT_SEARCH_LIMIT
 
 
-class FetchClosedOrdersParams(NamedTuple):
+@dataclass(frozen=True)
+class FetchClosedOrdersParams(BaseModel):
     # Max Transactions to search through looking for Order data before giving up
     search_limit: Optional[int] = DEFAULT_SEARCH_LIMIT
 

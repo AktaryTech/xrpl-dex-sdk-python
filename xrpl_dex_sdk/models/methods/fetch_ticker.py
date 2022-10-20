@@ -1,12 +1,15 @@
-from typing import NamedTuple, Optional
+from dataclasses import dataclass
+from typing import Optional
 
 from ...models.ccxt import Ticker
-from ...constants import DEFAULT_SEARCH_LIMIT
+from ...constants import DEFAULT_TICKER_SEARCH_LIMIT
+from ..base_model import BaseModel
 
 
-class FetchTickerParams(NamedTuple):
+@dataclass(frozen=True)
+class FetchTickerParams(BaseModel):
     # Max Transactions to search through looking for Ticker data before giving up
-    search_limit: int = DEFAULT_SEARCH_LIMIT
+    search_limit: Optional[int] = DEFAULT_TICKER_SEARCH_LIMIT
 
 
 FetchTickerResponse = Ticker

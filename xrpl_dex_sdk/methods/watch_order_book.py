@@ -2,10 +2,10 @@ from typing import Any, Dict, Optional
 import uuid
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
-from xrpl.models import Subscribe
+from xrpl.models import Subscribe, SubscribeBook
 
 from ..constants import DEFAULT_LIMIT
-from ..models import WatchOrderBookParams, MarketSymbol
+from ..models import WatchOrderBookParams, MarketSymbol, IssuedCurrency, XRP
 
 
 async def watch_order_book(
@@ -16,27 +16,34 @@ async def watch_order_book(
     limit: Optional[int],
     params: WatchOrderBookParams,
 ) -> None:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
+    # symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
     limit = DEFAULT_LIMIT if limit == None else limit
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
 
-    base_amount = {"currency": symbol.base.currency}
-    if symbol.base.issuer != None:
-        base_amount["issuer"] = symbol.base.issuer
+    base_amount = (
+        IssuedCurrency(currency=symbol.base.currency, issuer=symbol.base.issuer)
+        if symbol.base.issuer != None
+        else XRP()
+    )
+    # if symbol.base.issuer != None:
+    #     base_amount["issuer"] = symbol.base.issuer
 
-    quote_amount = {"currency": symbol.quote.currency}
-    if symbol.quote.issuer != None:
-        quote_amount["issuer"] = symbol.quote.issuer
+    quote_amount = (
+        IssuedCurrency(currency=symbol.quote.currency, issuer=symbol.quote.issuer)
+        if symbol.quote.issuer != None
+        else XRP()
+    )
+
+    # quote_amount = {"currency": symbol.quote.currency}
+    # if symbol.quote.issuer != None:
+    #     quote_amount["issuer"] = symbol.quote.issuer
 
     payload = Subscribe(
         id=uuid.uuid4().hex,
         books=[
-            {
-                "taker_pays": base_amount,
-                "taker_gets": quote_amount,
-            },
+            SubscribeBook(taker_pays=base_amount, taker_gets=quote_amount),
         ],
     )
 
@@ -65,8 +72,8 @@ async def watch_order_book(
             order_book = await order_book_handler(message)
             if order_book != None:
                 if isinstance(params, Dict):
-                    params["listener"](order_book)
+                    params.listener(order_book)
                 else:
                     params.listener(order_book)
 
-    return {}
+    return

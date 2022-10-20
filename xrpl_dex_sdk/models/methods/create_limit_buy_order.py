@@ -1,17 +1,25 @@
-from typing import Any, List, NamedTuple, Optional
+from dataclasses import dataclass
+from typing import Any, List, Optional, Dict
 
+from ..base_model import BaseModel
+from ..required import REQUIRED
 from ..ccxt.orders import OrderId
 
 
-class CreateLimitBuyOrderParams(NamedTuple):
+@dataclass(frozen=True)
+class CreateLimitBuyOrderParams(BaseModel):
     # Time after which the Offer is no longer active, in seconds since the Ripple Epoch. (1/1/2000) */
     expiration: Optional[int] = None
     # Additional arbitrary information used to identify this transaction */
-    memos: List[Any] = []
+    memos: Optional[List[Any]] = None
     # Order behavior (via XRPL OfferCreateFlags) */
     flags: Optional[int] = None
 
 
-CreateLimitBuyOrderResponse = OrderId or None
+@dataclass(frozen=True)
+class CreateLimitBuyOrderResponse(BaseModel):
+    id: OrderId = REQUIRED
+    info: dict = REQUIRED
+
 
 __all__ = ["CreateLimitBuyOrderParams", "CreateLimitBuyOrderResponse"]

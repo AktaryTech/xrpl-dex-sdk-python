@@ -1,4 +1,4 @@
-from ..models.common import MarketSymbol
+from ..models.common import MarketSymbol, BigNumberish
 from ..models.ccxt.orders import OrderSide, OrderType
 from ..models.methods.create_limit_sell_order import (
     CreateLimitSellOrderParams,
@@ -9,11 +9,11 @@ from ..models.methods.create_limit_sell_order import (
 def create_limit_sell_order(
     self,
     symbol: MarketSymbol,
-    amount: str,
-    price: str,
+    amount: BigNumberish,
+    price: BigNumberish,
     params: CreateLimitSellOrderParams = CreateLimitSellOrderParams(),
 ) -> CreateLimitSellOrderResponse:
-    return self.create_order(
+    order = self.create_order(
         symbol=symbol,
         side=OrderSide.Sell,
         type=OrderType.Limit,
@@ -21,3 +21,5 @@ def create_limit_sell_order(
         price=price,
         params=params,
     )
+
+    return CreateLimitSellOrderResponse(id=order.id, info=order.info)
