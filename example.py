@@ -120,9 +120,7 @@ class CurrencyCode(BaseModel):
         return errors
 
     def _is_valid_currency(self, value: str) -> bool:
-        return bool(
-            ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value)
-        )
+        return bool(ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value))
 
     def _get_code(self) -> str:
         return self.currency + ("+" + self.issuer if self.issuer != None else "")

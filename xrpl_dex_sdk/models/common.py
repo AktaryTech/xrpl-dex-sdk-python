@@ -1,12 +1,22 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 from .base_model import BaseModel
 from .required import REQUIRED
 from ..constants import ISO_CURRENCY_REGEX, HEX_CURRENCY_REGEX
 
+
+# type aliases
 AccountAddress = str
 IssuerAddress = AccountAddress
+
+BigNumberish = Union[str, int, float]
+
+NetworkName = str
+
+UnixTimestamp = int  # milliseconds since start of Unix epoch (1/1/1970)
+UnixISOTimestamp = str  # ISO8601 datetime with milliseconds
+XrplTimestamp = int  # milliseconds since start of XRPL epoch (1/1/2000)
 
 
 @dataclass(frozen=True)
@@ -18,12 +28,22 @@ class OrderId(BaseModel):
     def from_string(cls, id: str):
         try:
             [account, sequence] = id.split(":")
-            return cls(account=account, sequence=sequence)
+            return cls(account=account, sequence=int(sequence))
         except:
             raise Exception(f"Invalid OrderId: {id}")
 
     def to_id(self) -> str:
         return self.account + ":" + str(self.sequence)
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, dict) and "Account" in other and "Sequence" in other:
+            return self.account == other["Account"] and self.sequence == other["Sequence"]
+        elif isinstance(other, OrderId):
+            return self.to_id() == other.to_id()
+        elif isinstance(other, str):
+            return self.to_id() == OrderId.from_string(other).to_id()
+        else:
+            return super().__eq__(other)
 
     def __str__(self) -> str:
         return self.to_id()
@@ -38,12 +58,18 @@ class TradeId(BaseModel):
     def from_string(cls, id: str):
         try:
             [account, sequence] = id.split(":")
-            return cls(account=account, sequence=sequence)
+            return cls(account=account, sequence=int(sequence))
         except:
             raise Exception(f"Invalid TradeId: {id}")
 
     def to_id(self) -> str:
         return self.account + ":" + str(self.sequence)
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, dict) and "Account" in other and "Sequence" in other:
+            return self.account == other["Account"] and self.sequence == other["Sequence"]
+        else:
+            return super().__eq__(other)
 
     def __str__(self) -> str:
         return self.to_id()
@@ -81,9 +107,7 @@ class CurrencyCode(BaseModel):
         return errors
 
     def _is_valid_currency(self, value: str) -> bool:
-        return bool(
-            ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value)
-        )
+        return bool(ISO_CURRENCY_REGEX.fullmatch(value) or HEX_CURRENCY_REGEX.fullmatch(value))
 
     def __str__(self) -> str:
         return self.to_code()
@@ -110,13 +134,11 @@ class MarketSymbol(BaseModel):
         return self.to_symbol()
 
 
-UnixTimestamp = int  # milliseconds since start of Unix epoch (1/1/1970)
-UnixISOTimestamp = str  # ISO8601 datetime with milliseconds
-XrplTimestamp = int  # milliseconds since start of XRPL epoch (1/1/2000)
-
 __all__ = [
     "AccountAddress",
     "IssuerAddress",
+    "NetworkName",
+    "BigNumberish",
     "OrderId",
     "TradeId",
     "CurrencyCode",

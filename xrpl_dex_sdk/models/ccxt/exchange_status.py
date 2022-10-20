@@ -19,7 +19,7 @@ class ExchangeStatus(BaseModel):
     # Status is one of 'ok', 'shutdown', 'error', 'maintenance'
     status: ExchangeStatusType = REQUIRED
     # Raw response from exchange
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
     # Integer, last updated timestamp in milliseconds if updated via the API
     updated: Optional[UnixTimestamp] = None
     # When the maintenance or outage is expected to end

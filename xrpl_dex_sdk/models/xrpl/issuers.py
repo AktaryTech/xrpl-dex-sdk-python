@@ -7,12 +7,6 @@ from ..required import REQUIRED
 
 
 @dataclass(frozen=True)
-class IssuerCurrency(BaseModel):
-    code: CurrencyCode = REQUIRED
-    issuer: AccountAddress = REQUIRED
-
-
-@dataclass(frozen=True)
 class Issuer(BaseModel):
     name: str = REQUIRED
     trusted: bool = REQUIRED
@@ -24,4 +18,4 @@ class Issuer(BaseModel):
 
 Issuers = Dict[str, Issuer]
 
-__all__ = ["IssuerCurrency", "Issuer", "Issuers"]
+__all__ = ["Issuer", "Issuers"]

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, NamedTuple, Optional
+from typing import Any, Dict, Optional
 
 from ..ccxt import Balances
 from ..common import CurrencyCode
@@ -15,7 +15,7 @@ class FetchBalanceParams(BaseModel):
 @dataclass(frozen=True)
 class FetchBalanceResponse(BaseModel):
     balances: Balances = REQUIRED
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 __all__ = ["FetchBalanceParams", "FetchBalanceResponse"]

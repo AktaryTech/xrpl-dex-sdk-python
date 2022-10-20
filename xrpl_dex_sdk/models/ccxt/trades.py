@@ -4,7 +4,6 @@ from typing import Any, Dict, List, Optional
 
 from .fees import Fee
 from ..common import (
-    AccountAddress,
     MarketSymbol,
     UnixISOTimestamp,
     UnixTimestamp,
@@ -56,7 +55,7 @@ class Trade(BaseModel):
     # transfer fees
     fee: Optional[Fee] = None
     # Raw response from exchange
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 Trades = List[Trade]

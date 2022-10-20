@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, NamedTuple, Optional
+from typing import List, Optional
 
 from ...models.ccxt import Ticker
 from ...constants import DEFAULT_SEARCH_LIMIT

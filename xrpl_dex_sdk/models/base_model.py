@@ -1,4 +1,3 @@
-from abc import ABC
 from dataclasses import dataclass, fields
 from enum import Enum
 import json
@@ -56,22 +55,17 @@ class BaseModel:
             if param not in class_types:
                 raise Exception(f"{param} not a valid parameter for {cls.__name__}")
 
-            args[param] = cls._from_dict_single_param(
-                param, class_types[param], values[param]
-            )
+            args[param] = cls._from_dict_single_param(param, class_types[param], values[param])
 
         init = cls._get_only_init_args(args)
         return cls(**init)
-        # return cls(currency=values["currency"], issuer=values["issuer"])
 
     @classmethod
     def _from_dict_single_param(
         cls: Type["BaseModel"],
         param: str,
         param_type: Type[Any],
-        param_value: Union[
-            int, str, bool, "BaseModel", Enum, List[Any], Dict[str, Any]
-        ],
+        param_value: Union[int, str, bool, "BaseModel", Enum, List[Any], Dict[str, Any]],
     ) -> Any:
         """Recursively handles each individual param in `from_dict`."""
         param_type_origin = get_origin(param_type)
@@ -80,19 +74,14 @@ class BaseModel:
         if param_type_origin is list and isinstance(param_value, list):
             # expected a List, received a List
             list_type = get_args(param_type)[0]
-            return [
-                cls._from_dict_single_param(param, list_type, item)
-                for item in param_value
-            ]
+            return [cls._from_dict_single_param(param, list_type, item) for item in param_value]
 
         if param_type_origin is Union:
             for param_type_option in get_args(param_type):
                 # iterate through the types Union-ed together
                 try:
                     # try to use this Union-ed type to process param_value
-                    return cls._from_dict_single_param(
-                        param, param_type_option, param_value
-                    )
+                    return cls._from_dict_single_param(param, param_type_option, param_value)
                 except Exception:
                     # this Union-ed type did not work, move onto the next one
                     pass
@@ -118,6 +107,16 @@ class BaseModel:
 
         if (
             isinstance(param_type, type)
+            and issubclass(param_type, Enum)
+            and isinstance(param_value, str)
+        ):
+            if not getattr(param_type, param_value):
+                error_message = f"Cannot cast {param_value} to type {param_type} for {param}"
+            else:
+                return getattr(param_type, param_value)
+
+        if (
+            isinstance(param_type, type)
             and issubclass(param_type, BaseModel)
             and isinstance(param_value, dict)
         ):
@@ -131,15 +130,11 @@ class BaseModel:
                 f"received a {type(param_value)}"
             )
         else:
-            error_message = (
-                f"{param} expected a {param_type}, received a {type(param_value)}"
-            )
+            error_message = f"{param} expected a {param_type}, received a {type(param_value)}"
         raise Exception(error_message)
 
     @classmethod
-    def _get_only_init_args(
-        cls: Type["BaseModel"], args: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    def _get_only_init_args(cls: Type["BaseModel"], args: Dict[str, Any]) -> Dict[str, Any]:
         init_keys = {field.name for field in fields(cls) if field.init is True}
         valid_args = {key: value for key, value in args.items() if key in init_keys}
         return valid_args
@@ -176,9 +171,7 @@ class BaseModel:
             Dictionary of any errors found on self.
         """
         return {
-            attr: f"{attr} is not set"
-            for attr, value in self.__dict__.items()
-            if value is REQUIRED
+            attr: f"{attr} is not set" for attr, value in self.__dict__.items() if value is REQUIRED
         }
 
     def to_dict(self: "BaseModel") -> Dict[str, Any]:
@@ -215,11 +208,7 @@ class BaseModel:
         if isinstance(elem, Enum):
             return elem.value
         if isinstance(elem, list):
-            return [
-                self._to_dict_elem(sub_elem)
-                for sub_elem in elem
-                if sub_elem is not None
-            ]
+            return [self._to_dict_elem(sub_elem) for sub_elem in elem if sub_elem is not None]
         return elem
 
     def __eq__(self: "BaseModel", other: object) -> bool:

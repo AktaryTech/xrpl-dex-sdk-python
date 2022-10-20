@@ -10,7 +10,6 @@ from ..models import (
     Trade,
     Trade,
     Trades,
-    Offer,
     MarketSymbol,
     UnixTimestamp,
 )
@@ -34,9 +33,7 @@ async def fetch_trades(
     params: FetchTradesParams = FetchTradesParams(),
 ) -> FetchTradesResponse:
     limit = limit if limit != None else DEFAULT_LIMIT
-    search_limit = (
-        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
 
     trades: Trades = []
 
@@ -52,26 +49,32 @@ async def fetch_trades(
             ledger_request["ledger_index"] = "validated"
 
         ledger_response = await self.client.request(Ledger.from_dict(ledger_request))
-        ledger = ledger_response.result
-        handle_response_error(ledger)
+        ledger_result = ledger_response.result
+        handle_response_error(ledger_result)
 
-        if since != None and ripple_time_to_posix(
-            ledger["ledger"]["close_time"] >= since
-        ):
-            has_next_page = False
-            continue
+        previous_ledger_hash = ledger_result["ledger"]["parent_hash"]
 
-        previous_ledger_hash = ledger["ledger"]["parent_hash"]
-
-        transactions = ledger["ledger"]["transactions"]
+        transactions = ledger_result["ledger"]["transactions"]
 
         for transaction in transactions:
+            tx_count += 1
+            if tx_count >= search_limit:
+                break
+
             if (
                 "Sequence" not in transaction
                 or "metaData" not in transaction
                 or transaction["TransactionType"] != "OfferCreate"
-                or get_market_symbol(transaction) != symbol
             ):
+                continue
+
+            if get_market_symbol(transaction) != symbol:
+                continue
+
+            if since != None and ripple_time_to_posix(
+                ledger_result["ledger"]["close_time"] >= since
+            ):
+                has_next_page = False
                 continue
 
             for affected_node in transaction["metaData"]["AffectedNodes"]:
@@ -86,7 +89,7 @@ async def fetch_trades(
                 trade = await get_trade_from_data(
                     self,
                     {
-                        "date": ledger["ledger"]["close_time"],
+                        "date": ledger_result["ledger"]["close_time"],
                         "Flags": offer_fields["Flags"],
                         "OrderAccount": offer_fields["Account"],
                         "OrderSequence": offer_fields["Sequence"],
@@ -103,10 +106,6 @@ async def fetch_trades(
                     if len(trades) >= limit:
                         break
 
-            tx_count += 1
-            if tx_count >= search_limit:
-                break
-
         has_next_page = len(trades) < limit and tx_count < search_limit
 
     if len(trades) > 0:
@@ -114,8 +113,6 @@ async def fetch_trades(
         def sort_by_timestamp(trade: Trade):
             return trade.timestamp
 
-        sorted_trades = trades.sort(reverse=False, key=sort_by_timestamp)
-        if sorted_trades != None:
-            trades = sorted_trades
+        trades.sort(reverse=False, key=sort_by_timestamp)
 
     return trades

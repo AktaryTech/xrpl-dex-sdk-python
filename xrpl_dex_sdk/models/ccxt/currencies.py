@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, NamedTuple, Optional
+from typing import Dict, Optional
 
 from ...constants import CURRENCY_PRECISION
 from ..common import CurrencyCode

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
 from xrpl.models.requests.ledger import Ledger
 from xrpl.utils import ripple_time_to_posix
@@ -26,9 +26,7 @@ async def fetch_orders(
     limit: int = DEFAULT_LIMIT,
     params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
-    search_limit = (
-        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
     orders: List[Order] = []
 
     has_next_page = True
@@ -40,19 +38,13 @@ async def fetch_orders(
             {
                 "transactions": True,
                 "expand": True,
-                "ledger_hash": previous_ledger_hash
-                if previous_ledger_hash != None
-                else None,
+                "ledger_hash": previous_ledger_hash if previous_ledger_hash != None else None,
                 "ledger_index": "validated" if previous_ledger_hash == None else None,
             }
         )
         ledger_response = await self.client.request(ledger_request)
         ledger_result = ledger_response.result
         handle_response_error(ledger_result)
-
-        if "error" in ledger_result:
-            raise Exception("Error: " + ledger_result["error_message"])
-            return
 
         ledger = ledger_result["ledger"]
 
@@ -92,8 +84,7 @@ async def fetch_orders(
                                 continue
                             if (
                                 node["FinalFields"]["Account"] == transaction["Account"]
-                                and node["FinalFields"]["Sequence"]
-                                == transaction["OfferSequence"]
+                                and node["FinalFields"]["Sequence"] == transaction["OfferSequence"]
                             ):
                                 tx_symbol = get_market_symbol(node["FinalFields"])
                                 break
@@ -104,17 +95,17 @@ async def fetch_orders(
 
             order_id = OrderId(transaction["Account"], transaction["Sequence"])
 
-            order = await self.fetch_order(order_id)
+            order: Optional[Order] = await self.fetch_order(order_id)
 
             if order == None:
                 continue
 
             if (
-                order["status"] == OrderStatus.Open.value
+                order.status == OrderStatus.Open.value
                 and params.show_open == False
-                or order["status"] == OrderStatus.Closed.value
+                or order.status == OrderStatus.Closed.value
                 and params.show_closed == False
-                or order["status"] == OrderStatus.Canceled.value
+                or order.status == OrderStatus.Canceled.value
                 and params.show_canceled == False
             ):
                 continue

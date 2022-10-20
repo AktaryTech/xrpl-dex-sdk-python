@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from ..common import MarketSymbol, UnixISOTimestamp, UnixTimestamp
 from ..base_model import BaseModel
@@ -48,7 +47,7 @@ class Ticker(BaseModel):
     # volume of quote currency traded for last 24 hours
     quote_volume: float = REQUIRED
     # the original non-modified unparsed reply from exchange API
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 Tickers = Dict[MarketSymbol, Ticker]

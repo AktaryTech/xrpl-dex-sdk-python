@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, Optional
 
 from ..common import MarketSymbol, UnixISOTimestamp, UnixTimestamp
 from ..base_model import BaseModel

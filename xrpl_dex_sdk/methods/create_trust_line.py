@@ -7,7 +7,7 @@ from ..models.methods.create_trust_line import CreateTrustLineResponse
 
 
 def create_trust_line(self, code: CurrencyCode, limit_amount: str) -> CreateTrustLineResponse:
-    if code.code == "XRP":
+    if code.is_xrp():
         raise Exception("Error creating Trust Line: No line needed for XRP")
     elif code.issuer == None:
         raise Exception("Error creating Trust Line: Invalid code")

@@ -1,8 +1,5 @@
 from typing import Optional
-from ..models.methods.fetch_trading_fee import FetchTradingFeeResponse
-from ..models.common import MarketSymbol
-from ..models.ccxt.markets import Market
-from ..models.ccxt.fees import TradingFee
+from ..models import FetchTradingFeeResponse, MarketSymbol, Market, TradingFee
 
 
 async def fetch_trading_fee(self, symbol: MarketSymbol) -> Optional[FetchTradingFeeResponse]:

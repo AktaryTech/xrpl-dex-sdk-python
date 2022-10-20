@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import NamedTuple, Optional, Union
+from typing import Optional, Union
 
 from ..ccxt.order_book import OrderBook
 from ..common import AccountAddress

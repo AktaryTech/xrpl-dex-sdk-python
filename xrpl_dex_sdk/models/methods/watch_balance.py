@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, NamedTuple, Optional
+from typing import Callable, Optional
 
 from ..common import CurrencyCode
 from ..base_model import BaseModel

@@ -1,4 +1,8 @@
-from typing import Any, Dict, NamedTuple
+from dataclasses import dataclass
+from typing import Any, Dict
+
+from ..base_model import BaseModel
+from ..required import REQUIRED
 from ..common import CurrencyCode
 
 #
@@ -6,10 +10,11 @@ from ..common import CurrencyCode
 #
 # @category Responses
 #
-class CreateTrustLineResponse(NamedTuple):
-    code: CurrencyCode
-    amount: str
-    info: Dict[str, Any]
+@dataclass(frozen=True)
+class CreateTrustLineResponse(BaseModel):
+    code: CurrencyCode = REQUIRED
+    amount: str = REQUIRED
+    info: dict = REQUIRED
 
 
 __all__ = ["CreateTrustLineResponse"]

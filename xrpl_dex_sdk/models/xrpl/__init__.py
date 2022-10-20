@@ -1,5 +1,5 @@
 """Top-level exports for the models.xrpl package."""
-from .common import *
+from .currency import *
 from .errors import *
 from .fees import *
 from .issuers import *
@@ -9,7 +9,7 @@ from .offers import *
 from .transactions import *
 
 __all__ = [
-    *common.__all__,
+    *currency.__all__,
     *errors.__all__,
     *fees.__all__,
     *issuers.__all__,

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import NamedTuple, Optional
+from typing import Optional
 
 from ..ccxt import Trades
 from ...constants import DEFAULT_SEARCH_LIMIT

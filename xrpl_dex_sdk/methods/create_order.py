@@ -1,14 +1,22 @@
 from xrpl.utils import xrp_to_drops
 from xrpl.transaction import safe_sign_and_submit_transaction
-from xrpl.models.amounts.issued_currency_amount import IssuedCurrencyAmount
 from xrpl.models.transactions import OfferCreate
+from xrpl.models.amounts import (
+    Amount as XrplAmount,
+    IssuedCurrencyAmount as XrplIssuedCurrencyAmount,
+)
 
-from ..models.common import MarketSymbol
-from ..models.ccxt.orders import OrderId, OrderSide, OrderType
-from ..models.methods.create_order import CreateOrderParams, CreateOrderResponse
-from ..models.xrpl import OfferCreateFlags
-from ..utils.errors import handle_response_error
-from ..utils.orders import get_base_amount_key
+from ..models import (
+    MarketSymbol,
+    BigNumberish,
+    OrderId,
+    OrderSide,
+    OrderType,
+    CreateOrderParams,
+    CreateOrderResponse,
+    OfferCreateFlags,
+)
+from ..utils import handle_response_error, get_base_amount_key
 
 
 def create_order(
@@ -17,26 +25,29 @@ def create_order(
     side: OrderSide,
     # unused - always "limit"
     type: OrderType,
-    amount: float,
-    price: float,
+    amount: BigNumberish,
+    price: BigNumberish,
     params: CreateOrderParams = CreateOrderParams(),
 ) -> CreateOrderResponse:
+    amount = float(amount)
+    price = float(price)
+
     base_amount = (
-        IssuedCurrencyAmount(
+        XrplIssuedCurrencyAmount(
             currency=symbol.base.currency,
             issuer=symbol.base.issuer,
-            value=str(amount),
+            value=amount,
         )
-        if symbol.base.issuer != None
+        if symbol.base.issuer
         else xrp_to_drops(amount)
     )
     base_amount_key = get_base_amount_key(side)
 
     quote_amount = (
-        IssuedCurrencyAmount(
+        XrplIssuedCurrencyAmount(
             currency=symbol.quote.currency,
             issuer=symbol.quote.issuer,
-            value=str(amount * price),
+            value=amount * price,
         )
         if symbol.quote.issuer != None
         else xrp_to_drops(amount * price)
@@ -49,7 +60,7 @@ def create_order(
         "taker_pays": base_amount if base_amount_key == "TakerPays" else quote_amount,
     }
 
-    for field in params._fields:
+    for field in params.__dataclass_fields__:
         if getattr(params, field) != None:
             offer_create_request[field] = params.__getattribute__(field)
 
@@ -67,15 +78,13 @@ def create_order(
     offer_create_response = safe_sign_and_submit_transaction(
         transaction=OfferCreate.from_dict(offer_create_request),
         wallet=self.wallet,
-        client=self.client,
+        client=self.sync_client,
     )
     offer_create_result = offer_create_response.result
     handle_response_error(offer_create_result)
 
     if "error" in offer_create_result:
-        raise Exception(
-            offer_create_result["error"] + " " + offer_create_result["error_message"]
-        )
+        raise Exception(offer_create_result["error"] + " " + offer_create_result["error_message"])
 
     else:
         return CreateOrderResponse(

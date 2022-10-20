@@ -1,15 +1,15 @@
 import uuid
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Set, cast
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
 from xrpl.models import Subscribe, StreamParameter
 
-from ..constants import DEFAULT_SEARCH_LIMIT
 from ..models import (
     WatchTickerParams,
     MarketSymbol,
     Ticker,
 )
+from ..utils import omit
 
 
 async def watch_ticker(
@@ -35,12 +35,7 @@ async def watch_ticker(
             ):
                 return
 
-            new_ticker = await self.fetch_ticker(
-                symbol,
-                WatchTickerParams(
-                    search_limit=params.search_limit, listener=params.listener
-                ),
-            )
+            new_ticker: Optional[Ticker] = await self.fetch_ticker(symbol, params)
 
             if new_ticker == None:
                 return
@@ -48,12 +43,13 @@ async def watch_ticker(
             if ticker == None:
                 return new_ticker
             else:
-                for field in new_ticker._fields:
-                    if field != "datetime" and field != "timestamp" and field != "info":
-                        if new_ticker.__getattribute__(
-                            field
-                        ) != ticker.__getattribute__(field):
-                            return new_ticker
+                omitted_fields = cast(Set, ["datetime", "timestamp", "info"])
+                return (
+                    new_ticker
+                    if omit(ticker.to_dict(), omitted_fields)
+                    != omit(new_ticker.to_dict(), omitted_fields)
+                    else None
+                )
 
     async with self.websocket_client as websocket:
         await websocket.send(payload)
@@ -68,6 +64,7 @@ async def watch_ticker(
 
             new_ticker = await ticker_handler(message)
             if new_ticker != None:
+                ticker = new_ticker
                 if isinstance(params, Dict):
                     params.listener(new_ticker)
                 else:

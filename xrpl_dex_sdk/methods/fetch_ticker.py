@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 from time import time
 from datetime import datetime
 
@@ -7,9 +7,8 @@ from xrpl.models.requests.book_offers import BookOffers
 from ..constants import CURRENCY_PRECISION, DEFAULT_SEARCH_LIMIT
 from ..models import (
     FetchTickerParams,
-    Offer,
+    BookOffer,
     FetchTickerResponse,
-    LedgerEntryTypes,
     MarketSymbol,
     Ticker,
 )
@@ -23,7 +22,7 @@ from ..utils import (
 
 async def fetch_ticker(
     self, symbol: MarketSymbol, params: FetchTickerParams = FetchTickerParams()
-) -> FetchTickerResponse:
+) -> Optional[FetchTickerResponse]:
     search_limit = params.search_limit if params.search_limit else DEFAULT_SEARCH_LIMIT
 
     high: Union[float, None] = None
@@ -41,11 +40,11 @@ async def fetch_ticker(
     quote_volume: float = 0
 
     base_amount = {"currency": symbol.base.currency}
-    if symbol.base.issuer != None:
+    if symbol.base.issuer:
         base_amount["issuer"] = symbol.base.issuer
 
     quote_amount = {"currency": symbol.quote.currency}
-    if symbol.quote.issuer != None:
+    if symbol.quote.issuer:
         quote_amount["issuer"] = symbol.quote.issuer
 
     bids_response = await self.client.request(
@@ -76,48 +75,39 @@ async def fetch_ticker(
 
     book_offers.sort(reverse=False, key=sort_by_previous_txn_lgr_seq)
 
-    def get_book_offer_price(book_offer: Offer) -> float:
-        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(
-            book_offer
-        )
+    def get_book_offer_price(book_offer: BookOffer) -> float:
+        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(book_offer)
 
-    open = get_book_offer_price(
-        Offer.from_dict(
-            {
-                **book_offers[1],
-                "LedgerEntryType": LedgerEntryTypes(book_offers[1]["LedgerEntryType"]),
-            }
-        )
-    )
-    close = get_book_offer_price(Offer.from_dict(book_offers[len(book_offers) - 1]))
-    previous_close = get_book_offer_price(Offer.from_dict(book_offers[0]))
+    open = get_book_offer_price(BookOffer.from_dict(book_offers[1]))
+    close = get_book_offer_price(BookOffer.from_dict(book_offers[-1]))
+    previous_close = get_book_offer_price(BookOffer.from_dict(book_offers[0]))
 
     for book_offer_dict in book_offers:
-        book_offer = Offer.from_dict(book_offer_dict)
-        price = get_book_offer_price(book_offer)
+        book_offer = BookOffer.from_dict(book_offer_dict)
+        book_offer_price = get_book_offer_price(book_offer)
 
-        if high == None or price > high:
-            high = price
-        if low == None or price < low:
-            low = price
+        if not high or book_offer_price > high:
+            high = book_offer_price
+        if not low or book_offer_price < low:
+            low = book_offer_price
 
         base_value = get_book_offer_base_value(book_offer)
         quote_value = get_book_offer_quote_value(book_offer)
 
-        if bid == None or price > bid:
-            bid = price
-        if bid_volume == None or base_value > bid_volume:
+        if not bid or book_offer_price > bid:
+            bid = book_offer_price
+        if not bid_volume or base_value > bid_volume:
             bid_volume = base_value
 
-        if ask == None or price > ask:
-            ask = price
-        if ask_volume == None or quote_value > ask_volume:
+        if not ask or book_offer_price > ask:
+            ask = book_offer_price
+        if not ask_volume or quote_value > ask_volume:
             ask_volume = quote_value
 
         base_volume += base_value
         quote_volume += quote_value
 
-        vwap_price += price * base_value
+        vwap_price += book_offer_price * base_value
         vwap_quantity += base_value
 
     vwap = vwap_price / vwap_quantity
@@ -132,12 +122,12 @@ async def fetch_ticker(
         symbol=symbol,
         timestamp=timestamp,
         datetime=iso_timestamp,
-        high=round(high if high != None else 0, CURRENCY_PRECISION),
-        low=round(low if low != None else 0, CURRENCY_PRECISION),
-        bid=round(bid if bid != None else 0, CURRENCY_PRECISION),
-        bid_volume=round(bid_volume if bid_volume != None else 0, CURRENCY_PRECISION),
-        ask=round(ask if ask != None else 0, CURRENCY_PRECISION),
-        ask_volume=round(ask_volume if ask_volume != None else 0, CURRENCY_PRECISION),
+        high=round(high if high else 0, CURRENCY_PRECISION),
+        low=round(low if low else 0, CURRENCY_PRECISION),
+        bid=round(bid if bid else 0, CURRENCY_PRECISION),
+        bid_volume=round(bid_volume if bid_volume else 0, CURRENCY_PRECISION),
+        ask=round(ask if ask else 0, CURRENCY_PRECISION),
+        ask_volume=round(ask_volume if ask_volume else 0, CURRENCY_PRECISION),
         vwap=round(vwap, CURRENCY_PRECISION),
         open=round(open, CURRENCY_PRECISION),
         close=round(close, CURRENCY_PRECISION),

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, NamedTuple, Optional
+from typing import Dict, Optional
 
 from ..common import CurrencyCode, MarketSymbol
 from ..base_model import BaseModel

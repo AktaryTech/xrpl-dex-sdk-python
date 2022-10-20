@@ -41,9 +41,7 @@ async def fetch_order_book(
         "taker_pays": taker_pays,
         "taker_gets": taker_gets,
         "limit": params.search_limit,
-        "ledger_index": params.ledger_index
-        if params.ledger_index != None
-        else "validated",
+        "ledger_index": params.ledger_index if params.ledger_index != None else "validated",
     }
 
     if params.ledger_hash != None:
@@ -51,9 +49,7 @@ async def fetch_order_book(
     if params.taker != None:
         book_offers_request["taker"] = params.taker
 
-    book_offers_response = await self.client.request(
-        BookOffers.from_dict(book_offers_request)
-    )
+    book_offers_response = await self.client.request(BookOffers.from_dict(book_offers_request))
     book_offers_result = book_offers_response.result
     handle_response_error(book_offers_result)
 
@@ -71,22 +67,14 @@ async def fetch_order_book(
             else OrderSide.Buy
         )
 
-        base_amount = (
-            offer["TakerPays"] if side == OrderSide.Buy else offer["TakerGets"]
-        )
+        base_amount = offer["TakerPays"] if side == OrderSide.Buy else offer["TakerGets"]
         base_value = float(
-            base_amount["value"]
-            if "value" in base_amount
-            else drops_to_xrp(base_amount)
+            base_amount["value"] if "value" in base_amount else drops_to_xrp(base_amount)
         )
 
-        quote_amount = (
-            offer["TakerGets"] if side == OrderSide.Buy else offer["TakerPays"]
-        )
+        quote_amount = offer["TakerGets"] if side == OrderSide.Buy else offer["TakerPays"]
         quote_value = float(
-            quote_amount["value"]
-            if "value" in quote_amount
-            else drops_to_xrp(quote_amount)
+            quote_amount["value"] if "value" in quote_amount else drops_to_xrp(quote_amount)
         )
 
         order_book_entry = [quote_value / base_value, base_value]

@@ -11,7 +11,6 @@ from ..models import (
     OrderId,
     Trade,
     Order,
-    UnixTimestamp,
     OrderStatus,
 )
 from ..utils import parse_transaction, get_order_from_data, get_trade_from_data
@@ -23,7 +22,7 @@ async def watch_orders(
     symbol: Optional[MarketSymbol],
     params: WatchOrdersParams,
 ) -> None:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
+    # symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
@@ -33,13 +32,11 @@ async def watch_orders(
     async def orders_handler(tx_message: Any):
         if tx_message["type"] == "transaction":
             order_id = OrderId(
-                tx_message["transaction"]["Account"],
-                tx_message["transaction"]["Sequence"],
+                account=tx_message["transaction"]["Account"],
+                sequence=tx_message["transaction"]["Sequence"],
             )
 
-            txn_data = parse_transaction(
-                id=order_id, transaction=tx_message["transaction"]
-            )
+            txn_data = parse_transaction(id=order_id, transaction=tx_message["transaction"])
 
             if txn_data == None:
                 return
@@ -47,7 +44,6 @@ async def watch_orders(
             trades: List[Trade] = []
             order: Optional[Order] = None
             order_status = OrderStatus.Open
-            last_trade_timestamp: Optional[UnixTimestamp] = None
             filled: float = 0
             fill_price: float = 0
             total_fill_price: float = fill_price
@@ -55,8 +51,6 @@ async def watch_orders(
             transaction = txn_data["transaction"]
             offers: List[Offer] = txn_data["offers"]
             date = txn_data["date"]
-
-            last_trade_timestamp = date
 
             for offer in offers:
                 if offer.Sequence == None:
@@ -81,8 +75,8 @@ async def watch_orders(
                     trades.append(trade)
 
             if (
-                transaction["Account"] == id.account
-                and transaction["Sequence"] == id.sequence
+                transaction["Account"] == order_id.account
+                and transaction["Sequence"] == order_id.sequence
             ):
                 source = transaction
 
@@ -106,6 +100,8 @@ async def watch_orders(
                     },
                     {"transaction_data": txn_data},
                 )
+
+            return order
 
     async with self.websocket_client as websocket:
         await websocket.send(payload)

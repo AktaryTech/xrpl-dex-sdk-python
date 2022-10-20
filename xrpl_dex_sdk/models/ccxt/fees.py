@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, NamedTuple, Optional
+from typing import Any, Dict, List, Optional
 
 from ..common import CurrencyCode, MarketSymbol
 from ..base_model import BaseModel
@@ -30,7 +30,7 @@ class TransactionFee(BaseModel):
     # The transfer fee (if any) for the given issuers #
     transfer: Optional[float] = None
     # Raw response from exchange
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 #
@@ -45,7 +45,7 @@ class TradingFee(BaseModel):
     # Fee rate for quote token #
     quote: float = REQUIRED
     # Raw response from exchange
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
     # Whether the fees are a percentage or flat rate #
     percentage: Optional[bool] = True
 

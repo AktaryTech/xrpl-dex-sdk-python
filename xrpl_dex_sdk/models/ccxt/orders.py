@@ -53,7 +53,7 @@ class Order(BaseModel):
     cost: float = REQUIRED
     trades: List[Trade] = REQUIRED
     fee: Optional[Fee] = None
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 __all__ = [

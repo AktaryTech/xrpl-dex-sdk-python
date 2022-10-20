@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, NamedTuple, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 from xrpl.models.transactions import Memo
 
 from ..ccxt.orders import OrderId
@@ -21,7 +21,7 @@ class CancelOrderParams(BaseModel):
 @dataclass(frozen=True)
 class CancelOrderResponse(BaseModel):
     id: OrderId = REQUIRED
-    info: Dict[str, Any] = REQUIRED
+    info: dict = REQUIRED
 
 
 __all__ = ["CancelOrderParams", "CancelOrderResponse"]

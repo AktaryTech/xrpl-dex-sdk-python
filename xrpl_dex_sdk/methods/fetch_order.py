@@ -46,9 +46,7 @@ async def fetch_order(
         transactions.append(previous_txn_data)
 
     while previous_txn_id != None:
-        tx_response = await self.client.request(
-            Tx.from_dict({"transaction": previous_txn_id})
-        )
+        tx_response = await self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
         tx = tx_response.result
         handle_response_error(tx)
 
@@ -105,10 +103,7 @@ async def fetch_order(
             if trade != None:
                 trades.append(trade)
 
-        if (
-            transaction["Account"] == id.account
-            and transaction["Sequence"] == id.sequence
-        ):
+        if id == transaction:
             source = transaction
 
             if "Sequence" not in source:
@@ -119,6 +114,7 @@ async def fetch_order(
                 {
                     "status": order_status,
                     "date": date,
+                    "last_trade_timestamp": last_trade_timestamp,
                     "filled": filled,
                     "fill_price": fill_price,
                     "total_fill_price": total_fill_price,

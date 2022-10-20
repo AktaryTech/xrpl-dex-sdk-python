@@ -2,10 +2,10 @@ from typing import Any, Dict, Optional
 import uuid
 
 from xrpl.asyncio.clients import AsyncWebsocketClient
-from xrpl.models import Subscribe, SubscribeBook, IssuedCurrency, XRP
+from xrpl.models import Subscribe, SubscribeBook
 
 from ..constants import DEFAULT_LIMIT
-from ..models import WatchOrderBookParams, MarketSymbol
+from ..models import WatchOrderBookParams, MarketSymbol, IssuedCurrency, XRP
 
 
 async def watch_order_book(
@@ -16,7 +16,7 @@ async def watch_order_book(
     limit: Optional[int],
     params: WatchOrderBookParams,
 ) -> None:
-    symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
+    # symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
     limit = DEFAULT_LIMIT if limit == None else limit
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:

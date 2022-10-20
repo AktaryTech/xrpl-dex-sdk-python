@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
 
-from .common import Amount
+from .currency import Amount
 from .metadata import Node
 from ..common import UnixTimestamp, XrplTimestamp
 from ..xrpl import Offer
@@ -27,7 +27,7 @@ class Warning(BaseModel):
 
 @dataclass(frozen=True)
 class BaseTxResponse(BaseModel):
-    id: int or str = REQUIRED
+    id: Union[int, str] = REQUIRED
     status: Optional[str] = None
     type: str = REQUIRED
     result: Any = REQUIRED
@@ -41,7 +41,7 @@ class BaseTxResponse(BaseModel):
 class TxResult(BaseModel):
     hash: str = REQUIRED
     ledger_index: int = REQUIRED
-    meta: TransactionMetadata or str = REQUIRED
+    meta: Union[TransactionMetadata, str] = REQUIRED
     validated: bool = REQUIRED
     date: XrplTimestamp = REQUIRED
 

@@ -13,7 +13,7 @@ async def fetch_balance(
     self, params: Optional[FetchBalanceParams] = FetchBalanceParams()
 ) -> Optional[FetchBalanceResponse]:
     balances: Dict[CurrencyCode, Balance] = {}
-    info: Dict[str, Any] = {}
+    info: dict = {}
 
     # get XRP balance
     if getattr(params, "code") == None or getattr(params, "code") == "XRP":
@@ -40,9 +40,7 @@ async def fetch_balance(
         free_xrp = float(drops_to_xrp(account_info["Balance"])) - used_xrp
         total_xrp = used_xrp + free_xrp
 
-        balances[CurrencyCode("XRP")] = Balance(
-            free=free_xrp, used=used_xrp, total=total_xrp
-        )
+        balances[CurrencyCode("XRP")] = Balance(free=free_xrp, used=used_xrp, total=total_xrp)
 
         info["account_info"] = account_info
         info["validated_ledger"] = validated_ledger

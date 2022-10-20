@@ -1,11 +1,9 @@
 from typing import Optional, Union
-from ..data import markets_data, MarketsData
+from ..data import markets_data
 from ..models import CurrencyCode, MarketSymbol, FetchMarketResponse, Market
 
 
-async def fetch_market(
-    self, symbol: Union[MarketSymbol, str]
-) -> Optional[FetchMarketResponse]:
+async def fetch_market(self, symbol: Union[MarketSymbol, str]) -> Optional[FetchMarketResponse]:
     symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
 
     if self.markets != None and symbol in self.markets:

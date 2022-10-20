@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import NamedTuple, Optional, Union
+from typing import Optional, Union
 
 from ...constants import DEFAULT_SEARCH_LIMIT
 from ...models.ccxt import Order

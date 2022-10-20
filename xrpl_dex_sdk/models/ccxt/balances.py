@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, NamedTuple
+from typing import Dict
 
 from ..common import CurrencyCode
 from ..base_model import BaseModel

@@ -6,23 +6,15 @@ from .. import constants
 MarketsData: Dict[str, Markets] = {}
 
 MarketsData[constants.TESTNET] = {
-    MarketSymbol(
-        CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"), "XRP"
-    ): Market(
+    MarketSymbol(CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"), "XRP"): Market(
         id="AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP",
-        symbol=MarketSymbol(
-            CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"), "XRP"
-        ),
+        symbol=MarketSymbol(CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"), "XRP"),
         base=CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"),
         quote=CurrencyCode("XRP"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")): Market(
         id="XRP/AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("AKT", "rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B"),
     ),
@@ -123,53 +115,33 @@ MarketsData[constants.MAINNET] = {
         ),
         quote=CurrencyCode("USD", "rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("USD", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("USD", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")): Market(
         id="XRP/USD+rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("USD", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("USD", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("USD", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("EUR", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("EUR", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")): Market(
         id="XRP/EUR+rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("EUR", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("EUR", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("EUR", "rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")): Market(
         id="XRP/SGB+rctArjqVvTHihekzDeecKo6mkTYTUSBNc",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")): Market(
         id="XRP/ETH+rcA8X3TVMST1n3CJeAdGk1RdRCHii7N2h",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("SGB", "rctArjqVvTHihekzDeecKo6mkTYTUSBNc")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("ETH", "rcA8X3TVMST1n3CJeAdGk1RdRCHii7N2h"),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("XTK", "rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("XTK", "rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb")): Market(
         id="XRP/XTK+rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("XTK", "rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("XTK", "rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("XTK", "rXTKdHWuppSjkbiKoEv53bfxHAn1MxmTb"),
     ),
@@ -278,13 +250,9 @@ MarketsData[constants.MAINNET] = {
             "rpakCr61Q92abPXJnVboKENmpKssWyHpwu",
         ),
     ),
-    MarketSymbol(
-        "XRP", CurrencyCode("ELS", "rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg")
-    ): Market(
+    MarketSymbol("XRP", CurrencyCode("ELS", "rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg")): Market(
         id="XRP/ELS+rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg",
-        symbol=MarketSymbol(
-            "XRP", CurrencyCode("ELS", "rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg")
-        ),
+        symbol=MarketSymbol("XRP", CurrencyCode("ELS", "rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg")),
         base=CurrencyCode("XRP"),
         quote=CurrencyCode("ELS", "rHXuEaRYnnJHbDeuBH5w8yPh5uwNVh5zAg"),
     ),

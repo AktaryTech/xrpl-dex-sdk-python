@@ -1,6 +1,7 @@
 from typing import List
 
 from ..models import (
+    FetchTickerParams,
     FetchTickersParams,
     FetchTickersResponse,
     MarketSymbol,
@@ -14,7 +15,7 @@ async def fetch_tickers(
     tickers: List[Ticker] = []
 
     for symbol in symbols:
-        ticker = await self.fetch_ticker(symbol, params)
+        ticker = await self.fetch_ticker(symbol, FetchTickerParams.from_dict(params.to_dict()))
         if ticker != None:
             tickers.append(ticker)
 

@@ -10,9 +10,7 @@ from ..models import (
     Trade,
     Trade,
     Trades,
-    Offer,
     MarketSymbol,
-    Node,
     UnixTimestamp,
 )
 from ..utils import (
@@ -35,9 +33,7 @@ async def fetch_my_trades(
     params: FetchTradesParams = FetchTradesParams(),
 ) -> FetchTradesResponse:
     limit = limit if limit != None else DEFAULT_LIMIT
-    search_limit = (
-        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
 
     trades: Trades = []
 
@@ -60,11 +56,11 @@ async def fetch_my_trades(
         account_tx_result = account_tx_response.result
         handle_response_error(account_tx_result)
 
-        if account_tx_result["validated"] == False:
-            continue
-
         if "marker" in account_tx_result:
             marker = account_tx_result["marker"]
+
+        if account_tx_result["validated"] == False:
+            continue
 
         transactions = account_tx_result["transactions"]
 
@@ -80,10 +76,11 @@ async def fetch_my_trades(
             if tx["TransactionType"] != "OfferCreate" or "Sequence" not in tx:
                 continue
 
-            if since != None and ripple_time_to_posix(tx["date"]) >= since:
+            if get_market_symbol(tx) != symbol:
                 continue
 
-            if get_market_symbol(tx) != symbol:
+            if since != None and ripple_time_to_posix(tx["date"]) >= since:
+                has_next_page = False
                 continue
 
             for affected_node in transaction["meta"]["AffectedNodes"]:

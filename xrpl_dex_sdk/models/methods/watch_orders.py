@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, NamedTuple, Optional
+from typing import Callable, Optional
 
 from ...constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..base_model import BaseModel

@@ -1,34 +1,46 @@
-from typing import Any, NamedTuple, Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.asyncio.clients import AsyncJsonRpcClient, AsyncWebsocketClient
 from xrpl.clients import JsonRpcClient
 
 from . import methods
-from .models import Currencies, Issuers, Markets, TransferRates
-from .constants import Networks, NetworkName, MAINNET, LOCAL
+from .models import (
+    Currencies,
+    Issuers,
+    Markets,
+    TransferRates,
+    BaseModel,
+    REQUIRED,
+    NetworkName,
+)
+from .constants import Networks, MAINNET
 
 
-class SDKParams(NamedTuple):
-    network: Optional[str] = MAINNET
-    # websockets_options: Optional[Any] = None
-    wallet_secret: Optional[str] = None
+@dataclass(frozen=True)
+class SDKParams(BaseModel):
+    # xrpl servers
+    network: NetworkName = REQUIRED
     json_rpc_url: Optional[str] = None
     ws_url: Optional[str] = None
+
+    # clients
     client: Optional[AsyncJsonRpcClient] = None
     sync_client: Optional[JsonRpcClient] = None
     websocket_client: Optional[AsyncWebsocketClient] = None
+
+    # wallet
     wallet: Optional[Wallet] = None
+    wallet_secret: Optional[str] = None
     generate_wallet: Optional[bool] = False
     fund_testnet_wallet: Optional[bool] = False
 
 
 class SDK:
+    # clients
     client: AsyncJsonRpcClient
     sync_client: JsonRpcClient
     websocket_client: AsyncWebsocketClient
-    # wallet: Optional[Wallet]
-    # json_rpc_url: str
-    # ws_url: str
 
     # cache
     currencies: Optional[Currencies] = None
@@ -36,11 +48,14 @@ class SDK:
     markets: Optional[Markets] = None
     transfer_rates: Optional[TransferRates] = None
 
+    # state-changing methods
     cancel_order = methods.cancel_order
     create_limit_buy_order = methods.create_limit_buy_order
     create_limit_sell_order = methods.create_limit_sell_order
     create_order = methods.create_order
     create_trust_line = methods.create_trust_line
+
+    # read-only methods
     fetch_balance = methods.fetch_balance
     fetch_closed_orders = methods.fetch_closed_orders
     fetch_canceled_orders = methods.fetch_canceled_orders
@@ -87,28 +102,20 @@ class SDK:
 
         if params.client == None:
             json_rpc_url = (
-                network_urls["json_rpc"]
-                if "json_rpc" in network_urls
-                else params.json_rpc_url
+                network_urls["json_rpc"] if "json_rpc" in network_urls else params.json_rpc_url
             )
             if json_rpc_url == None:
-                raise Exception(
-                    "No JSON-RPC URL found or provided for network " + network + "!"
-                )
+                raise Exception("No JSON-RPC URL found or provided for network " + network + "!")
             self.client = AsyncJsonRpcClient(url=json_rpc_url)
         else:
             self.client = params.client
 
         if params.sync_client == None:
             json_rpc_url = (
-                network_urls["json_rpc"]
-                if "json_rpc" in network_urls
-                else params.json_rpc_url
+                network_urls["json_rpc"] if "json_rpc" in network_urls else params.json_rpc_url
             )
             if json_rpc_url == None:
-                raise Exception(
-                    "No JSON-RPC URL found or provided for network " + network + "!"
-                )
+                raise Exception("No JSON-RPC URL found or provided for network " + network + "!")
             self.sync_client = JsonRpcClient(url=json_rpc_url)
         else:
             self.sync_client = params.sync_client
@@ -116,9 +123,7 @@ class SDK:
         if params.websocket_client == None:
             ws_url = network_urls["ws"] if "ws" in network_urls else params.ws_url
             if ws_url == None:
-                raise Exception(
-                    "No Websocket URL found or provided for network " + network + "!"
-                )
+                raise Exception("No Websocket URL found or provided for network " + network + "!")
             self.websocket_client = AsyncWebsocketClient(url=ws_url)
         else:
             self.websocket_client = params.websocket_client
@@ -133,14 +138,10 @@ class SDK:
             else:
                 wallet = Wallet(seed=params.wallet_secret, sequence=0)
                 if wallet == None:
-                    raise Exception(
-                        "Could not create wallet using provided `wallet_secret`!"
-                    )
+                    raise Exception("Could not create wallet using provided `wallet_secret`!")
                 self.wallet = wallet
         else:
             self.wallet = params.wallet
 
         if params.fund_testnet_wallet == True:
-            self.wallet = generate_faucet_wallet(
-                client=self.sync_client, wallet=self.wallet
-            )
+            self.wallet = generate_faucet_wallet(client=self.sync_client, wallet=self.wallet)
