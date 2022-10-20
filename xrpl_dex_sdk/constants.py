@@ -5,8 +5,10 @@ from typing import Dict, Final, Pattern
 
 
 DEFAULT_LIMIT: int = int(os.getenv("XRPL_DEFAULT_LIMIT", 20))
-DEFAULT_SEARCH_LIMIT: int = int(os.getenv("XRPL_DEFAULT_LIMIT", 500))
-DEFAULT_TICKER_SEARCH_LIMIT: int = int(os.getenv("XRPL_DEFAULT_LIMIT", 50))
+DEFAULT_SEARCH_LIMIT: int = int(os.getenv("XRPL_DEFAULT_SEARCH_LIMIT", 200))
+DEFAULT_TICKER_SEARCH_LIMIT: int = int(
+    os.getenv("XRPL_DEFAULT_TICKER_SEARCH_LIMIT", 100)
+)
 
 
 class NetworkNames(Enum):
@@ -22,8 +24,12 @@ MAINNET: str = "MAINNET"
 LOCAL: str = "LOCAL"
 
 MAINNET_URL: str = os.getenv("XRPL_MAINNET_URL", "s1.ripple.com")
-MAINNET_FULL_HISTORY_1_URL: str = os.getenv("XRPL_MAINNET_FULL_HISTORY_1_URL", "xrplcluster.com")
-MAINNET_FULL_HISTORY_2_URL: str = os.getenv("XRPL_MAINNET_FULL_HISTORY_2_URL", "s2.ripple.com")
+MAINNET_FULL_HISTORY_1_URL: str = os.getenv(
+    "XRPL_MAINNET_FULL_HISTORY_1_URL", "xrplcluster.com"
+)
+MAINNET_FULL_HISTORY_2_URL: str = os.getenv(
+    "XRPL_MAINNET_FULL_HISTORY_2_URL", "s2.ripple.com"
+)
 TESTNET_URL: str = os.getenv("XRPL_TESTNET_URL", "s.altnet.rippletest.net")
 DEVNET_URL: str = os.getenv("XRPL_DEVNET_URL", "s.devnet.rippletest.net")
 NFT_DEVNET_URL: str = os.getenv("XRPL_NFT_DEVNET_URL", "xls20-sandbox.rippletest.net")
