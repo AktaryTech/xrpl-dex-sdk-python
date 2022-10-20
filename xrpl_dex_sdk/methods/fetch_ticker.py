@@ -23,9 +23,7 @@ from ..utils import (
 async def fetch_ticker(
     self, symbol: MarketSymbol, params: FetchTickerParams = FetchTickerParams()
 ) -> Optional[FetchTickerResponse]:
-    search_limit = (
-        params.search_limit if params.search_limit else DEFAULT_TICKER_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit else DEFAULT_TICKER_SEARCH_LIMIT
 
     high: Union[float, None] = None
     low: Union[float, None] = None
@@ -78,9 +76,7 @@ async def fetch_ticker(
     book_offers.sort(reverse=False, key=sort_by_previous_txn_lgr_seq)
 
     def get_book_offer_price(book_offer: BookOffer) -> float:
-        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(
-            book_offer
-        )
+        return get_book_offer_quote_value(book_offer) / get_book_offer_base_value(book_offer)
 
     open = get_book_offer_price(BookOffer.from_dict(book_offers[1]))
     close = get_book_offer_price(BookOffer.from_dict(book_offers[-1]))
