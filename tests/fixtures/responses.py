@@ -296,7 +296,9 @@ fetch_order_responses[
         "timestamp": 1664567751000,
         "last_trade_timestamp": 1664568213000,
         "status": OrderStatus.Closed,
-        "symbol": MarketSymbol.from_string("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"),
+        "symbol": MarketSymbol.from_string(
+            "AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"
+        ),
         "type": OrderType.Limit,
         "time_in_force": OrderTimeInForce.GoodTillCanceled,
         "side": OrderSide.Sell,
@@ -309,8 +311,12 @@ fetch_order_responses[
         "trades": [
             Trade.from_dict(
                 {
-                    "id": TradeId.from_string("rLg33RykRFBxoJsTknkE5ekmoVDPmAPJwU:31617724"),
-                    "order": OrderId.from_string("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z:31617670"),
+                    "id": TradeId.from_string(
+                        "rLg33RykRFBxoJsTknkE5ekmoVDPmAPJwU:31617724"
+                    ),
+                    "order": OrderId.from_string(
+                        "r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z:31617670"
+                    ),
                     "datetime": "2022-09-30T20:03:33.000Z",
                     "timestamp": 1664568213000,
                     "symbol": MarketSymbol.from_string(
@@ -387,3 +393,27 @@ fetch_order_responses[
         },
     }
 )
+
+fetch_trades_expected_responses: Dict[str, Dict[str, Any]] = {
+    "by_trade_id": {},
+    "by_order_id": {},
+    "by_symbol": {},
+}
+
+_trade_1 = {
+    "id": "r3KC7iM1GPLmvg1MVTXbXmoC87yyyuFRf2:67956678",
+    "order": "rpXhhWmCvDwkzNtRbm7mmD1vZqdfatQNEe:59349452",
+    "datetime": "2022-10-21T02:19:30.000Z",
+    "timestamp": 1666318770000,
+    "symbol": "XRP/USD+rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+    "type": "limit",
+    "side": "sell",
+    "amount": 5254.779017,
+    "price": 0.4462306799635816,
+    "taker_or_maker": "maker",
+    "cost": 2344.843613814271,
+}
+
+fetch_trades_expected_responses["by_trade_id"][_trade_1["id"]] = _trade_1
+fetch_trades_expected_responses["by_order_id"][_trade_1["order"]] = _trade_1
+fetch_trades_expected_responses["by_symbol"][_trade_1["symbol"]] = _trade_1

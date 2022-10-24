@@ -18,11 +18,19 @@ from ..utils import parse_transaction, get_order_from_data, get_trade_from_data
 
 async def watch_orders(
     self,
-    # Token pair (called Unified Market Symbol in CCXT)
     symbol: Optional[MarketSymbol],
     params: WatchOrdersParams,
 ) -> None:
-    # symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
+    """
+    Listens for new Orders for a single market pair.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        (Optional) Symbol to filter Orders by
+    params : WatchOrdersParams
+        Additional request parameters
+    """
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
@@ -36,9 +44,11 @@ async def watch_orders(
                 sequence=tx_message["transaction"]["Sequence"],
             )
 
-            txn_data = parse_transaction(id=order_id, transaction=tx_message["transaction"])
+            txn_data = parse_transaction(
+                id=order_id, transaction=tx_message["transaction"]
+            )
 
-            if txn_data == None:
+            if txn_data == None or (symbol and symbol != order_id):
                 return
 
             trades: List[Trade] = []

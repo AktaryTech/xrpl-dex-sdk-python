@@ -8,6 +8,8 @@ from ..required import REQUIRED
 
 
 class ExchangeStatusType(Enum):
+    """https://docs.ccxt.com/en/latest/manual.html?#exchange-status-structure"""
+
     OK = "ok"
     SHUTDOWN = "shutdown"
     ERROR = "error"

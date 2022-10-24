@@ -1,5 +1,5 @@
 from ..models.common import MarketSymbol, BigNumberish
-from ..models.ccxt.orders import OrderSide, OrderType
+from ..models.ccxt.order import OrderSide, OrderType
 from ..models.methods.create_limit_sell_order import (
     CreateLimitSellOrderParams,
     CreateLimitSellOrderResponse,
@@ -13,6 +13,26 @@ def create_limit_sell_order(
     price: BigNumberish,
     params: CreateLimitSellOrderParams = CreateLimitSellOrderParams(),
 ) -> CreateLimitSellOrderResponse:
+    """
+    Places a Limit Sell Order on the Ripple dEX.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        Market symbol for new Order
+    amount : float
+        How much currency you want to trade (in units of base currency)
+    price : float
+        Price at which the order is to be fullfilled (in units of quote currency)
+    params : CreateLimitSellOrderParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    CreateLimitSellOrderResponse
+        ID of created Order
+    """
+
     order = self.create_order(
         symbol=symbol,
         side=OrderSide.Sell,

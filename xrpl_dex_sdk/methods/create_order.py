@@ -29,6 +29,30 @@ def create_order(
     price: BigNumberish,
     params: CreateOrderParams = CreateOrderParams(),
 ) -> CreateOrderResponse:
+    """
+    Places an Order on the Ripple dEX.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        Market symbol for new Order
+    side : OrderSide
+        Order direction (buy or sell)
+    type : OrderType
+        Order type. Only limit orders are supported
+    amount : float
+        How much currency you want to trade (in units of base currency)
+    price : float
+        Price at which the order is to be fullfilled (in units of quote currency)
+    params : CreateOrderParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    CreateOrderResponse
+        ID of created Order
+    """
+
     amount = float(amount)
     price = float(price)
 
@@ -83,14 +107,10 @@ def create_order(
     offer_create_result = offer_create_response.result
     handle_response_error(offer_create_result)
 
-    if "error" in offer_create_result:
-        raise Exception(offer_create_result["error"] + " " + offer_create_result["error_message"])
-
-    else:
-        return CreateOrderResponse(
-            id=OrderId(
-                offer_create_result["tx_json"]["Account"],
-                offer_create_result["tx_json"]["Sequence"],
-            ),
-            info={"OfferCreate": offer_create_result},
-        )
+    return CreateOrderResponse(
+        id=OrderId(
+            offer_create_result["tx_json"]["Account"],
+            offer_create_result["tx_json"]["Sequence"],
+        ),
+        info={"OfferCreate": offer_create_result},
+    )

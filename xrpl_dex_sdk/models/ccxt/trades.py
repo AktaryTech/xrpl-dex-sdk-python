@@ -30,6 +30,8 @@ class TradeTakerOrMaker(Enum):
 
 @dataclass(frozen=True)
 class Trade(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#trade-structure"""
+
     # string trade id
     id: TradeId = REQUIRED
     # string order id or undefined/None/null

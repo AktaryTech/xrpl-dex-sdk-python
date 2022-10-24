@@ -4,6 +4,8 @@ from ..models import CurrencyCode, MarketSymbol, FetchMarketsResponse, Market, M
 
 
 async def fetch_markets(self) -> Optional[FetchMarketsResponse]:
+    """Retrieves info about all markets being traded on the dEX."""
+
     if self.markets != None:
         return self.markets
 

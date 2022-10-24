@@ -22,7 +22,16 @@ async def watch_trades(
     symbol: MarketSymbol,
     params: WatchTradesParams,
 ) -> None:
-    # symbol = MarketSymbol(symbol) if isinstance(symbol, str) else symbol
+    """
+    Listens for new Trades for a given market symbol.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        (Optional) Market symbol to filter Trades by
+    params : WatchTradesParams
+        Additional request parameters
+    """
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching trades: Websockets client not initialized")

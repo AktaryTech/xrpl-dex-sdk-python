@@ -35,6 +35,8 @@ class OrderSide(Enum):
 
 @dataclass(frozen=True)
 class Order(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#order-structure"""
+
     id: OrderId = REQUIRED
     client_order_id: Optional[str] = None
     datetime: UnixISOTimestamp = REQUIRED

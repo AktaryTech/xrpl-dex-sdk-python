@@ -12,6 +12,22 @@ from ..utils import handle_response_error
 async def fetch_balance(
     self, params: Optional[FetchBalanceParams] = FetchBalanceParams()
 ) -> Optional[FetchBalanceResponse]:
+    """
+    Returns information about an account's balances.
+
+    Results are sorted by currency and funds availability.
+
+    Parameters
+    ----------
+    params : FetchBalanceParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    FetchBalanceResponse
+        Balance information
+    """
+
     balances: Dict[CurrencyCode, Balance] = {}
     info: dict = {}
 
@@ -40,7 +56,9 @@ async def fetch_balance(
         free_xrp = float(drops_to_xrp(account_info["Balance"])) - used_xrp
         total_xrp = used_xrp + free_xrp
 
-        balances[CurrencyCode("XRP")] = Balance(free=free_xrp, used=used_xrp, total=total_xrp)
+        balances[CurrencyCode("XRP")] = Balance(
+            free=free_xrp, used=used_xrp, total=total_xrp
+        )
 
         info["account_info"] = account_info
         info["validated_ledger"] = validated_ledger

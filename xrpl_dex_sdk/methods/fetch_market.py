@@ -3,7 +3,23 @@ from ..data import markets_data
 from ..models import CurrencyCode, MarketSymbol, FetchMarketResponse, Market
 
 
-async def fetch_market(self, symbol: Union[MarketSymbol, str]) -> Optional[FetchMarketResponse]:
+async def fetch_market(
+    self, symbol: Union[MarketSymbol, str]
+) -> Optional[FetchMarketResponse]:
+    """
+    Retrieves info about a single market being traded on the dEX.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        Market to get data for
+
+    Returns
+    -------
+    FetchMarketResponse
+        Market data
+    """
+
     symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
 
     if self.markets != None and symbol in self.markets:

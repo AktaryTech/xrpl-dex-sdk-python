@@ -1,5 +1,6 @@
+import asyncio
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Union
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.asyncio.clients import AsyncJsonRpcClient, AsyncWebsocketClient
 from xrpl.clients import JsonRpcClient
@@ -14,7 +15,7 @@ from .models import (
     REQUIRED,
     NetworkName,
 )
-from .constants import Networks, MAINNET
+from .constants import Networks, MAINNET, TESTNET, DEVNET
 
 
 @dataclass(frozen=True)
@@ -41,6 +42,9 @@ class SDK:
     client: AsyncJsonRpcClient
     sync_client: JsonRpcClient
     websocket_client: AsyncWebsocketClient
+
+    # wallet
+    wallet: Wallet
 
     # cache
     currencies: Optional[Currencies] = None
@@ -92,7 +96,17 @@ class SDK:
     watch_tickers = methods.watch_tickers
     watch_trades = methods.watch_trades
 
-    def __init__(self, params: SDKParams) -> None:
+    def is_testnet(self) -> bool:
+        return (
+            self.params
+            and self.params.network
+            and (self.params.network == TESTNET or self.params.network == DEVNET)
+        )
+
+    def __init__(self, params: Union[SDKParams, Dict[str, Any]]) -> None:
+        params = (
+            params if isinstance(params, SDKParams) else SDKParams.from_dict(params)
+        )
 
         self.params = params
 
@@ -100,48 +114,78 @@ class SDK:
         network = params.network if params.network != None else MAINNET
         network_urls = Networks[network]
 
+        # Create async JSON-RPC client
         if params.client == None:
             json_rpc_url = (
-                network_urls["json_rpc"] if "json_rpc" in network_urls else params.json_rpc_url
+                network_urls["json_rpc"]
+                if "json_rpc" in network_urls
+                else params.json_rpc_url
             )
             if json_rpc_url == None:
-                raise Exception("No JSON-RPC URL found or provided for network " + network + "!")
+                raise Exception(
+                    "No JSON-RPC URL found or provided for network " + network + "!"
+                )
             self.client = AsyncJsonRpcClient(url=json_rpc_url)
         else:
             self.client = params.client
 
+        # Create synchronous JSON-RPC client
         if params.sync_client == None:
             json_rpc_url = (
-                network_urls["json_rpc"] if "json_rpc" in network_urls else params.json_rpc_url
+                network_urls["json_rpc"]
+                if "json_rpc" in network_urls
+                else params.json_rpc_url
             )
             if json_rpc_url == None:
-                raise Exception("No JSON-RPC URL found or provided for network " + network + "!")
+                raise Exception(
+                    "No JSON-RPC URL found or provided for network " + network + "!"
+                )
             self.sync_client = JsonRpcClient(url=json_rpc_url)
         else:
             self.sync_client = params.sync_client
 
+        # Create async Websocket client
         if params.websocket_client == None:
             ws_url = network_urls["ws"] if "ws" in network_urls else params.ws_url
             if ws_url == None:
-                raise Exception("No Websocket URL found or provided for network " + network + "!")
+                raise Exception(
+                    "No Websocket URL found or provided for network " + network + "!"
+                )
             self.websocket_client = AsyncWebsocketClient(url=ws_url)
         else:
             self.websocket_client = params.websocket_client
 
-        if params.wallet == None:
-            if params.wallet_secret == None:
-                if params.generate_wallet == False:
-                    raise Exception(
-                        "Must provide a Wallet instance or a `wallet_secret`, or set `generate_wallet` to True"
-                    )
-                self.wallet = Wallet.create()
-            else:
-                wallet = Wallet(seed=params.wallet_secret, sequence=0)
-                if wallet == None:
-                    raise Exception("Could not create wallet using provided `wallet_secret`!")
-                self.wallet = wallet
-        else:
-            self.wallet = params.wallet
+        # self.wallet = self.generate_wallet()
 
-        if params.fund_testnet_wallet == True:
-            self.wallet = generate_faucet_wallet(client=self.sync_client, wallet=self.wallet)
+        # Initialize wallet
+        if (
+            not params.wallet
+            and not params.wallet_secret
+            and not params.generate_wallet
+        ):
+            raise Exception(
+                "Must provide a Wallet instance, a `wallet_secret`, or set `generate_wallet` to True"
+            )
+
+        if params.wallet:
+            self.wallet = params.wallet
+        elif params.wallet_secret:
+            wallet = Wallet(seed=params.wallet_secret, sequence=0)
+            if wallet == None:
+                raise Exception(
+                    "Could not create wallet using provided `wallet_secret`!"
+                )
+            self.wallet = wallet
+        elif params.generate_wallet:
+            self.wallet = Wallet.create()
+
+        # Fund wallet (testnet/devnet only)
+        if params.fund_testnet_wallet and self.is_testnet():
+            funded_wallet = generate_faucet_wallet(
+                client=self.sync_client, wallet=self.wallet
+            )
+            if funded_wallet:
+                self.wallet = funded_wallet
+
+
+__all__ = ["SDKParams", "SDK"]

@@ -17,6 +17,26 @@ async def fetch_closed_orders(
     limit: Optional[int] = DEFAULT_LIMIT,
     params: FetchClosedOrdersParams = FetchClosedOrdersParams(),
 ) -> FetchClosedOrdersResponse:
+    """
+    Fetches a list of closed Orders from the dEX.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        (Optional) Market symbol to filter Orders by
+    since : int
+        (Optional) Only return Orders since this date
+    limit : int
+        (Optional) Total number of Orders to return (default is 20)
+    params : FetchClosedOrdersParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    FetchClosedOrdersResponse
+        List of retrieved Orders
+    """
+
     orders = await self.fetch_orders(
         symbol,
         since,

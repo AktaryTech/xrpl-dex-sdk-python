@@ -7,6 +7,15 @@ from ..models import WatchStatusParams
 
 
 async def watch_status(self, params: WatchStatusParams) -> None:
+    """
+    Listens for updates regarding exchange status.
+
+    Parameters
+    ----------
+    params : WatchStatusParams
+        Additional request parameters
+    """
+
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
 

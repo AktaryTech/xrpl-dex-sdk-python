@@ -14,6 +14,24 @@ async def fetch_order_books(
     limit: int = DEFAULT_LIMIT,
     params: FetchOrderBooksParams = FetchOrderBooksParams(),
 ) -> FetchOrderBooksResponse:
+    """
+    Retrieves order book data for a multiple market pairs.
+
+    Parameters
+    ----------
+    symbols : List[MarketSymbol]
+        List of market symbols to get order books for
+    limit : int
+        (Optional) Total number of entries to return (default is 20)
+    params : FetchOrderBooksParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    FetchOrderBooksResponse
+        Order books
+    """
+
     order_books: FetchOrderBooksResponse = {}
 
     for symbol in symbols:

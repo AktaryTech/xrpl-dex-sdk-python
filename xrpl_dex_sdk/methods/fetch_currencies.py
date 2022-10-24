@@ -3,6 +3,8 @@ from ..models import Currency, CurrencyCode, Currencies
 
 
 async def fetch_currencies(self) -> Currencies:
+    """Retrieves a list of currencies being traded on the dEX."""
+
     if self.currencies != None:
         return self.currencies
 
@@ -24,7 +26,9 @@ async def fetch_currencies(self) -> Currencies:
             "name": currency_data["name"],
             "issuer_name": currency_data["issuer_name"],
             "logo": currency_data["logo"] if "logo" in currency_data else None,
-            "precision": currency_data["precision"] if "precision" in currency_data else None,
+            "precision": currency_data["precision"]
+            if "precision" in currency_data
+            else None,
         }
 
         fee_rate = await self.fetch_transfer_rate(currency["code"].issuer)

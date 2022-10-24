@@ -8,6 +8,8 @@ from ..required import REQUIRED
 
 @dataclass(frozen=True)
 class Ticker(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#ticker-structure"""
+
     # symbol of the market ('BTC/USD', 'ETH/BTC', ...)
     symbol: MarketSymbol = REQUIRED
     # (64-bit Unix Timestamp in milliseconds since Epoch 1 Jan 1970)

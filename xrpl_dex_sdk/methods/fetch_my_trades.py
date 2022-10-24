@@ -5,8 +5,8 @@ from xrpl.utils import ripple_time_to_posix
 
 from ..constants import DEFAULT_LIMIT, DEFAULT_SEARCH_LIMIT
 from ..models import (
-    FetchTradesParams,
-    FetchTradesResponse,
+    FetchMyTradesParams,
+    FetchMyTradesResponse,
     Trade,
     Trade,
     Trades,
@@ -17,23 +17,41 @@ from ..utils import (
     handle_response_error,
     get_market_symbol,
     get_trade_from_data,
-    parse_affected_node,
+    get_offer_from_node,
 )
 
 
 async def fetch_my_trades(
     self,
-    # Market symbol to fetch trades for
     symbol: MarketSymbol,
-    # Only return Trades since this date
     since: Optional[UnixTimestamp] = None,
-    # Total number of Trades to return
     limit: Optional[int] = None,
-    # eslint-disable-next-line
-    params: FetchTradesParams = FetchTradesParams(),
-) -> FetchTradesResponse:
+    params: FetchMyTradesParams = FetchMyTradesParams(),
+) -> FetchMyTradesResponse:
+    """
+    Fetch the SDK user's Trades for a given market symbol
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        (Optional) Market symbol to filter Trades by
+    since : int
+        (Optional) Only return Trades since this date
+    limit : int
+        (Optional) Total number of Trades to return (default is 20)
+    params : FetchMyTradesParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    FetchMyTradesResponse
+        List of retrieved Trades
+    """
+
     limit = limit if limit != None else DEFAULT_LIMIT
-    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
+    search_limit = (
+        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
+    )
 
     trades: Trades = []
 
@@ -68,15 +86,22 @@ async def fetch_my_trades(
             continue
 
         for transaction in transactions:
+            tx_count += 1
+            if len(trades) >= limit or tx_count >= search_limit:
+                break
+
             if "tx" not in transaction:
                 continue
 
             tx = transaction["tx"]
 
-            if tx["TransactionType"] != "OfferCreate" or "Sequence" not in tx:
-                continue
-
-            if get_market_symbol(tx) != symbol:
+            if (
+                "Sequence" not in tx
+                or isinstance(transaction["meta"], str)
+                or tx["TransactionType"] != "OfferCreate"
+                or not tx["date"]
+                or get_market_symbol(tx) != symbol
+            ):
                 continue
 
             if since != None and ripple_time_to_posix(tx["date"]) >= since:
@@ -84,37 +109,28 @@ async def fetch_my_trades(
                 continue
 
             for affected_node in transaction["meta"]["AffectedNodes"]:
-                node = parse_affected_node(affected_node)
-                if node == None:
-                    continue
+                offer = get_offer_from_node(affected_node)
 
-                offer_fields = getattr(node, "FinalFields")
-                if offer_fields == None:
+                if not offer:
                     continue
 
                 trade = await get_trade_from_data(
                     self,
                     {
                         "date": tx["date"],
-                        "Flags": offer_fields["Flags"],
-                        "OrderAccount": offer_fields["Account"],
-                        "OrderSequence": offer_fields["Sequence"],
+                        "Flags": offer["Flags"],
+                        "OrderAccount": offer["Account"],
+                        "OrderSequence": offer["Sequence"],
                         "Account": tx["Account"],
                         "Sequence": tx["Sequence"],
-                        "TakerPays": offer_fields["TakerPays"],
-                        "TakerGets": offer_fields["TakerGets"],
+                        "TakerPays": offer["TakerPays"],
+                        "TakerGets": offer["TakerGets"],
                     },
                     {"transaction": transaction},
                 )
 
                 if trade != None:
                     trades.append(trade)
-                    if len(trades) >= limit:
-                        break
-
-            tx_count += 1
-            if tx_count >= search_limit:
-                break
 
         has_next_page = len(trades) < limit and tx_count < search_limit
 

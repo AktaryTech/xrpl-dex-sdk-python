@@ -2,7 +2,23 @@ from typing import Optional
 from ..models import FetchTradingFeeResponse, MarketSymbol, Market, TradingFee
 
 
-async def fetch_trading_fee(self, symbol: MarketSymbol) -> Optional[FetchTradingFeeResponse]:
+async def fetch_trading_fee(
+    self, symbol: MarketSymbol
+) -> Optional[FetchTradingFeeResponse]:
+    """
+    Returns information about the fees incurred while trading on given market.
+
+    Parameters
+    ----------
+    symbol : MarketSymbol
+        (Optional) Market symbol to get trading fees for
+
+    Returns
+    -------
+    FetchTradingFeeResponse
+        Trading fee data
+    """
+
     market: Market = await self.fetch_market(symbol)
 
     if market == None:
