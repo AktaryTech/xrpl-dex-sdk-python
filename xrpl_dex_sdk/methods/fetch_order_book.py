@@ -23,6 +23,24 @@ async def fetch_order_book(
     limit: int = DEFAULT_LIMIT,
     params: FetchOrderBookParams = FetchOrderBookParams(),
 ) -> FetchOrderBookResponse:
+    """
+    Retrieves order book data for a single market pair.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        Market symbol to get order book for
+    limit : int
+        (Optional) Total number of entries to return (default is 20)
+    params : xrpl_dex_sdk.models.FetchOrderBookParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchOrderBookResponse
+        Order book
+    """
+
     taker_pays = {
         "currency": symbol.base.currency,
     }

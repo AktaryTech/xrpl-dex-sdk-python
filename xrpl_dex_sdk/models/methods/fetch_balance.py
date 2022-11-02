@@ -16,6 +16,3 @@ class FetchBalanceParams(BaseModel):
 class FetchBalanceResponse(BaseModel):
     balances: Balances = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["FetchBalanceParams", "FetchBalanceResponse"]

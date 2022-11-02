@@ -1,0 +1,159 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl_dex_sdk.utils.hashes &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl_dex_sdk.utils.hashes</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="kn">import</span> <span class="n">sha512</span>
+<span class="kn">import</span> <span class="nn">base58</span>
+
+<span class="c1">#</span>
+<span class="c1"># XRP Ledger namespace prefixes.</span>
+<span class="c1">#</span>
+<span class="c1"># The XRP Ledger is a key-value store. In order to avoid name collisions</span>
+<span class="c1"># names are partitioned into namespaces.</span>
+<span class="c1">#</span>
+<span class="c1"># Each namespace is just a single character prefix.</span>
+<span class="c1">#</span>
+<span class="c1"># See [LedgerNameSpace enum](https://github.com/ripple/rippled/blob/master/src/ripple/protocol/LedgerFormats.h#L100).</span>
+<span class="c1">#</span>
+<div class="viewcode-block" id="LedgerNameSpaces"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.LedgerNameSpaces">[docs]</a><span class="k">class</span> <span class="nc">LedgerNameSpaces</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">account</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
+    <span class="n">dirNode</span> <span class="o">=</span> <span class="s2">&quot;d&quot;</span>
+    <span class="n">generatorMap</span> <span class="o">=</span> <span class="s2">&quot;g&quot;</span>
+    <span class="n">rippleState</span> <span class="o">=</span> <span class="s2">&quot;r&quot;</span>
+    <span class="n">offer</span> <span class="o">=</span> <span class="s2">&quot;o&quot;</span>
+    <span class="n">ownerDir</span> <span class="o">=</span> <span class="s2">&quot;O&quot;</span>
+    <span class="n">bookDir</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+    <span class="n">contract</span> <span class="o">=</span> <span class="s2">&quot;c&quot;</span>
+    <span class="n">skipList</span> <span class="o">=</span> <span class="s2">&quot;s&quot;</span>
+    <span class="n">escrow</span> <span class="o">=</span> <span class="s2">&quot;u&quot;</span>
+    <span class="n">amendment</span> <span class="o">=</span> <span class="s2">&quot;f&quot;</span>
+    <span class="n">feeSettings</span> <span class="o">=</span> <span class="s2">&quot;e&quot;</span>
+    <span class="n">ticket</span> <span class="o">=</span> <span class="s2">&quot;T&quot;</span>
+    <span class="n">signerList</span> <span class="o">=</span> <span class="s2">&quot;S&quot;</span>
+    <span class="n">paychan</span> <span class="o">=</span> <span class="s2">&quot;x&quot;</span>
+    <span class="n">check</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span>
+    <span class="n">depositPreauth</span> <span class="o">=</span> <span class="s2">&quot;p&quot;</span></div>
+
+
+<div class="viewcode-block" id="sha_512_half"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.sha_512_half">[docs]</a><span class="k">def</span> <span class="nf">sha_512_half</span><span class="p">(</span><span class="nb">hex</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">sha512</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="nb">hex</span><span class="p">))</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="o">.</span><span class="n">upper</span><span class="p">()[:</span><span class="mi">64</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="hash_offer_id"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.hash_offer_id">[docs]</a><span class="k">def</span> <span class="nf">hash_offer_id</span><span class="p">(</span><span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sequence</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">hex_prefix</span> <span class="o">=</span> <span class="n">LedgerNameSpaces</span><span class="o">.</span><span class="n">offer</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+    <span class="n">prefix_pad_size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">hex_prefix</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prefix_pad_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prefix_pad_size</span><span class="p">):</span>
+            <span class="n">hex_prefix</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="n">hex_prefix</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;00&quot;</span> <span class="o">+</span> <span class="n">hex_prefix</span>
+
+    <span class="n">hex_sequence</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;0x&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sequence_pad_size</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">hex_sequence</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sequence_pad_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sequence_pad_size</span><span class="p">):</span>
+            <span class="n">hex_sequence</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="n">hex_sequence</span>
+
+    <span class="n">base58_address</span> <span class="o">=</span> <span class="n">base58</span><span class="o">.</span><span class="n">b58decode_check</span><span class="p">(</span>
+        <span class="n">address</span><span class="p">,</span>
+        <span class="n">alphabet</span><span class="o">=</span><span class="s2">&quot;rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+    <span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">offer_id_hash</span> <span class="o">=</span> <span class="n">sha_512_half</span><span class="p">((</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">base58_address</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span> <span class="o">+</span> <span class="n">hex_sequence</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">offer_id_hash</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">XRPL dEX Python SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, AktaryTech.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -12,6 +12,22 @@ from ..models import (
 async def fetch_tickers(
     self, symbols: List[MarketSymbol], params: FetchTickersParams = FetchTickersParams()
 ) -> FetchTickersResponse:
+    """
+    Retrieves price ticker data for a multiple market pairs.
+
+    Parameters
+    ----------
+    symbols : List[xrpl_dex_sdk.models.MarketSymbol]
+        List of market symbols to get price ticker data for
+    params : xrpl_dex_sdk.models.FetchTickersParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchTickersResponse
+        Price ticker data
+    """
+
     tickers: List[Ticker] = []
 
     for symbol in symbols:

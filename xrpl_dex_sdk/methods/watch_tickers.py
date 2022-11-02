@@ -21,6 +21,17 @@ async def watch_tickers(
     symbols: List[MarketSymbol],
     params: WatchTickersParams,
 ) -> None:
+    """
+    Listens for new price ticker data for multiple market pairs.
+
+    Parameters
+    ----------
+    symbols : List[xrpl_dex_sdk.models.MarketSymbol]
+        List of market symbols to get price ticker data for
+    params : xrpl_dex_sdk.models.WatchTickersParams
+        Additional request parameters
+    """
+
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
 

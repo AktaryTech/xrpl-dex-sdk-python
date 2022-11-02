@@ -8,6 +8,8 @@ from ..required import REQUIRED
 
 @dataclass(frozen=True)
 class Market(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#market-structure"""
+
     # String literal for referencing within an exchange
     id: str = REQUIRED
     # Unified Market Symbol
@@ -25,5 +27,3 @@ class Market(BaseModel):
 
 
 Markets = Dict[MarketSymbol, Market]
-
-__all__ = ["Market", "Markets"]

@@ -387,3 +387,27 @@ fetch_order_responses[
         },
     }
 )
+
+fetch_trades_expected_responses: Dict[str, Dict[str, Any]] = {
+    "by_trade_id": {},
+    "by_order_id": {},
+    "by_symbol": {},
+}
+
+_trade_1 = {
+    "id": "r3KC7iM1GPLmvg1MVTXbXmoC87yyyuFRf2:67956678",
+    "order": "rpXhhWmCvDwkzNtRbm7mmD1vZqdfatQNEe:59349452",
+    "datetime": "2022-10-21T02:19:30.000Z",
+    "timestamp": 1666318770000,
+    "symbol": "XRP/USD+rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq",
+    "type": "limit",
+    "side": "sell",
+    "amount": 5254.779017,
+    "price": 0.4462306799635816,
+    "taker_or_maker": "maker",
+    "cost": 2344.843613814271,
+}
+
+fetch_trades_expected_responses["by_trade_id"][_trade_1["id"]] = _trade_1
+fetch_trades_expected_responses["by_order_id"][_trade_1["order"]] = _trade_1
+fetch_trades_expected_responses["by_symbol"][_trade_1["symbol"]] = _trade_1

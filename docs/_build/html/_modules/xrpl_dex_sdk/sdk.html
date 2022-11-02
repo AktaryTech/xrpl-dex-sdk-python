@@ -1,0 +1,350 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl_dex_sdk.sdk &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/bizstyle.css" />
+    
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk.sdk</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl_dex_sdk.sdk</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">xrpl.wallet</span> <span class="kn">import</span> <span class="n">generate_faucet_wallet</span><span class="p">,</span> <span class="n">Wallet</span>
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.clients</span> <span class="kn">import</span> <span class="n">AsyncJsonRpcClient</span><span class="p">,</span> <span class="n">AsyncWebsocketClient</span>
+<span class="kn">from</span> <span class="nn">xrpl.clients</span> <span class="kn">import</span> <span class="n">JsonRpcClient</span>
+
+<span class="kn">from</span> <span class="nn">xrpl_dex_sdk.methods</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">cancel_order</span><span class="p">,</span>
+    <span class="n">create_limit_buy_order</span><span class="p">,</span>
+    <span class="n">create_limit_sell_order</span><span class="p">,</span>
+    <span class="n">create_order</span><span class="p">,</span>
+    <span class="n">create_trust_line</span><span class="p">,</span>
+    <span class="n">fetch_balance</span><span class="p">,</span>
+    <span class="n">fetch_closed_orders</span><span class="p">,</span>
+    <span class="n">fetch_canceled_orders</span><span class="p">,</span>
+    <span class="n">fetch_currencies</span><span class="p">,</span>
+    <span class="n">fetch_fees</span><span class="p">,</span>
+    <span class="n">fetch_issuers</span><span class="p">,</span>
+    <span class="n">fetch_l2_order_book</span><span class="p">,</span>
+    <span class="n">fetch_market</span><span class="p">,</span>
+    <span class="n">fetch_markets</span><span class="p">,</span>
+    <span class="n">fetch_my_trades</span><span class="p">,</span>
+    <span class="n">fetch_open_orders</span><span class="p">,</span>
+    <span class="n">fetch_order</span><span class="p">,</span>
+    <span class="n">fetch_order_book</span><span class="p">,</span>
+    <span class="n">fetch_order_books</span><span class="p">,</span>
+    <span class="n">fetch_orders</span><span class="p">,</span>
+    <span class="n">fetch_status</span><span class="p">,</span>
+    <span class="n">fetch_ticker</span><span class="p">,</span>
+    <span class="n">fetch_tickers</span><span class="p">,</span>
+    <span class="n">fetch_trades</span><span class="p">,</span>
+    <span class="n">fetch_trading_fee</span><span class="p">,</span>
+    <span class="n">fetch_trading_fees</span><span class="p">,</span>
+    <span class="n">fetch_transaction_fee</span><span class="p">,</span>
+    <span class="n">fetch_transaction_fees</span><span class="p">,</span>
+    <span class="n">fetch_transfer_rate</span><span class="p">,</span>
+    <span class="n">load_currencies</span><span class="p">,</span>
+    <span class="n">load_issuers</span><span class="p">,</span>
+    <span class="n">load_markets</span><span class="p">,</span>
+    <span class="n">watch_balance</span><span class="p">,</span>
+    <span class="n">watch_my_trades</span><span class="p">,</span>
+    <span class="n">watch_order_book</span><span class="p">,</span>
+    <span class="n">watch_orders</span><span class="p">,</span>
+    <span class="n">watch_status</span><span class="p">,</span>
+    <span class="n">watch_ticker</span><span class="p">,</span>
+    <span class="n">watch_tickers</span><span class="p">,</span>
+    <span class="n">watch_trades</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">xrpl_dex_sdk.models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Currencies</span><span class="p">,</span>
+    <span class="n">Issuers</span><span class="p">,</span>
+    <span class="n">Markets</span><span class="p">,</span>
+    <span class="n">TransferRates</span><span class="p">,</span>
+    <span class="n">BaseModel</span><span class="p">,</span>
+    <span class="n">REQUIRED</span><span class="p">,</span>
+    <span class="n">NetworkName</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">xrpl_dex_sdk.constants</span> <span class="kn">import</span> <span class="n">Networks</span><span class="p">,</span> <span class="n">MAINNET</span><span class="p">,</span> <span class="n">TESTNET</span><span class="p">,</span> <span class="n">DEVNET</span>
+
+
+<div class="viewcode-block" id="SDKParams"><a class="viewcode-back" href="../../xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SDKParams</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Config parameters used when creating a new SDK instance.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    network : NetworkName</span>
+<span class="sd">        Name of the XRPL network to connect to.</span>
+<span class="sd">    json_rpc_url : Optional[str]</span>
+<span class="sd">        Custom JSON-RPC server URL. Will be ignored if network is not set to &quot;custom&quot;.</span>
+<span class="sd">    ws_url : Optional[str]</span>
+<span class="sd">        Custom Websocket server URL. Will be ignored if network is not set to &quot;custom&quot;.</span>
+<span class="sd">    client : Optional[AsyncJsonRpcClient]</span>
+<span class="sd">        Existing async JSON-RPC client instance. Must set network attribute to the network this client is connected to.</span>
+<span class="sd">    sync_client : Optional[JsonRpcClient]</span>
+<span class="sd">        Existing JSON-RPC client instance. Must set network attribute to the network this client is connected to.</span>
+<span class="sd">    websocket_client : Optional[AsyncWebsocketClient]</span>
+<span class="sd">        Existing Websocket client instance. Must set network attribute to the network this client is connected to.</span>
+<span class="sd">    wallet : Optional[Wallet]</span>
+<span class="sd">        Existing XRPL Wallet instance to use.</span>
+<span class="sd">    wallet_secret : Optional[str]</span>
+<span class="sd">        Secret value used to initialize an existing XRPL wallet.</span>
+<span class="sd">    generate_wallet : Optional[bool]</span>
+<span class="sd">        Whether to generate a new wallet. Will output the wallet&#39;s address, keys, and secret when done.</span>
+<span class="sd">    fund_testnet_wallet : Optional[bool]</span>
+<span class="sd">        Whether to fund a testnet account via a faucet. Will be ignored if network is not set to a testnet or devnet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># xrpl servers</span>
+    <span class="n">network</span><span class="p">:</span> <span class="n">NetworkName</span> <span class="o">=</span> <span class="n">REQUIRED</span>
+    <span class="n">json_rpc_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">ws_url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># clients</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AsyncJsonRpcClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sync_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">JsonRpcClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">websocket_client</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AsyncWebsocketClient</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># wallet</span>
+    <span class="n">wallet</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Wallet</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">wallet_secret</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">generate_wallet</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">fund_testnet_wallet</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="SDK"><a class="viewcode-back" href="../../xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK">[docs]</a><span class="k">class</span> <span class="nc">SDK</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The base XRPL dEX SDK class.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    client : AsyncJsonRpcClient</span>
+<span class="sd">        Client for making async calls to XRPL&#39;s JSON-RPC API.</span>
+<span class="sd">    sync_client : JsonRpcClient</span>
+<span class="sd">        Client for making synchronous calls to XRPL&#39;s JSON-RPC API.</span>
+<span class="sd">    websocket_client : AsyncWebsocketClient</span>
+<span class="sd">        Websocket client for subscribing to XRPL ledger updates.</span>
+<span class="sd">    wallet : Wallet</span>
+<span class="sd">        The SDK user&#39;s XRPL wallet.</span>
+<span class="sd">    currencies : Optional[Currencies]</span>
+<span class="sd">        Cached currency data.</span>
+<span class="sd">    issuers : Optional[Issuers]</span>
+<span class="sd">        Cached list of currency issuer data.</span>
+<span class="sd">    markets : Optional[Markets]</span>
+<span class="sd">        Cached list of markets data.</span>
+<span class="sd">    transfer_rates : Optional[TransferRates]</span>
+<span class="sd">        Cached transfer rates for currency issuers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># clients</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">AsyncJsonRpcClient</span>
+    <span class="n">sync_client</span><span class="p">:</span> <span class="n">JsonRpcClient</span>
+    <span class="n">websocket_client</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span>
+
+    <span class="c1"># wallet</span>
+    <span class="n">wallet</span><span class="p">:</span> <span class="n">Wallet</span>
+
+    <span class="c1"># cache</span>
+    <span class="n">currencies</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Currencies</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">issuers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Issuers</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">markets</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Markets</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">transfer_rates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TransferRates</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># state-changing methods</span>
+    <span class="n">cancel_order</span> <span class="o">=</span> <span class="n">cancel_order</span>
+    <span class="n">create_limit_buy_order</span> <span class="o">=</span> <span class="n">create_limit_buy_order</span>
+    <span class="n">create_limit_sell_order</span> <span class="o">=</span> <span class="n">create_limit_sell_order</span>
+    <span class="n">create_order</span> <span class="o">=</span> <span class="n">create_order</span>
+    <span class="n">create_trust_line</span> <span class="o">=</span> <span class="n">create_trust_line</span>
+
+    <span class="c1"># read-only methods</span>
+    <span class="n">fetch_balance</span> <span class="o">=</span> <span class="n">fetch_balance</span>
+    <span class="n">fetch_closed_orders</span> <span class="o">=</span> <span class="n">fetch_closed_orders</span>
+    <span class="n">fetch_canceled_orders</span> <span class="o">=</span> <span class="n">fetch_canceled_orders</span>
+    <span class="n">fetch_currencies</span> <span class="o">=</span> <span class="n">fetch_currencies</span>
+    <span class="n">fetch_fees</span> <span class="o">=</span> <span class="n">fetch_fees</span>
+    <span class="n">fetch_issuers</span> <span class="o">=</span> <span class="n">fetch_issuers</span>
+    <span class="n">fetch_l2_order_book</span> <span class="o">=</span> <span class="n">fetch_l2_order_book</span>
+    <span class="n">fetch_market</span> <span class="o">=</span> <span class="n">fetch_market</span>
+    <span class="n">fetch_markets</span> <span class="o">=</span> <span class="n">fetch_markets</span>
+    <span class="n">fetch_my_trades</span> <span class="o">=</span> <span class="n">fetch_my_trades</span>
+    <span class="n">fetch_open_orders</span> <span class="o">=</span> <span class="n">fetch_open_orders</span>
+    <span class="n">fetch_order</span> <span class="o">=</span> <span class="n">fetch_order</span>
+    <span class="n">fetch_order_book</span> <span class="o">=</span> <span class="n">fetch_order_book</span>
+    <span class="n">fetch_order_books</span> <span class="o">=</span> <span class="n">fetch_order_books</span>
+    <span class="n">fetch_orders</span> <span class="o">=</span> <span class="n">fetch_orders</span>
+    <span class="n">fetch_status</span> <span class="o">=</span> <span class="n">fetch_status</span>
+    <span class="n">fetch_ticker</span> <span class="o">=</span> <span class="n">fetch_ticker</span>
+    <span class="n">fetch_tickers</span> <span class="o">=</span> <span class="n">fetch_tickers</span>
+    <span class="n">fetch_trades</span> <span class="o">=</span> <span class="n">fetch_trades</span>
+    <span class="n">fetch_trading_fee</span> <span class="o">=</span> <span class="n">fetch_trading_fee</span>
+    <span class="n">fetch_trading_fees</span> <span class="o">=</span> <span class="n">fetch_trading_fees</span>
+    <span class="n">fetch_transaction_fee</span> <span class="o">=</span> <span class="n">fetch_transaction_fee</span>
+    <span class="n">fetch_transaction_fees</span> <span class="o">=</span> <span class="n">fetch_transaction_fees</span>
+    <span class="n">fetch_transfer_rate</span> <span class="o">=</span> <span class="n">fetch_transfer_rate</span>
+    <span class="n">load_currencies</span> <span class="o">=</span> <span class="n">load_currencies</span>
+    <span class="n">load_issuers</span> <span class="o">=</span> <span class="n">load_issuers</span>
+    <span class="n">load_markets</span> <span class="o">=</span> <span class="n">load_markets</span>
+    <span class="n">watch_balance</span> <span class="o">=</span> <span class="n">watch_balance</span>
+    <span class="n">watch_my_trades</span> <span class="o">=</span> <span class="n">watch_my_trades</span>
+    <span class="n">watch_order_book</span> <span class="o">=</span> <span class="n">watch_order_book</span>
+    <span class="n">watch_orders</span> <span class="o">=</span> <span class="n">watch_orders</span>
+    <span class="n">watch_status</span> <span class="o">=</span> <span class="n">watch_status</span>
+    <span class="n">watch_ticker</span> <span class="o">=</span> <span class="n">watch_ticker</span>
+    <span class="n">watch_tickers</span> <span class="o">=</span> <span class="n">watch_tickers</span>
+    <span class="n">watch_trades</span> <span class="o">=</span> <span class="n">watch_trades</span>
+
+    <span class="k">def</span> <span class="nf">_is_testnet</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">network</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">TESTNET</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">DEVNET</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">SDKParams</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">SDKParams</span><span class="p">)</span> <span class="k">else</span> <span class="n">SDKParams</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+
+        <span class="c1"># Specify a Network</span>
+        <span class="n">network</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">network</span> <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">network</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">MAINNET</span>
+        <span class="n">network_urls</span> <span class="o">=</span> <span class="n">Networks</span><span class="p">[</span><span class="n">network</span><span class="p">]</span>
+
+        <span class="c1"># Create async JSON-RPC client</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">client</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">json_rpc_url</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">network_urls</span><span class="p">[</span><span class="s2">&quot;json_rpc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;json_rpc&quot;</span> <span class="ow">in</span> <span class="n">network_urls</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">json_rpc_url</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">json_rpc_url</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No JSON-RPC URL found or provided for network &quot;</span> <span class="o">+</span> <span class="n">network</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">AsyncJsonRpcClient</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">json_rpc_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">client</span>
+
+        <span class="c1"># Create synchronous JSON-RPC client</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">sync_client</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">json_rpc_url</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">network_urls</span><span class="p">[</span><span class="s2">&quot;json_rpc&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;json_rpc&quot;</span> <span class="ow">in</span> <span class="n">network_urls</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">json_rpc_url</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">json_rpc_url</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No JSON-RPC URL found or provided for network &quot;</span> <span class="o">+</span> <span class="n">network</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_client</span> <span class="o">=</span> <span class="n">JsonRpcClient</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">json_rpc_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync_client</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">sync_client</span>
+
+        <span class="c1"># Create async Websocket client</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">websocket_client</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ws_url</span> <span class="o">=</span> <span class="n">network_urls</span><span class="p">[</span><span class="s2">&quot;ws&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;ws&quot;</span> <span class="ow">in</span> <span class="n">network_urls</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">ws_url</span>
+            <span class="k">if</span> <span class="n">ws_url</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No Websocket URL found or provided for network &quot;</span> <span class="o">+</span> <span class="n">network</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">websocket_client</span> <span class="o">=</span> <span class="n">AsyncWebsocketClient</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">ws_url</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">websocket_client</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">websocket_client</span>
+
+        <span class="c1"># self.wallet = self.generate_wallet()</span>
+
+        <span class="c1"># Initialize wallet</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">wallet</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">wallet_secret</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">generate_wallet</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s2">&quot;Must provide a Wallet instance, a `wallet_secret`, or set `generate_wallet` to True&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">wallet</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wallet</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">wallet</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">wallet_secret</span><span class="p">:</span>
+            <span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">params</span><span class="o">.</span><span class="n">wallet_secret</span><span class="p">,</span> <span class="n">sequence</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">wallet</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Could not create wallet using provided `wallet_secret`!&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wallet</span> <span class="o">=</span> <span class="n">wallet</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">generate_wallet</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">wallet</span> <span class="o">=</span> <span class="n">Wallet</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+
+        <span class="c1"># Fund wallet (testnet/devnet only)</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">fund_testnet_wallet</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_testnet</span><span class="p">():</span>
+            <span class="n">funded_wallet</span> <span class="o">=</span> <span class="n">generate_faucet_wallet</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sync_client</span><span class="p">,</span> <span class="n">wallet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">wallet</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">funded_wallet</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">wallet</span> <span class="o">=</span> <span class="n">funded_wallet</span></div>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;SDKParams&quot;</span><span class="p">,</span> <span class="s2">&quot;SDK&quot;</span><span class="p">]</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk.sdk</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Ripple Labs, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

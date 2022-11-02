@@ -17,11 +17,19 @@ from ..utils import (
 
 async def watch_my_trades(
     self,
-    # Market symbol to fetch trades for
     symbol: MarketSymbol,
     params: WatchMyTradesParams,
 ) -> None:
-    # symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
+    """
+    Listens for new Trades from the SDK user for a given market pair.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        Symbol to watch
+    params : xrpl_dex_sdk.models.WatchMyTradesParams
+        Additional request parameters
+    """
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching trades: Websockets client not initialized")

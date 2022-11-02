@@ -10,13 +10,23 @@ from ..models import WatchOrderBookParams, MarketSymbol, IssuedCurrency, XRP
 
 async def watch_order_book(
     self,
-    # Token pair (called Unified Market Symbol in CCXT)
     symbol: MarketSymbol,
-    # Number of results to return in book
     limit: Optional[int],
     params: WatchOrderBookParams,
 ) -> None:
-    # symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
+    """
+    Listens for order book updates for a given market pair.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        Symbol to watch
+    limit : int
+        (Optional) Number of entries to return (default is to 20)
+    params : xrpl_dex_sdk.models.WatchOrderBookParams
+        Additional request parameters
+    """
+
     limit = DEFAULT_LIMIT if limit == None else limit
 
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
@@ -27,18 +37,12 @@ async def watch_order_book(
         if symbol.base.issuer != None
         else XRP()
     )
-    # if symbol.base.issuer != None:
-    #     base_amount["issuer"] = symbol.base.issuer
 
     quote_amount = (
         IssuedCurrency(currency=symbol.quote.currency, issuer=symbol.quote.issuer)
         if symbol.quote.issuer != None
         else XRP()
     )
-
-    # quote_amount = {"currency": symbol.quote.currency}
-    # if symbol.quote.issuer != None:
-    #     quote_amount["issuer"] = symbol.quote.issuer
 
     payload = Subscribe(
         id=uuid.uuid4().hex,

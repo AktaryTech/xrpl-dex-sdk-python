@@ -20,6 +20,3 @@ class WatchOrdersParams(BaseModel):
     show_closed: Optional[bool] = True
     # Whether to return Canceled orders
     show_canceled: Optional[bool] = True
-
-
-__all__ = ["WatchOrdersParams"]

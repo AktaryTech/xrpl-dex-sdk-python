@@ -7,6 +7,22 @@ from ..models.methods.create_trust_line import CreateTrustLineResponse
 
 
 def create_trust_line(self, code: CurrencyCode, limit_amount: str) -> CreateTrustLineResponse:
+    """
+    Creates a Trust Line to a currency Issuer on the XRPL ledger.
+
+    Parameters
+    ----------
+    code : xrpl_dex_sdk.models.CurrencyCode
+        Code for an issued (non-XRP) currency
+    amount : float
+        Max amount of this currency you can receive
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.CreateTrustLineResponse
+        Newly created Trust Line
+    """
+
     if code.is_xrp():
         raise Exception("Error creating Trust Line: No line needed for XRP")
     elif code.issuer == None:

@@ -1,23 +1,37 @@
 from typing import Optional, Union
-from ..data import markets_data
+from ..data import MarketsData
 from ..models import CurrencyCode, MarketSymbol, FetchMarketResponse, Market
 
 
 async def fetch_market(self, symbol: Union[MarketSymbol, str]) -> Optional[FetchMarketResponse]:
+    """
+    Retrieves info about a single market being traded on the dEX.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        Market to get data for
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchMarketResponse
+        Market data
+    """
+
     symbol = MarketSymbol.from_string(symbol) if isinstance(symbol, str) else symbol
 
     if self.markets != None and symbol in self.markets:
         return self.markets[symbol]
 
     market_data = (
-        markets_data[self.params.network][str(symbol)]
-        if self.params.network != None and self.params.network in markets_data
+        MarketsData[self.params.network][str(symbol)]
+        if self.params.network != None and self.params.network in MarketsData
         else None
     )
 
     if market_data != None:
-        for network in markets_data:
-            markets = markets_data[network]
+        for network in MarketsData:
+            markets = MarketsData[network]
             if str(symbol) in markets:
                 market_data = markets[str(symbol)]
                 break

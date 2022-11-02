@@ -3,7 +3,7 @@ from typing import Any, List, Optional, Dict
 
 from ..base_model import BaseModel
 from ..required import REQUIRED
-from ..ccxt.orders import OrderId
+from ..ccxt.order import OrderId
 
 
 @dataclass(frozen=True)
@@ -20,6 +20,3 @@ class CreateLimitBuyOrderParams(BaseModel):
 class CreateLimitBuyOrderResponse(BaseModel):
     id: OrderId = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CreateLimitBuyOrderParams", "CreateLimitBuyOrderResponse"]

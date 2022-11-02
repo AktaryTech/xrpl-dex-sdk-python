@@ -9,6 +9,8 @@ from ..required import REQUIRED
 
 @dataclass(frozen=True)
 class Currency(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#currency-structure"""
+
     code: CurrencyCode = REQUIRED
     fee: Optional[float] = None
     name: Optional[str] = None
@@ -18,5 +20,3 @@ class Currency(BaseModel):
 
 
 Currencies = Dict[CurrencyCode, Currency]
-
-__all__ = ["Currency", "Currencies"]

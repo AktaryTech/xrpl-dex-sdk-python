@@ -23,6 +23,22 @@ from ..utils import (
 async def fetch_ticker(
     self, symbol: MarketSymbol, params: FetchTickerParams = FetchTickerParams()
 ) -> Optional[FetchTickerResponse]:
+    """
+    Retrieves price ticker data for a single market pair.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        Market symbol to get price ticker data for
+    params : xrpl_dex_sdk.models.FetchTickerParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchTickerResponse
+        Price ticker data
+    """
+
     search_limit = params.search_limit if params.search_limit else DEFAULT_TICKER_SEARCH_LIMIT
 
     high: Union[float, None] = None

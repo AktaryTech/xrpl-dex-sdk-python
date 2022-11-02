@@ -9,6 +9,8 @@ from ..utils import server_time_to_posix, handle_response_error
 
 
 async def fetch_status(self) -> Optional[FetchStatusResponse]:
+    """Returns information regarding exchange status."""
+
     server_state_response = await self.client.request(ServerState())
     server_state_result = server_state_response.result
     handle_response_error(server_state_result)

@@ -18,6 +18,8 @@ class OrderBookLevel(Enum):
 
 @dataclass(frozen=True)
 class OrderBook(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#order-book-structure"""
+
     symbol: MarketSymbol = REQUIRED
     nonce: Optional[int] = 0
     bids: List[OrderBookEntry] = REQUIRED
@@ -28,11 +30,3 @@ class OrderBook(BaseModel):
 
 
 OrderBooks = Dict[MarketSymbol, OrderBook]
-
-
-__all__ = [
-    "OrderBookEntry",
-    "OrderBookLevel",
-    "OrderBook",
-    "OrderBooks",
-]

@@ -9,6 +9,15 @@ from ..utils import get_amount_currency_code
 
 
 async def watch_balance(self, params: WatchBalanceParams) -> None:
+    """
+    Listens for new order book data for a single market pair.
+
+    Parameters
+    ----------
+    params : xrpl_dex_sdk.models.WatchBalanceParams
+        Additional request parameters
+    """
+
     if isinstance(self.websocket_client, AsyncWebsocketClient) == False:
         raise Exception("Error watching balance: Websockets client not initialized")
 

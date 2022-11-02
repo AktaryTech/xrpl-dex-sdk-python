@@ -13,5 +13,3 @@ class FetchMyTradesParams(BaseModel):
 
 
 FetchMyTradesResponse = Trades
-
-__all__ = ["FetchMyTradesParams", "FetchMyTradesResponse"]

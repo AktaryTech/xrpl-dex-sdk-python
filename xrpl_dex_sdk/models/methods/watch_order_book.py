@@ -12,6 +12,3 @@ class WatchOrderBookParams(BaseModel):
     listener: Callable = REQUIRED
     # Max Transactions to search through looking for Order Book data before giving up
     search_limit: Optional[int] = DEFAULT_SEARCH_LIMIT
-
-
-__all__ = ["WatchOrderBookParams"]

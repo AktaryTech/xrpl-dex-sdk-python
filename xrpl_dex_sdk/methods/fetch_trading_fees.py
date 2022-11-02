@@ -2,6 +2,8 @@ from ..models import FetchTradingFeesResponse, Markets
 
 
 async def fetch_trading_fees(self) -> FetchTradingFeesResponse:
+    """Returns information about the fees incurred while trading on any market."""
+
     markets: Markets = await self.fetch_markets()
 
     if markets == None:

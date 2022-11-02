@@ -26,6 +26,26 @@ async def fetch_orders(
     limit: int = DEFAULT_LIMIT,
     params: FetchOrdersParams = FetchOrdersParams(),
 ) -> FetchOrdersResponse:
+    """
+    Fetches a list of Orders from the dEX.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        (Optional) Symbol to filter Orders by
+    since : int
+        (Optional) Only return Orders since this date
+    limit : int
+        (Optional) Total number of Orders to return (default is 20)
+    params : xrpl_dex_sdk.models.FetchOrdersParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchOrdersResponse
+        The matching Orders
+    """
+
     search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
     orders: List[Order] = []
 
@@ -61,11 +81,12 @@ async def fetch_orders(
 
         for transaction in transactions:
             tx_count += 1
-            if tx_count >= search_limit:
+            if len(orders) >= limit or tx_count >= search_limit:
                 break
 
             if (
-                "Sequence" not in transaction
+                isinstance(transaction, str)
+                or "Sequence" not in transaction
                 or "metaData" not in transaction
                 or (
                     transaction["TransactionType"] != "OfferCancel"
@@ -101,19 +122,16 @@ async def fetch_orders(
                 continue
 
             if (
-                order.status == OrderStatus.Open.value
+                order.status == OrderStatus.Open
                 and params.show_open == False
-                or order.status == OrderStatus.Closed.value
+                or order.status == OrderStatus.Closed
                 and params.show_closed == False
-                or order.status == OrderStatus.Canceled.value
+                or order.status == OrderStatus.Canceled
                 and params.show_canceled == False
             ):
                 continue
 
             orders.append(order)
-
-            if len(orders) >= limit:
-                break
 
         has_next_page = len(orders) < limit and tx_count < search_limit
 

@@ -1,0 +1,1038 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>xrpl_dex_sdk &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="xrpl-dex-sdk">
+<h1>xrpl_dex_sdk<a class="headerlink" href="#xrpl-dex-sdk" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="xrpl_dex_sdk.html">xrpl_dex_sdk package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.data.html">xrpl_dex_sdk.data package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.data.html#module-xrpl_dex_sdk.data">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.methods.html">xrpl_dex_sdk.methods package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.cancel_order">xrpl_dex_sdk.methods.cancel_order module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.create_limit_buy_order">xrpl_dex_sdk.methods.create_limit_buy_order module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.create_limit_sell_order">xrpl_dex_sdk.methods.create_limit_sell_order module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.create_order">xrpl_dex_sdk.methods.create_order module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.create_trust_line">xrpl_dex_sdk.methods.create_trust_line module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_balance">xrpl_dex_sdk.methods.fetch_balance module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_canceled_orders">xrpl_dex_sdk.methods.fetch_canceled_orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_closed_orders">xrpl_dex_sdk.methods.fetch_closed_orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_currencies">xrpl_dex_sdk.methods.fetch_currencies module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_fees">xrpl_dex_sdk.methods.fetch_fees module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_issuers">xrpl_dex_sdk.methods.fetch_issuers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_l2_order_book">xrpl_dex_sdk.methods.fetch_l2_order_book module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_market">xrpl_dex_sdk.methods.fetch_market module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_markets">xrpl_dex_sdk.methods.fetch_markets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_my_trades">xrpl_dex_sdk.methods.fetch_my_trades module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_open_orders">xrpl_dex_sdk.methods.fetch_open_orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_order">xrpl_dex_sdk.methods.fetch_order module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_order_book">xrpl_dex_sdk.methods.fetch_order_book module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_order_books">xrpl_dex_sdk.methods.fetch_order_books module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_orders">xrpl_dex_sdk.methods.fetch_orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_status">xrpl_dex_sdk.methods.fetch_status module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_ticker">xrpl_dex_sdk.methods.fetch_ticker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_tickers">xrpl_dex_sdk.methods.fetch_tickers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_trades">xrpl_dex_sdk.methods.fetch_trades module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_trading_fee">xrpl_dex_sdk.methods.fetch_trading_fee module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_trading_fees">xrpl_dex_sdk.methods.fetch_trading_fees module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_transaction_fee">xrpl_dex_sdk.methods.fetch_transaction_fee module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_transaction_fees">xrpl_dex_sdk.methods.fetch_transaction_fees module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.fetch_transfer_rate">xrpl_dex_sdk.methods.fetch_transfer_rate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.load_currencies">xrpl_dex_sdk.methods.load_currencies module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.load_issuers">xrpl_dex_sdk.methods.load_issuers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.load_markets">xrpl_dex_sdk.methods.load_markets module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_balance">xrpl_dex_sdk.methods.watch_balance module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_my_trades">xrpl_dex_sdk.methods.watch_my_trades module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_order_book">xrpl_dex_sdk.methods.watch_order_book module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_orders">xrpl_dex_sdk.methods.watch_orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_status">xrpl_dex_sdk.methods.watch_status module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_ticker">xrpl_dex_sdk.methods.watch_ticker module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_tickers">xrpl_dex_sdk.methods.watch_tickers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods.watch_trades">xrpl_dex_sdk.methods.watch_trades module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.methods.html#module-xrpl_dex_sdk.methods">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.models.html">xrpl_dex_sdk.models package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#module-xrpl_dex_sdk.models.base_model">xrpl_dex_sdk.models.base_model module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#module-xrpl_dex_sdk.models.common">xrpl_dex_sdk.models.common module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#module-xrpl_dex_sdk.models.exceptions">xrpl_dex_sdk.models.exceptions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#module-xrpl_dex_sdk.models.required">xrpl_dex_sdk.models.required module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.models.html#module-xrpl_dex_sdk.models">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.utils.html">xrpl_dex_sdk.utils package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.conversions">xrpl_dex_sdk.utils.conversions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.data">xrpl_dex_sdk.utils.data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.errors">xrpl_dex_sdk.utils.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.hashes">xrpl_dex_sdk.utils.hashes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.numbers">xrpl_dex_sdk.utils.numbers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils.orders">xrpl_dex_sdk.utils.orders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.utils.html#module-xrpl_dex_sdk.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#module-xrpl_dex_sdk.clients">xrpl_dex_sdk.clients module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncJsonRpcClient"><code class="docutils literal notranslate"><span class="pre">AsyncJsonRpcClient</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.close"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.open"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.send"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.send()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.JsonRpcClient"><code class="docutils literal notranslate"><span class="pre">JsonRpcClient</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#module-xrpl_dex_sdk.constants">xrpl_dex_sdk.constants module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames"><code class="docutils literal notranslate"><span class="pre">NetworkNames</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames.DEVNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.DEVNET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames.LOCAL"><code class="docutils literal notranslate"><span class="pre">NetworkNames.LOCAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames.MAINNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.MAINNET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames.TESTNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.TESTNET</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#module-xrpl_dex_sdk.sdk">xrpl_dex_sdk.sdk module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK"><code class="docutils literal notranslate"><span class="pre">SDK</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.client"><code class="docutils literal notranslate"><span class="pre">SDK.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.sync_client"><code class="docutils literal notranslate"><span class="pre">SDK.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.websocket_client"><code class="docutils literal notranslate"><span class="pre">SDK.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.wallet"><code class="docutils literal notranslate"><span class="pre">SDK.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.currencies"><code class="docutils literal notranslate"><span class="pre">SDK.currencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.issuers"><code class="docutils literal notranslate"><span class="pre">SDK.issuers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.markets"><code class="docutils literal notranslate"><span class="pre">SDK.markets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.transfer_rates"><code class="docutils literal notranslate"><span class="pre">SDK.transfer_rates</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.cancel_order"><code class="docutils literal notranslate"><span class="pre">SDK.cancel_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id0"><code class="docutils literal notranslate"><span class="pre">SDK.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.create_limit_buy_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_limit_buy_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.create_limit_sell_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_limit_sell_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.create_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.create_trust_line"><code class="docutils literal notranslate"><span class="pre">SDK.create_trust_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id1"><code class="docutils literal notranslate"><span class="pre">SDK.currencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_balance"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_canceled_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_canceled_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_closed_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_closed_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_currencies"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_currencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_issuers"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_issuers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_l2_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_l2_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_market"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_market()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_markets"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_markets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_my_trades"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_my_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_open_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_open_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_order"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_order_books"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order_books()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_status"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_ticker"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_ticker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_tickers"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_tickers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_trades"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_trading_fee"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trading_fee()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_trading_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trading_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_transaction_fee"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transaction_fee()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_transaction_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transaction_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.fetch_transfer_rate"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transfer_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id2"><code class="docutils literal notranslate"><span class="pre">SDK.issuers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.load_currencies"><code class="docutils literal notranslate"><span class="pre">SDK.load_currencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.load_issuers"><code class="docutils literal notranslate"><span class="pre">SDK.load_issuers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.load_markets"><code class="docutils literal notranslate"><span class="pre">SDK.load_markets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id3"><code class="docutils literal notranslate"><span class="pre">SDK.markets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id4"><code class="docutils literal notranslate"><span class="pre">SDK.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id5"><code class="docutils literal notranslate"><span class="pre">SDK.transfer_rates</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id6"><code class="docutils literal notranslate"><span class="pre">SDK.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_balance"><code class="docutils literal notranslate"><span class="pre">SDK.watch_balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_my_trades"><code class="docutils literal notranslate"><span class="pre">SDK.watch_my_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.watch_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_orders"><code class="docutils literal notranslate"><span class="pre">SDK.watch_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_status"><code class="docutils literal notranslate"><span class="pre">SDK.watch_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_ticker"><code class="docutils literal notranslate"><span class="pre">SDK.watch_ticker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_tickers"><code class="docutils literal notranslate"><span class="pre">SDK.watch_tickers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDK.watch_trades"><code class="docutils literal notranslate"><span class="pre">SDK.watch_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id7"><code class="docutils literal notranslate"><span class="pre">SDK.websocket_client</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams"><code class="docutils literal notranslate"><span class="pre">SDKParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.network"><code class="docutils literal notranslate"><span class="pre">SDKParams.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.json_rpc_url"><code class="docutils literal notranslate"><span class="pre">SDKParams.json_rpc_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.ws_url"><code class="docutils literal notranslate"><span class="pre">SDKParams.ws_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.client"><code class="docutils literal notranslate"><span class="pre">SDKParams.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.sync_client"><code class="docutils literal notranslate"><span class="pre">SDKParams.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.websocket_client"><code class="docutils literal notranslate"><span class="pre">SDKParams.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.wallet_secret"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet_secret</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.generate_wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.generate_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sdk.SDKParams.fund_testnet_wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.fund_testnet_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id8"><code class="docutils literal notranslate"><span class="pre">SDKParams.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id9"><code class="docutils literal notranslate"><span class="pre">SDKParams.fund_testnet_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id10"><code class="docutils literal notranslate"><span class="pre">SDKParams.generate_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id11"><code class="docutils literal notranslate"><span class="pre">SDKParams.json_rpc_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id12"><code class="docutils literal notranslate"><span class="pre">SDKParams.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id13"><code class="docutils literal notranslate"><span class="pre">SDKParams.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id14"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id15"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet_secret</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id16"><code class="docutils literal notranslate"><span class="pre">SDKParams.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id17"><code class="docutils literal notranslate"><span class="pre">SDKParams.ws_url</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="xrpl_dex_sdk.html#module-xrpl_dex_sdk">Module contents</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AccountAddress"><code class="docutils literal notranslate"><span class="pre">AccountAddress</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AccountNotEnabled"><code class="docutils literal notranslate"><span class="pre">AccountNotEnabled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ArgumentsRequired"><code class="docutils literal notranslate"><span class="pre">ArgumentsRequired</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncJsonRpcClient"><code class="docutils literal notranslate"><span class="pre">AsyncJsonRpcClient</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncWebsocketClient"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncWebsocketClient.close"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncWebsocketClient.open"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.open()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncWebsocketClient.send"><code class="docutils literal notranslate"><span class="pre">AsyncWebsocketClient.send()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AuthenticationError"><code class="docutils literal notranslate"><span class="pre">AuthenticationError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BadOrderId"><code class="docutils literal notranslate"><span class="pre">BadOrderId</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BadRequest"><code class="docutils literal notranslate"><span class="pre">BadRequest</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BadResponse"><code class="docutils literal notranslate"><span class="pre">BadResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BadSymbol"><code class="docutils literal notranslate"><span class="pre">BadSymbol</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Balance"><code class="docutils literal notranslate"><span class="pre">Balance</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Balance.free"><code class="docutils literal notranslate"><span class="pre">Balance.free</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Balance.total"><code class="docutils literal notranslate"><span class="pre">Balance.total</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Balance.used"><code class="docutils literal notranslate"><span class="pre">Balance.used</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel"><code class="docutils literal notranslate"><span class="pre">BaseModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.from_dict"><code class="docutils literal notranslate"><span class="pre">BaseModel.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.is_dict_of_model"><code class="docutils literal notranslate"><span class="pre">BaseModel.is_dict_of_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.is_valid"><code class="docutils literal notranslate"><span class="pre">BaseModel.is_valid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.to_dict"><code class="docutils literal notranslate"><span class="pre">BaseModel.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.to_json"><code class="docutils literal notranslate"><span class="pre">BaseModel.to_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseModel.validate"><code class="docutils literal notranslate"><span class="pre">BaseModel.validate()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.api_version"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.api_version</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.forwarded"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.forwarded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.id"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.result"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.result</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.status"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.type"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.warning"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.warning</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BaseTxResponse.warnings"><code class="docutils literal notranslate"><span class="pre">BaseTxResponse.warnings</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BookOffer"><code class="docutils literal notranslate"><span class="pre">BookOffer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BookOffer.owner_funds"><code class="docutils literal notranslate"><span class="pre">BookOffer.owner_funds</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BookOffer.quality"><code class="docutils literal notranslate"><span class="pre">BookOffer.quality</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BookOffer.taker_gets_funded"><code class="docutils literal notranslate"><span class="pre">BookOffer.taker_gets_funded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.BookOffer.taker_pays_funded"><code class="docutils literal notranslate"><span class="pre">BookOffer.taker_pays_funded</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CCXTException"><code class="docutils literal notranslate"><span class="pre">CCXTException</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.account_txn_id"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.account_txn_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.fee"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.flags"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.flags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.last_ledger_sequence"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.last_ledger_sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.memos"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.memos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.sequence"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderParams.source_tag"><code class="docutils literal notranslate"><span class="pre">CancelOrderParams.source_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderResponse"><code class="docutils literal notranslate"><span class="pre">CancelOrderResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderResponse.id"><code class="docutils literal notranslate"><span class="pre">CancelOrderResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelOrderResponse.info"><code class="docutils literal notranslate"><span class="pre">CancelOrderResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CancelPending"><code class="docutils literal notranslate"><span class="pre">CancelPending</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderParams"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderParams.expiration"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderParams.expiration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderParams.flags"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderParams.flags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderParams.memos"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderParams.memos</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderResponse"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderResponse.id"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitBuyOrderResponse.info"><code class="docutils literal notranslate"><span class="pre">CreateLimitBuyOrderResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderParams"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderParams.expiration"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderParams.expiration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderParams.flags"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderParams.flags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderParams.memos"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderParams.memos</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderResponse"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderResponse.id"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateLimitSellOrderResponse.info"><code class="docutils literal notranslate"><span class="pre">CreateLimitSellOrderResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.account_txn_id"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.account_txn_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.expiration"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.expiration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.fee"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.flags"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.flags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.last_ledger_sequence"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.last_ledger_sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.memos"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.memos</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.offer_sequence"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.offer_sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.sequence"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderParams.source_tag"><code class="docutils literal notranslate"><span class="pre">CreateOrderParams.source_tag</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderResponse"><code class="docutils literal notranslate"><span class="pre">CreateOrderResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderResponse.id"><code class="docutils literal notranslate"><span class="pre">CreateOrderResponse.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateOrderResponse.info"><code class="docutils literal notranslate"><span class="pre">CreateOrderResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateTrustLineResponse"><code class="docutils literal notranslate"><span class="pre">CreateTrustLineResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateTrustLineResponse.amount"><code class="docutils literal notranslate"><span class="pre">CreateTrustLineResponse.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateTrustLineResponse.code"><code class="docutils literal notranslate"><span class="pre">CreateTrustLineResponse.code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreateTrustLineResponse.info"><code class="docutils literal notranslate"><span class="pre">CreateTrustLineResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreatedNode"><code class="docutils literal notranslate"><span class="pre">CreatedNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreatedNode.LedgerEntryType"><code class="docutils literal notranslate"><span class="pre">CreatedNode.LedgerEntryType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreatedNode.LedgerIndex"><code class="docutils literal notranslate"><span class="pre">CreatedNode.LedgerIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CreatedNode.NewFields"><code class="docutils literal notranslate"><span class="pre">CreatedNode.NewFields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency"><code class="docutils literal notranslate"><span class="pre">Currency</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.code"><code class="docutils literal notranslate"><span class="pre">Currency.code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.fee"><code class="docutils literal notranslate"><span class="pre">Currency.fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.issuer_name"><code class="docutils literal notranslate"><span class="pre">Currency.issuer_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.logo"><code class="docutils literal notranslate"><span class="pre">Currency.logo</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.name"><code class="docutils literal notranslate"><span class="pre">Currency.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Currency.precision"><code class="docutils literal notranslate"><span class="pre">Currency.precision</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode"><code class="docutils literal notranslate"><span class="pre">CurrencyCode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.currency"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.currency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.issuer"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.issuer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id18"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.currency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.from_string"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.has_issuer"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.has_issuer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.is_xrp"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.is_xrp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id19"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.issuer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.CurrencyCode.to_code"><code class="docutils literal notranslate"><span class="pre">CurrencyCode.to_code()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DDoSProtection"><code class="docutils literal notranslate"><span class="pre">DDoSProtection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DeletedNode"><code class="docutils literal notranslate"><span class="pre">DeletedNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DeletedNode.FinalFields"><code class="docutils literal notranslate"><span class="pre">DeletedNode.FinalFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DeletedNode.LedgerEntryType"><code class="docutils literal notranslate"><span class="pre">DeletedNode.LedgerEntryType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DeletedNode.LedgerIndex"><code class="docutils literal notranslate"><span class="pre">DeletedNode.LedgerIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.DeletedNode.PreviousFields"><code class="docutils literal notranslate"><span class="pre">DeletedNode.PreviousFields</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeError"><code class="docutils literal notranslate"><span class="pre">ExchangeError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeNotAvailable"><code class="docutils literal notranslate"><span class="pre">ExchangeNotAvailable</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus.eta"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus.eta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus.info"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus.status"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus.updated"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus.updated</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatus.url"><code class="docutils literal notranslate"><span class="pre">ExchangeStatus.url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatusType"><code class="docutils literal notranslate"><span class="pre">ExchangeStatusType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatusType.ERROR"><code class="docutils literal notranslate"><span class="pre">ExchangeStatusType.ERROR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatusType.MAINTENANCE"><code class="docutils literal notranslate"><span class="pre">ExchangeStatusType.MAINTENANCE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatusType.OK"><code class="docutils literal notranslate"><span class="pre">ExchangeStatusType.OK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ExchangeStatusType.SHUTDOWN"><code class="docutils literal notranslate"><span class="pre">ExchangeStatusType.SHUTDOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Fee"><code class="docutils literal notranslate"><span class="pre">Fee</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Fee.cost"><code class="docutils literal notranslate"><span class="pre">Fee.cost</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Fee.currency"><code class="docutils literal notranslate"><span class="pre">Fee.currency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Fee.percentage"><code class="docutils literal notranslate"><span class="pre">Fee.percentage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Fee.rate"><code class="docutils literal notranslate"><span class="pre">Fee.rate</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FeeSchedule"><code class="docutils literal notranslate"><span class="pre">FeeSchedule</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FeeSchedule.trading"><code class="docutils literal notranslate"><span class="pre">FeeSchedule.trading</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FeeSchedule.transactions"><code class="docutils literal notranslate"><span class="pre">FeeSchedule.transactions</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchBalanceParams"><code class="docutils literal notranslate"><span class="pre">FetchBalanceParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchBalanceParams.code"><code class="docutils literal notranslate"><span class="pre">FetchBalanceParams.code</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchBalanceResponse"><code class="docutils literal notranslate"><span class="pre">FetchBalanceResponse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchBalanceResponse.balances"><code class="docutils literal notranslate"><span class="pre">FetchBalanceResponse.balances</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchBalanceResponse.info"><code class="docutils literal notranslate"><span class="pre">FetchBalanceResponse.info</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchCanceledOrdersParams"><code class="docutils literal notranslate"><span class="pre">FetchCanceledOrdersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchCanceledOrdersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchCanceledOrdersParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchClosedOrdersParams"><code class="docutils literal notranslate"><span class="pre">FetchClosedOrdersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchClosedOrdersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchClosedOrdersParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchFeesResponse"><code class="docutils literal notranslate"><span class="pre">FetchFeesResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookParams"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookParams.ledger_hash"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookParams.ledger_hash</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookParams.ledger_index"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookParams.ledger_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookParams.search_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookParams.taker"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookParams.taker</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchL2OrderBookResponse"><code class="docutils literal notranslate"><span class="pre">FetchL2OrderBookResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchMarketResponse"><code class="docutils literal notranslate"><span class="pre">FetchMarketResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchMyTradesParams"><code class="docutils literal notranslate"><span class="pre">FetchMyTradesParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchMyTradesParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchMyTradesParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOpenOrdersParams"><code class="docutils literal notranslate"><span class="pre">FetchOpenOrdersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOpenOrdersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchOpenOrdersParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookParams"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookParams.ledger_hash"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookParams.ledger_hash</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookParams.ledger_index"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookParams.ledger_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookParams.search_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookParams.taker"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookParams.taker</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBookResponse"><code class="docutils literal notranslate"><span class="pre">FetchOrderBookResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBooksParams"><code class="docutils literal notranslate"><span class="pre">FetchOrderBooksParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderBooksParams.symbols"><code class="docutils literal notranslate"><span class="pre">FetchOrderBooksParams.symbols</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderParams"><code class="docutils literal notranslate"><span class="pre">FetchOrderParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderParams.ledger_index"><code class="docutils literal notranslate"><span class="pre">FetchOrderParams.ledger_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchOrderParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrderResponse"><code class="docutils literal notranslate"><span class="pre">FetchOrderResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrdersParams"><code class="docutils literal notranslate"><span class="pre">FetchOrdersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrdersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchOrdersParams.search_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrdersParams.show_canceled"><code class="docutils literal notranslate"><span class="pre">FetchOrdersParams.show_canceled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrdersParams.show_closed"><code class="docutils literal notranslate"><span class="pre">FetchOrdersParams.show_closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchOrdersParams.show_open"><code class="docutils literal notranslate"><span class="pre">FetchOrdersParams.show_open</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchStatusResponse"><code class="docutils literal notranslate"><span class="pre">FetchStatusResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTickerParams"><code class="docutils literal notranslate"><span class="pre">FetchTickerParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTickerParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchTickerParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTickerResponse"><code class="docutils literal notranslate"><span class="pre">FetchTickerResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTickersParams"><code class="docutils literal notranslate"><span class="pre">FetchTickersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTickersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchTickersParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTradesParams"><code class="docutils literal notranslate"><span class="pre">FetchTradesParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTradesParams.search_limit"><code class="docutils literal notranslate"><span class="pre">FetchTradesParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTradingFeeResponse"><code class="docutils literal notranslate"><span class="pre">FetchTradingFeeResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTransactionFeeResponse"><code class="docutils literal notranslate"><span class="pre">FetchTransactionFeeResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.FetchTransferRateResponse"><code class="docutils literal notranslate"><span class="pre">FetchTransferRateResponse</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.InsufficientFunds"><code class="docutils literal notranslate"><span class="pre">InsufficientFunds</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.InvalidAddress"><code class="docutils literal notranslate"><span class="pre">InvalidAddress</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.InvalidOrder"><code class="docutils literal notranslate"><span class="pre">InvalidOrder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrency"><code class="docutils literal notranslate"><span class="pre">IssuedCurrency</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrency.currency"><code class="docutils literal notranslate"><span class="pre">IssuedCurrency.currency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrency.issuer"><code class="docutils literal notranslate"><span class="pre">IssuedCurrency.issuer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrency.to_amount"><code class="docutils literal notranslate"><span class="pre">IssuedCurrency.to_amount()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrencyAmount"><code class="docutils literal notranslate"><span class="pre">IssuedCurrencyAmount</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrencyAmount.to_currency"><code class="docutils literal notranslate"><span class="pre">IssuedCurrencyAmount.to_currency()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrencyAmount.to_dict"><code class="docutils literal notranslate"><span class="pre">IssuedCurrencyAmount.to_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuedCurrencyAmount.value"><code class="docutils literal notranslate"><span class="pre">IssuedCurrencyAmount.value</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer"><code class="docutils literal notranslate"><span class="pre">Issuer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.addresses"><code class="docutils literal notranslate"><span class="pre">Issuer.addresses</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.currencies"><code class="docutils literal notranslate"><span class="pre">Issuer.currencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.name"><code class="docutils literal notranslate"><span class="pre">Issuer.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.transfer_rate"><code class="docutils literal notranslate"><span class="pre">Issuer.transfer_rate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.trusted"><code class="docutils literal notranslate"><span class="pre">Issuer.trusted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Issuer.website"><code class="docutils literal notranslate"><span class="pre">Issuer.website</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.IssuerAddress"><code class="docutils literal notranslate"><span class="pre">IssuerAddress</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.JsonRpcClient"><code class="docutils literal notranslate"><span class="pre">JsonRpcClient</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerEntryTypes"><code class="docutils literal notranslate"><span class="pre">LedgerEntryTypes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerEntryTypes.Offer"><code class="docutils literal notranslate"><span class="pre">LedgerEntryTypes.Offer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.account"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.amendment"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.amendment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.bookDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.bookDir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.check"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.check</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.contract"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.contract</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.depositPreauth"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.depositPreauth</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.dirNode"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.dirNode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.escrow"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.escrow</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.feeSettings"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.feeSettings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.generatorMap"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.generatorMap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.offer"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.offer</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.ownerDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ownerDir</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.paychan"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.paychan</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.rippleState"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.rippleState</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.signerList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.signerList</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.skipList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.skipList</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.LedgerNameSpaces.ticket"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ticket</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market"><code class="docutils literal notranslate"><span class="pre">Market</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.base"><code class="docutils literal notranslate"><span class="pre">Market.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.base_fee"><code class="docutils literal notranslate"><span class="pre">Market.base_fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.id"><code class="docutils literal notranslate"><span class="pre">Market.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.percentage"><code class="docutils literal notranslate"><span class="pre">Market.percentage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.quote"><code class="docutils literal notranslate"><span class="pre">Market.quote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.quote_fee"><code class="docutils literal notranslate"><span class="pre">Market.quote_fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Market.symbol"><code class="docutils literal notranslate"><span class="pre">Market.symbol</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketNotFound"><code class="docutils literal notranslate"><span class="pre">MarketNotFound</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketSymbol"><code class="docutils literal notranslate"><span class="pre">MarketSymbol</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketSymbol.base"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketSymbol.quote"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.quote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id20"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketSymbol.from_string"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id21"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.quote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.MarketSymbol.to_symbol"><code class="docutils literal notranslate"><span class="pre">MarketSymbol.to_symbol()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode"><code class="docutils literal notranslate"><span class="pre">ModifiedNode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.FinalFields"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.FinalFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.LedgerEntryType"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.LedgerEntryType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.LedgerIndex"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.LedgerIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.PreviousFields"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.PreviousFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.PreviousTxnID"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.PreviousTxnID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.ModifiedNode.PreviousTxnLgrSeq"><code class="docutils literal notranslate"><span class="pre">ModifiedNode.PreviousTxnLgrSeq</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkError"><code class="docutils literal notranslate"><span class="pre">NetworkError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkName"><code class="docutils literal notranslate"><span class="pre">NetworkName</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkNames"><code class="docutils literal notranslate"><span class="pre">NetworkNames</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkNames.DEVNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.DEVNET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkNames.LOCAL"><code class="docutils literal notranslate"><span class="pre">NetworkNames.LOCAL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkNames.MAINNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.MAINNET</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NetworkNames.TESTNET"><code class="docutils literal notranslate"><span class="pre">NetworkNames.TESTNET</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.FinalFields"><code class="docutils literal notranslate"><span class="pre">Node.FinalFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.LedgerEntryType"><code class="docutils literal notranslate"><span class="pre">Node.LedgerEntryType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.LedgerIndex"><code class="docutils literal notranslate"><span class="pre">Node.LedgerIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.NewFields"><code class="docutils literal notranslate"><span class="pre">Node.NewFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.PreviousFields"><code class="docutils literal notranslate"><span class="pre">Node.PreviousFields</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.PreviousTxnID"><code class="docutils literal notranslate"><span class="pre">Node.PreviousTxnID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.PreviousTxnLgrSeq"><code class="docutils literal notranslate"><span class="pre">Node.PreviousTxnLgrSeq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Node.type"><code class="docutils literal notranslate"><span class="pre">Node.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.NotSupported"><code class="docutils literal notranslate"><span class="pre">NotSupported</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer"><code class="docutils literal notranslate"><span class="pre">Offer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.Account"><code class="docutils literal notranslate"><span class="pre">Offer.Account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.BookDirectory"><code class="docutils literal notranslate"><span class="pre">Offer.BookDirectory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.BookNode"><code class="docutils literal notranslate"><span class="pre">Offer.BookNode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.Expiration"><code class="docutils literal notranslate"><span class="pre">Offer.Expiration</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.Flags"><code class="docutils literal notranslate"><span class="pre">Offer.Flags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.LedgerEntryType"><code class="docutils literal notranslate"><span class="pre">Offer.LedgerEntryType</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.OwnerNode"><code class="docutils literal notranslate"><span class="pre">Offer.OwnerNode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.PreviousTxnID"><code class="docutils literal notranslate"><span class="pre">Offer.PreviousTxnID</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.PreviousTxnLgrSeq"><code class="docutils literal notranslate"><span class="pre">Offer.PreviousTxnLgrSeq</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.Sequence"><code class="docutils literal notranslate"><span class="pre">Offer.Sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.TakerGets"><code class="docutils literal notranslate"><span class="pre">Offer.TakerGets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.TakerPays"><code class="docutils literal notranslate"><span class="pre">Offer.TakerPays</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Offer.index"><code class="docutils literal notranslate"><span class="pre">Offer.index</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferCreateFlags"><code class="docutils literal notranslate"><span class="pre">OfferCreateFlags</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferCreateFlags.TF_FILL_OR_KILL"><code class="docutils literal notranslate"><span class="pre">OfferCreateFlags.TF_FILL_OR_KILL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL"><code class="docutils literal notranslate"><span class="pre">OfferCreateFlags.TF_IMMEDIATE_OR_CANCEL</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferCreateFlags.TF_PASSIVE"><code class="docutils literal notranslate"><span class="pre">OfferCreateFlags.TF_PASSIVE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferCreateFlags.TF_SELL"><code class="docutils literal notranslate"><span class="pre">OfferCreateFlags.TF_SELL</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferFlags"><code class="docutils literal notranslate"><span class="pre">OfferFlags</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferFlags.LSF_PASSIVE"><code class="docutils literal notranslate"><span class="pre">OfferFlags.LSF_PASSIVE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OfferFlags.LSF_SELL"><code class="docutils literal notranslate"><span class="pre">OfferFlags.LSF_SELL</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order"><code class="docutils literal notranslate"><span class="pre">Order</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.amount"><code class="docutils literal notranslate"><span class="pre">Order.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.average"><code class="docutils literal notranslate"><span class="pre">Order.average</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.client_order_id"><code class="docutils literal notranslate"><span class="pre">Order.client_order_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.cost"><code class="docutils literal notranslate"><span class="pre">Order.cost</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.datetime"><code class="docutils literal notranslate"><span class="pre">Order.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.fee"><code class="docutils literal notranslate"><span class="pre">Order.fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.filled"><code class="docutils literal notranslate"><span class="pre">Order.filled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.id"><code class="docutils literal notranslate"><span class="pre">Order.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.info"><code class="docutils literal notranslate"><span class="pre">Order.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.last_trade_timestamp"><code class="docutils literal notranslate"><span class="pre">Order.last_trade_timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.price"><code class="docutils literal notranslate"><span class="pre">Order.price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.remaining"><code class="docutils literal notranslate"><span class="pre">Order.remaining</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.side"><code class="docutils literal notranslate"><span class="pre">Order.side</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.status"><code class="docutils literal notranslate"><span class="pre">Order.status</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.symbol"><code class="docutils literal notranslate"><span class="pre">Order.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.time_in_force"><code class="docutils literal notranslate"><span class="pre">Order.time_in_force</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.timestamp"><code class="docutils literal notranslate"><span class="pre">Order.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.trades"><code class="docutils literal notranslate"><span class="pre">Order.trades</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Order.type"><code class="docutils literal notranslate"><span class="pre">Order.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook"><code class="docutils literal notranslate"><span class="pre">OrderBook</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.asks"><code class="docutils literal notranslate"><span class="pre">OrderBook.asks</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.bids"><code class="docutils literal notranslate"><span class="pre">OrderBook.bids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.datetime"><code class="docutils literal notranslate"><span class="pre">OrderBook.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.level"><code class="docutils literal notranslate"><span class="pre">OrderBook.level</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.nonce"><code class="docutils literal notranslate"><span class="pre">OrderBook.nonce</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.symbol"><code class="docutils literal notranslate"><span class="pre">OrderBook.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBook.timestamp"><code class="docutils literal notranslate"><span class="pre">OrderBook.timestamp</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBookLevel"><code class="docutils literal notranslate"><span class="pre">OrderBookLevel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBookLevel.L1"><code class="docutils literal notranslate"><span class="pre">OrderBookLevel.L1</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBookLevel.L2"><code class="docutils literal notranslate"><span class="pre">OrderBookLevel.L2</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderBookLevel.L3"><code class="docutils literal notranslate"><span class="pre">OrderBookLevel.L3</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderId"><code class="docutils literal notranslate"><span class="pre">OrderId</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderId.account"><code class="docutils literal notranslate"><span class="pre">OrderId.account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderId.sequence"><code class="docutils literal notranslate"><span class="pre">OrderId.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id22"><code class="docutils literal notranslate"><span class="pre">OrderId.account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderId.from_string"><code class="docutils literal notranslate"><span class="pre">OrderId.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id23"><code class="docutils literal notranslate"><span class="pre">OrderId.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderId.to_id"><code class="docutils literal notranslate"><span class="pre">OrderId.to_id()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderNotFound"><code class="docutils literal notranslate"><span class="pre">OrderNotFound</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderSide"><code class="docutils literal notranslate"><span class="pre">OrderSide</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderSide.Buy"><code class="docutils literal notranslate"><span class="pre">OrderSide.Buy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderSide.Sell"><code class="docutils literal notranslate"><span class="pre">OrderSide.Sell</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus"><code class="docutils literal notranslate"><span class="pre">OrderStatus</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus.Canceled"><code class="docutils literal notranslate"><span class="pre">OrderStatus.Canceled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus.Closed"><code class="docutils literal notranslate"><span class="pre">OrderStatus.Closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus.Expired"><code class="docutils literal notranslate"><span class="pre">OrderStatus.Expired</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus.Open"><code class="docutils literal notranslate"><span class="pre">OrderStatus.Open</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderStatus.Rejected"><code class="docutils literal notranslate"><span class="pre">OrderStatus.Rejected</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderTimeInForce"><code class="docutils literal notranslate"><span class="pre">OrderTimeInForce</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderTimeInForce.FillOrKill"><code class="docutils literal notranslate"><span class="pre">OrderTimeInForce.FillOrKill</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderTimeInForce.GoodTillCanceled"><code class="docutils literal notranslate"><span class="pre">OrderTimeInForce.GoodTillCanceled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderTimeInForce.ImmediateOrCancel"><code class="docutils literal notranslate"><span class="pre">OrderTimeInForce.ImmediateOrCancel</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderTimeInForce.PostOnly"><code class="docutils literal notranslate"><span class="pre">OrderTimeInForce.PostOnly</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderType"><code class="docutils literal notranslate"><span class="pre">OrderType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.OrderType.Limit"><code class="docutils literal notranslate"><span class="pre">OrderType.Limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.PermissionDenied"><code class="docutils literal notranslate"><span class="pre">PermissionDenied</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.RateLimitExceeded"><code class="docutils literal notranslate"><span class="pre">RateLimitExceeded</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.RequestTimeout"><code class="docutils literal notranslate"><span class="pre">RequestTimeout</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK"><code class="docutils literal notranslate"><span class="pre">SDK</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.client"><code class="docutils literal notranslate"><span class="pre">SDK.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.sync_client"><code class="docutils literal notranslate"><span class="pre">SDK.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.websocket_client"><code class="docutils literal notranslate"><span class="pre">SDK.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.wallet"><code class="docutils literal notranslate"><span class="pre">SDK.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.currencies"><code class="docutils literal notranslate"><span class="pre">SDK.currencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.issuers"><code class="docutils literal notranslate"><span class="pre">SDK.issuers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.markets"><code class="docutils literal notranslate"><span class="pre">SDK.markets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.transfer_rates"><code class="docutils literal notranslate"><span class="pre">SDK.transfer_rates</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.cancel_order"><code class="docutils literal notranslate"><span class="pre">SDK.cancel_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id24"><code class="docutils literal notranslate"><span class="pre">SDK.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.create_limit_buy_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_limit_buy_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.create_limit_sell_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_limit_sell_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.create_order"><code class="docutils literal notranslate"><span class="pre">SDK.create_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.create_trust_line"><code class="docutils literal notranslate"><span class="pre">SDK.create_trust_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id25"><code class="docutils literal notranslate"><span class="pre">SDK.currencies</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_balance"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_canceled_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_canceled_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_closed_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_closed_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_currencies"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_currencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_issuers"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_issuers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_l2_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_l2_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_market"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_market()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_markets"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_markets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_my_trades"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_my_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_open_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_open_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_order"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_order_books"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_order_books()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_orders"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_status"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_ticker"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_ticker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_tickers"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_tickers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_trades"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_trading_fee"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trading_fee()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_trading_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_trading_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_transaction_fee"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transaction_fee()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_transaction_fees"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transaction_fees()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.fetch_transfer_rate"><code class="docutils literal notranslate"><span class="pre">SDK.fetch_transfer_rate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id26"><code class="docutils literal notranslate"><span class="pre">SDK.issuers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.load_currencies"><code class="docutils literal notranslate"><span class="pre">SDK.load_currencies()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.load_issuers"><code class="docutils literal notranslate"><span class="pre">SDK.load_issuers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.load_markets"><code class="docutils literal notranslate"><span class="pre">SDK.load_markets()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id27"><code class="docutils literal notranslate"><span class="pre">SDK.markets</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id28"><code class="docutils literal notranslate"><span class="pre">SDK.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id29"><code class="docutils literal notranslate"><span class="pre">SDK.transfer_rates</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id30"><code class="docutils literal notranslate"><span class="pre">SDK.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_balance"><code class="docutils literal notranslate"><span class="pre">SDK.watch_balance()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_my_trades"><code class="docutils literal notranslate"><span class="pre">SDK.watch_my_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_order_book"><code class="docutils literal notranslate"><span class="pre">SDK.watch_order_book()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_orders"><code class="docutils literal notranslate"><span class="pre">SDK.watch_orders()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_status"><code class="docutils literal notranslate"><span class="pre">SDK.watch_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_ticker"><code class="docutils literal notranslate"><span class="pre">SDK.watch_ticker()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_tickers"><code class="docutils literal notranslate"><span class="pre">SDK.watch_tickers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDK.watch_trades"><code class="docutils literal notranslate"><span class="pre">SDK.watch_trades()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id31"><code class="docutils literal notranslate"><span class="pre">SDK.websocket_client</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams"><code class="docutils literal notranslate"><span class="pre">SDKParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.network"><code class="docutils literal notranslate"><span class="pre">SDKParams.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.json_rpc_url"><code class="docutils literal notranslate"><span class="pre">SDKParams.json_rpc_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.ws_url"><code class="docutils literal notranslate"><span class="pre">SDKParams.ws_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.client"><code class="docutils literal notranslate"><span class="pre">SDKParams.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.sync_client"><code class="docutils literal notranslate"><span class="pre">SDKParams.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.websocket_client"><code class="docutils literal notranslate"><span class="pre">SDKParams.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.wallet_secret"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet_secret</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.generate_wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.generate_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.SDKParams.fund_testnet_wallet"><code class="docutils literal notranslate"><span class="pre">SDKParams.fund_testnet_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id32"><code class="docutils literal notranslate"><span class="pre">SDKParams.client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id33"><code class="docutils literal notranslate"><span class="pre">SDKParams.fund_testnet_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id34"><code class="docutils literal notranslate"><span class="pre">SDKParams.generate_wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id35"><code class="docutils literal notranslate"><span class="pre">SDKParams.json_rpc_url</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id36"><code class="docutils literal notranslate"><span class="pre">SDKParams.network</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id37"><code class="docutils literal notranslate"><span class="pre">SDKParams.sync_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id38"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id39"><code class="docutils literal notranslate"><span class="pre">SDKParams.wallet_secret</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id40"><code class="docutils literal notranslate"><span class="pre">SDKParams.websocket_client</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id41"><code class="docutils literal notranslate"><span class="pre">SDKParams.ws_url</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker"><code class="docutils literal notranslate"><span class="pre">Ticker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.ask"><code class="docutils literal notranslate"><span class="pre">Ticker.ask</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.ask_volume"><code class="docutils literal notranslate"><span class="pre">Ticker.ask_volume</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.average"><code class="docutils literal notranslate"><span class="pre">Ticker.average</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.base_volume"><code class="docutils literal notranslate"><span class="pre">Ticker.base_volume</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.bid"><code class="docutils literal notranslate"><span class="pre">Ticker.bid</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.bid_volume"><code class="docutils literal notranslate"><span class="pre">Ticker.bid_volume</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.change"><code class="docutils literal notranslate"><span class="pre">Ticker.change</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.close"><code class="docutils literal notranslate"><span class="pre">Ticker.close</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.datetime"><code class="docutils literal notranslate"><span class="pre">Ticker.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.high"><code class="docutils literal notranslate"><span class="pre">Ticker.high</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.info"><code class="docutils literal notranslate"><span class="pre">Ticker.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.last"><code class="docutils literal notranslate"><span class="pre">Ticker.last</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.low"><code class="docutils literal notranslate"><span class="pre">Ticker.low</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.open"><code class="docutils literal notranslate"><span class="pre">Ticker.open</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.percentage"><code class="docutils literal notranslate"><span class="pre">Ticker.percentage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.previous_close"><code class="docutils literal notranslate"><span class="pre">Ticker.previous_close</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.quote_volume"><code class="docutils literal notranslate"><span class="pre">Ticker.quote_volume</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.symbol"><code class="docutils literal notranslate"><span class="pre">Ticker.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.timestamp"><code class="docutils literal notranslate"><span class="pre">Ticker.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Ticker.vwap"><code class="docutils literal notranslate"><span class="pre">Ticker.vwap</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade"><code class="docutils literal notranslate"><span class="pre">Trade</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.amount"><code class="docutils literal notranslate"><span class="pre">Trade.amount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.cost"><code class="docutils literal notranslate"><span class="pre">Trade.cost</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.datetime"><code class="docutils literal notranslate"><span class="pre">Trade.datetime</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.fee"><code class="docutils literal notranslate"><span class="pre">Trade.fee</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.id"><code class="docutils literal notranslate"><span class="pre">Trade.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.info"><code class="docutils literal notranslate"><span class="pre">Trade.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.order"><code class="docutils literal notranslate"><span class="pre">Trade.order</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.price"><code class="docutils literal notranslate"><span class="pre">Trade.price</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.side"><code class="docutils literal notranslate"><span class="pre">Trade.side</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.symbol"><code class="docutils literal notranslate"><span class="pre">Trade.symbol</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.taker_or_maker"><code class="docutils literal notranslate"><span class="pre">Trade.taker_or_maker</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.timestamp"><code class="docutils literal notranslate"><span class="pre">Trade.timestamp</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Trade.type"><code class="docutils literal notranslate"><span class="pre">Trade.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeId"><code class="docutils literal notranslate"><span class="pre">TradeId</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeId.account"><code class="docutils literal notranslate"><span class="pre">TradeId.account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeId.sequence"><code class="docutils literal notranslate"><span class="pre">TradeId.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id42"><code class="docutils literal notranslate"><span class="pre">TradeId.account</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeId.from_string"><code class="docutils literal notranslate"><span class="pre">TradeId.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#id43"><code class="docutils literal notranslate"><span class="pre">TradeId.sequence</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeId.to_id"><code class="docutils literal notranslate"><span class="pre">TradeId.to_id()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeSide"><code class="docutils literal notranslate"><span class="pre">TradeSide</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeSide.Buy"><code class="docutils literal notranslate"><span class="pre">TradeSide.Buy</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeSide.Sell"><code class="docutils literal notranslate"><span class="pre">TradeSide.Sell</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeTakerOrMaker"><code class="docutils literal notranslate"><span class="pre">TradeTakerOrMaker</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeTakerOrMaker.Maker"><code class="docutils literal notranslate"><span class="pre">TradeTakerOrMaker.Maker</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeTakerOrMaker.Taker"><code class="docutils literal notranslate"><span class="pre">TradeTakerOrMaker.Taker</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeType"><code class="docutils literal notranslate"><span class="pre">TradeType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradeType.Limit"><code class="docutils literal notranslate"><span class="pre">TradeType.Limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee"><code class="docutils literal notranslate"><span class="pre">TradingFee</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee.base"><code class="docutils literal notranslate"><span class="pre">TradingFee.base</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee.info"><code class="docutils literal notranslate"><span class="pre">TradingFee.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee.percentage"><code class="docutils literal notranslate"><span class="pre">TradingFee.percentage</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee.quote"><code class="docutils literal notranslate"><span class="pre">TradingFee.quote</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TradingFee.symbol"><code class="docutils literal notranslate"><span class="pre">TradingFee.symbol</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData"><code class="docutils literal notranslate"><span class="pre">TransactionData</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData.date"><code class="docutils literal notranslate"><span class="pre">TransactionData.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData.metadata"><code class="docutils literal notranslate"><span class="pre">TransactionData.metadata</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData.offers"><code class="docutils literal notranslate"><span class="pre">TransactionData.offers</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData.previous_txn_id"><code class="docutils literal notranslate"><span class="pre">TransactionData.previous_txn_id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionData.transaction"><code class="docutils literal notranslate"><span class="pre">TransactionData.transaction</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionFee"><code class="docutils literal notranslate"><span class="pre">TransactionFee</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionFee.code"><code class="docutils literal notranslate"><span class="pre">TransactionFee.code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionFee.current"><code class="docutils literal notranslate"><span class="pre">TransactionFee.current</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionFee.info"><code class="docutils literal notranslate"><span class="pre">TransactionFee.info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionFee.transfer"><code class="docutils literal notranslate"><span class="pre">TransactionFee.transfer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata.AffectedNodes"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata.AffectedNodes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata.DeliveredAmount"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata.DeliveredAmount</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata.TransactionIndex"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata.TransactionIndex</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata.TransactionResult"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata.TransactionResult</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TransactionMetadata.delivered_amount"><code class="docutils literal notranslate"><span class="pre">TransactionMetadata.delivered_amount</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult"><code class="docutils literal notranslate"><span class="pre">TxResult</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult.date"><code class="docutils literal notranslate"><span class="pre">TxResult.date</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult.hash"><code class="docutils literal notranslate"><span class="pre">TxResult.hash</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult.ledger_index"><code class="docutils literal notranslate"><span class="pre">TxResult.ledger_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult.meta"><code class="docutils literal notranslate"><span class="pre">TxResult.meta</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.TxResult.validated"><code class="docutils literal notranslate"><span class="pre">TxResult.validated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.UnixISOTimestamp"><code class="docutils literal notranslate"><span class="pre">UnixISOTimestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.UnixTimestamp"><code class="docutils literal notranslate"><span class="pre">UnixTimestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet"><code class="docutils literal notranslate"><span class="pre">Wallet</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.classic_address"><code class="docutils literal notranslate"><span class="pre">Wallet.classic_address</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.create"><code class="docutils literal notranslate"><span class="pre">Wallet.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.get_xaddress"><code class="docutils literal notranslate"><span class="pre">Wallet.get_xaddress()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.private_key"><code class="docutils literal notranslate"><span class="pre">Wallet.private_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.public_key"><code class="docutils literal notranslate"><span class="pre">Wallet.public_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.seed"><code class="docutils literal notranslate"><span class="pre">Wallet.seed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Wallet.sequence"><code class="docutils literal notranslate"><span class="pre">Wallet.sequence</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Warning"><code class="docutils literal notranslate"><span class="pre">Warning</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Warning.details"><code class="docutils literal notranslate"><span class="pre">Warning.details</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Warning.id"><code class="docutils literal notranslate"><span class="pre">Warning.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.Warning.message"><code class="docutils literal notranslate"><span class="pre">Warning.message</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchBalanceParams"><code class="docutils literal notranslate"><span class="pre">WatchBalanceParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchBalanceParams.code"><code class="docutils literal notranslate"><span class="pre">WatchBalanceParams.code</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchBalanceParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchBalanceParams.listener</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchMyTradesParams"><code class="docutils literal notranslate"><span class="pre">WatchMyTradesParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchMyTradesParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchMyTradesParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchMyTradesParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchMyTradesParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrderBookParams"><code class="docutils literal notranslate"><span class="pre">WatchOrderBookParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrderBookParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchOrderBookParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrderBookParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchOrderBookParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.limit"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.search_limit</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.show_canceled"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.show_canceled</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.show_closed"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.show_closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchOrdersParams.show_open"><code class="docutils literal notranslate"><span class="pre">WatchOrdersParams.show_open</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchStatusParams"><code class="docutils literal notranslate"><span class="pre">WatchStatusParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchStatusParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchStatusParams.listener</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickerParams"><code class="docutils literal notranslate"><span class="pre">WatchTickerParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickerParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchTickerParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickerParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchTickerParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickersParams"><code class="docutils literal notranslate"><span class="pre">WatchTickersParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickersParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchTickersParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTickersParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchTickersParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTradesParams"><code class="docutils literal notranslate"><span class="pre">WatchTradesParams</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTradesParams.listener"><code class="docutils literal notranslate"><span class="pre">WatchTradesParams.listener</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.WatchTradesParams.search_limit"><code class="docutils literal notranslate"><span class="pre">WatchTradesParams.search_limit</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XRP"><code class="docutils literal notranslate"><span class="pre">XRP</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XRP.currency"><code class="docutils literal notranslate"><span class="pre">XRP.currency</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XRP.from_dict"><code class="docutils literal notranslate"><span class="pre">XRP.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XRP.to_amount"><code class="docutils literal notranslate"><span class="pre">XRP.to_amount()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XRP.to_dict"><code class="docutils literal notranslate"><span class="pre">XRP.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.ENTRY_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.ENTRY_NOT_FOUND</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.NO_CLOSED_LEDGER"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.NO_CLOSED_LEDGER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.NO_CURRENT_LEDGER"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.NO_CURRENT_LEDGER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.NO_NETWORK"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.NO_NETWORK</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.TOO_BUSY"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.TOO_BUSY</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplErrorTypes.TXN_NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">XrplErrorTypes.TXN_NOT_FOUND</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplTimestamp"><code class="docutils literal notranslate"><span class="pre">XrplTimestamp</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplTransactionErrorTypes"><code class="docutils literal notranslate"><span class="pre">XrplTransactionErrorTypes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplTransactionErrorTypes.NO_ISSUER"><code class="docutils literal notranslate"><span class="pre">XrplTransactionErrorTypes.NO_ISSUER</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.XrplTransactionErrorTypes.UNFUNDED_OFFER"><code class="docutils literal notranslate"><span class="pre">XrplTransactionErrorTypes.UNFUNDED_OFFER</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.decimal_to_transfer_rate"><code class="docutils literal notranslate"><span class="pre">decimal_to_transfer_rate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.generate_faucet_wallet"><code class="docutils literal notranslate"><span class="pre">generate_faucet_wallet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_amount"><code class="docutils literal notranslate"><span class="pre">get_amount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_amount_currency_code"><code class="docutils literal notranslate"><span class="pre">get_amount_currency_code()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_base_amount_key"><code class="docutils literal notranslate"><span class="pre">get_base_amount_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_book_offer_base_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_base_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_book_offer_quote_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_quote_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_market_symbol"><code class="docutils literal notranslate"><span class="pre">get_market_symbol()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_market_symbol_from_amount"><code class="docutils literal notranslate"><span class="pre">get_market_symbol_from_amount()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_most_recent_tx"><code class="docutils literal notranslate"><span class="pre">get_most_recent_tx()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_offer_from_node"><code class="docutils literal notranslate"><span class="pre">get_offer_from_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_offer_from_tx"><code class="docutils literal notranslate"><span class="pre">get_offer_from_tx()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_order_from_data"><code class="docutils literal notranslate"><span class="pre">get_order_from_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_order_side_from_flags"><code class="docutils literal notranslate"><span class="pre">get_order_side_from_flags()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_order_time_in_force"><code class="docutils literal notranslate"><span class="pre">get_order_time_in_force()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_quote_amount_key"><code class="docutils literal notranslate"><span class="pre">get_quote_amount_key()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_taker_or_maker"><code class="docutils literal notranslate"><span class="pre">get_taker_or_maker()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.get_trade_from_data"><code class="docutils literal notranslate"><span class="pre">get_trade_from_data()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.handle_response_error"><code class="docutils literal notranslate"><span class="pre">handle_response_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.has_offer_create_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_create_flag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.has_offer_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_flag()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.hash_offer_id"><code class="docutils literal notranslate"><span class="pre">hash_offer_id()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.omit"><code class="docutils literal notranslate"><span class="pre">omit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.parse_affected_node"><code class="docutils literal notranslate"><span class="pre">parse_affected_node()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.parse_amount_value"><code class="docutils literal notranslate"><span class="pre">parse_amount_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.parse_transaction"><code class="docutils literal notranslate"><span class="pre">parse_transaction()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.server_time_to_posix"><code class="docutils literal notranslate"><span class="pre">server_time_to_posix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sha_512_half"><code class="docutils literal notranslate"><span class="pre">sha_512_half()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sort_by_date"><code class="docutils literal notranslate"><span class="pre">sort_by_date()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.sort_by_previous_txn_lgr_seq"><code class="docutils literal notranslate"><span class="pre">sort_by_previous_txn_lgr_seq()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.subtract_amounts"><code class="docutils literal notranslate"><span class="pre">subtract_amounts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.transfer_rate_to_decimal"><code class="docutils literal notranslate"><span class="pre">transfer_rate_to_decimal()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Ripple Labs, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

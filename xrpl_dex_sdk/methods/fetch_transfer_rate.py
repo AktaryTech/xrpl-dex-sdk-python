@@ -1,9 +1,23 @@
 from xrpl.models import AccountInfo
-from ..models import AccountAddress
+from ..models import IssuerAddress
 from ..utils import handle_response_error, transfer_rate_to_decimal
 
 
-async def fetch_transfer_rate(self, issuer: AccountAddress) -> float:
+async def fetch_transfer_rate(self, issuer: IssuerAddress) -> float:
+    """
+    Retrieves a currency issuer's transfer rate (if any).
+
+    Parameters
+    ----------
+    issuer : xrpl_dex_sdk.models.IssuerAddress
+        Address of currency issuer
+
+    Returns
+    -------
+    float
+        The transfer rate
+    """
+
     if self.transfer_rates != None and "issuer" in self.transfer_rates:
         return self.transfer_rates[issuer]
     account_info_request = AccountInfo.from_dict({"account": issuer, "ledger_index": "validated"})

@@ -8,6 +8,8 @@ from ..required import REQUIRED
 
 
 class ExchangeStatusType(Enum):
+    """https://docs.ccxt.com/en/latest/manual.html?#exchange-status-structure"""
+
     OK = "ok"
     SHUTDOWN = "shutdown"
     ERROR = "error"
@@ -26,6 +28,3 @@ class ExchangeStatus(BaseModel):
     eta: Optional[UnixTimestamp] = None
     # A link to a GitHub issue or to an exchange post on the subject
     url: Optional[str] = None
-
-
-__all__ = ["ExchangeStatusType", "ExchangeStatus"]

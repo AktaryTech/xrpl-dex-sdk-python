@@ -12,6 +12,22 @@ from ..utils import handle_response_error
 async def fetch_balance(
     self, params: Optional[FetchBalanceParams] = FetchBalanceParams()
 ) -> Optional[FetchBalanceResponse]:
+    """
+    Returns information about an account's balances.
+
+    Results are sorted by currency and funds availability.
+
+    Parameters
+    ----------
+    params : xrpl_dex_sdk.models.FetchBalanceParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchBalanceResponse
+        Balance information
+    """
+
     balances: Dict[CurrencyCode, Balance] = {}
     info: dict = {}
 

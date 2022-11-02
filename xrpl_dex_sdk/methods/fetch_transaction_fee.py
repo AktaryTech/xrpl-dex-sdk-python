@@ -8,6 +8,20 @@ from ..utils import handle_response_error
 async def fetch_transaction_fee(
     self, code: Union[CurrencyCode, str]
 ) -> Optional[FetchTransactionFeeResponse]:
+    """
+    Returns information about fees incurred for performing transactions with a given currency.
+
+    Parameters
+    ----------
+    code : xrpl_dex_sdk.models.CurrencyCode
+        Currency code to get fees for
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchTransactionFeeResponse
+        Transaction fee data
+    """
+
     code = CurrencyCode.from_string(code) if isinstance(code, str) else code
 
     fee_response = await self.client.request(Fee())

@@ -15,7 +15,7 @@ from ..models import (
 )
 from ..utils import (
     handle_response_error,
-    parse_affected_node,
+    get_offer_from_node,
     get_market_symbol,
     get_trade_from_data,
 )
@@ -32,6 +32,26 @@ async def fetch_trades(
     # eslint-disable-next-line
     params: FetchTradesParams = FetchTradesParams(),
 ) -> FetchTradesResponse:
+    """
+    Fetch all Trades for a given market symbol.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        (Optional) Market symbol to filter Trades by
+    since : int
+        (Optional) Only return Trades since this date
+    limit : int
+        (Optional) Total number of Trades to return (default is 20)
+    params : xrpl_dex_sdk.models.FetchTradesParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchTradesResponse
+        List of retrieved Trades
+    """
+
     limit = limit if limit != None else DEFAULT_LIMIT
     search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
 
@@ -52,59 +72,53 @@ async def fetch_trades(
         ledger_result = ledger_response.result
         handle_response_error(ledger_result)
 
-        previous_ledger_hash = ledger_result["ledger"]["parent_hash"]
+        ledger = ledger_result["ledger"]
 
-        transactions = ledger_result["ledger"]["transactions"]
+        if since and ripple_time_to_posix(ledger["close_time"] >= since):
+            has_next_page = False
+            continue
+
+        previous_ledger_hash = ledger["parent_hash"]
+
+        transactions = ledger["transactions"]
 
         for transaction in transactions:
             tx_count += 1
-            if tx_count >= search_limit:
+            if len(trades) >= limit or tx_count >= search_limit:
                 break
 
             if (
-                "Sequence" not in transaction
+                isinstance(transaction, str)
+                or "Sequence" not in transaction
                 or "metaData" not in transaction
                 or transaction["TransactionType"] != "OfferCreate"
+                or get_market_symbol(transaction) != symbol
             ):
-                continue
-
-            if get_market_symbol(transaction) != symbol:
-                continue
-
-            if since != None and ripple_time_to_posix(
-                ledger_result["ledger"]["close_time"] >= since
-            ):
-                has_next_page = False
                 continue
 
             for affected_node in transaction["metaData"]["AffectedNodes"]:
-                node = parse_affected_node(affected_node)
-                if node == None:
-                    continue
+                offer = get_offer_from_node(affected_node)
 
-                offer_fields = getattr(node, "FinalFields")
-                if offer_fields == None:
+                if not offer:
                     continue
 
                 trade = await get_trade_from_data(
                     self,
                     {
-                        "date": ledger_result["ledger"]["close_time"],
-                        "Flags": offer_fields["Flags"],
-                        "OrderAccount": offer_fields["Account"],
-                        "OrderSequence": offer_fields["Sequence"],
+                        "date": ledger["close_time"],
+                        "Flags": offer["Flags"],
+                        "OrderAccount": offer["Account"],
+                        "OrderSequence": offer["Sequence"],
                         "Account": transaction["Account"],
                         "Sequence": transaction["Sequence"],
-                        "TakerPays": offer_fields["TakerPays"],
-                        "TakerGets": offer_fields["TakerGets"],
+                        "TakerPays": offer["TakerPays"],
+                        "TakerGets": offer["TakerGets"],
                     },
                     {"transaction": transaction},
                 )
 
                 if trade != None:
                     trades.append(trade)
-                    if len(trades) >= limit:
-                        break
 
         has_next_page = len(trades) < limit and tx_count < search_limit
 

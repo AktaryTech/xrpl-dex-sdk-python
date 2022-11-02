@@ -17,6 +17,26 @@ async def fetch_canceled_orders(
     limit: Optional[int] = DEFAULT_LIMIT,
     params: FetchCanceledOrdersParams = FetchCanceledOrdersParams(),
 ) -> FetchCanceledOrdersResponse:
+    """
+    Fetches a list of canceled Orders from the dEX.
+
+    Parameters
+    ----------
+    symbol : xrpl_dex_sdk.models.MarketSymbol
+        (Optional) Market symbol to filter Orders by
+    since : int
+        (Optional) Only return Orders since this date
+    limit : int
+        (Optional) Total number of Orders to return (default is 20)
+    params : xrpl_dex_sdk.models.FetchCanceledOrdersParams
+        (Optional) Additional request parameters
+
+    Returns
+    -------
+    xrpl_dex_sdk.models.FetchCanceledOrdersResponse
+        List of retrieved Orders
+    """
+
     orders = await self.fetch_orders(
         symbol,
         since,

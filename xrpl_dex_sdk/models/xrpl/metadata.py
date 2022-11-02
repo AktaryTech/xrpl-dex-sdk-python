@@ -50,6 +50,3 @@ class Node(BaseModel):
             if self.FinalFields == None:
                 errors["node"] = "DeletedNode requires a FinalFields property"
         return errors
-
-
-__all__ = ["CreatedNode", "ModifiedNode", "DeletedNode", "Node"]

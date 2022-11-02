@@ -12,6 +12,3 @@ class WatchTradesParams(BaseModel):
     listener: Callable = REQUIRED
     # Max items to search through looking for Trades before giving up
     search_limit: Optional[int] = DEFAULT_SEARCH_LIMIT
-
-
-__all__ = ["WatchTradesParams"]

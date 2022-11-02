@@ -23,6 +23,8 @@ class Fee(BaseModel):
 #
 @dataclass(frozen=True)
 class TransactionFee(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#fees"""
+
     # The currency being transacted #
     code: CurrencyCode = REQUIRED
     # The current cost in drops of XRP to send a transaction #
@@ -38,6 +40,8 @@ class TransactionFee(BaseModel):
 #
 @dataclass(frozen=True)
 class TradingFee(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#fees"""
+
     # Unified Market Symbol #
     symbol: MarketSymbol = REQUIRED
     # Fee rate for base token #
@@ -55,8 +59,7 @@ class TradingFee(BaseModel):
 #
 @dataclass(frozen=True)
 class FeeSchedule(BaseModel):
+    """https://docs.ccxt.com/en/latest/manual.html?#fees"""
+
     transactions: List[TransactionFee] = REQUIRED
     trading: List[TradingFee] = REQUIRED
-
-
-__all__ = ["Fee", "TransactionFee", "TradingFee", "FeeSchedule"]

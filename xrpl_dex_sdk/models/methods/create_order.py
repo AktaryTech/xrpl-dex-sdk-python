@@ -5,7 +5,7 @@ from xrpl.models.transactions import Memo
 
 from ..base_model import BaseModel
 from ..required import REQUIRED
-from ..ccxt.orders import OrderId
+from ..ccxt.order import OrderId
 
 
 @dataclass(frozen=True)
@@ -28,6 +28,3 @@ class CreateOrderParams(BaseModel):
 class CreateOrderResponse(BaseModel):
     id: OrderId = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CreateOrderParams", "CreateOrderResponse"]
