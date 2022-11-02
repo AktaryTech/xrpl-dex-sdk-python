@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl.asyncio.clients.async_websocket_client &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/alabaster.css" />
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl.asyncio.clients.async_websocket_client</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;A client for interacting with the rippled WebSocket API.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">AsyncIterator</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">TracebackType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Type</span>
+
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.clients.async_client</span> <span class="kn">import</span> <span class="n">AsyncClient</span>
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.clients.exceptions</span> <span class="kn">import</span> <span class="n">XRPLWebsocketException</span>
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.clients.websocket_base</span> <span class="kn">import</span> <span class="n">WebsocketBase</span>
+<span class="kn">from</span> <span class="nn">xrpl.models.requests.request</span> <span class="kn">import</span> <span class="n">Request</span>
+<span class="kn">from</span> <span class="nn">xrpl.models.response</span> <span class="kn">import</span> <span class="n">Response</span>
+
+
+<div class="viewcode-block" id="AsyncWebsocketClient"><a class="viewcode-back" href="../../../../xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient">[docs]</a><span class="k">class</span> <span class="nc">AsyncWebsocketClient</span><span class="p">(</span><span class="n">AsyncClient</span><span class="p">,</span> <span class="n">WebsocketBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An async client for interacting with the rippled WebSocket API.</span>
+
+<span class="sd">    Instead of calling ``open`` and ``close`` yourself, you</span>
+<span class="sd">    can use a context like so::</span>
+
+<span class="sd">        async with AsyncWebsocketClient(url) as client:</span>
+<span class="sd">            # inside the context the client is open</span>
+<span class="sd">        # after exiting the context, the client is closed</span>
+
+<span class="sd">    Doing this will open and close the client for you and is</span>
+<span class="sd">    preferred.</span>
+
+<span class="sd">    NOTE: if you are not using subscriptions or other WebSocket-only</span>
+<span class="sd">    features of rippled, you may not need to do anything other than</span>
+<span class="sd">    open the client and make requests::</span>
+
+<span class="sd">        from xrpl.asyncio.clients import AsyncWebsocketClient</span>
+<span class="sd">        from xrpl.asyncio.ledger import get_fee</span>
+<span class="sd">        from xrpl.models import Fee</span>
+
+
+<span class="sd">        async with AsyncWebsocketClient(url) as client:</span>
+<span class="sd">            # using helper functions</span>
+<span class="sd">            print(await get_fee(client))</span>
+
+<span class="sd">            # using raw requests yourself</span>
+<span class="sd">            print(await client.request(Fee())</span>
+
+<span class="sd">    However, if you are using some functionality that makes use of</span>
+<span class="sd">    subscriptions or other &quot;websocket-y&quot; things, you can iterate over</span>
+<span class="sd">    the client like so to read incoming messages::</span>
+
+<span class="sd">        async with AsyncWebsocketClient(url) as client:</span>
+<span class="sd">            # inside the context the client is open</span>
+<span class="sd">            async for message in client:</span>
+<span class="sd">                # do something with a message</span>
+<span class="sd">        # after exiting the context, the client is closed</span>
+
+<span class="sd">    The recommended way to use this client is to set up a Task</span>
+<span class="sd">    using the ``asyncio`` library to listen to incoming</span>
+<span class="sd">    messages and do something with them, but the above will</span>
+<span class="sd">    work fine if you want to listen indefinitely. This is how</span>
+<span class="sd">    you can use a Task to listen to messages without blocking::</span>
+
+<span class="sd">        import asyncio</span>
+
+<span class="sd">        from xrpl.asyncio.clients import AsyncWebsocketClient</span>
+<span class="sd">        from xrpl.models import Subscribe, Unsubscribe, StreamParameter</span>
+
+<span class="sd">        URL = &quot;wss://some-url-to-connect-to&quot;</span>
+
+
+<span class="sd">        async def listener(client):</span>
+<span class="sd">            async for message in client:</span>
+<span class="sd">                # do something with a message</span>
+
+<span class="sd">        async def main():</span>
+<span class="sd">            async with AsyncWebsocketClient(URL) as client:</span>
+<span class="sd">                # set up the `listener` function as a Task</span>
+<span class="sd">                # so that it doesn&#39;t wait for a response, but</span>
+<span class="sd">                # will &quot;awaken&quot; whenever the `asyncio` event</span>
+<span class="sd">                # loop toggles to it.</span>
+<span class="sd">                asyncio.create_task(listener(client))</span>
+
+<span class="sd">                # now, the `listener` function will run as if</span>
+<span class="sd">                # it were &quot;in the background&quot;, doing whatever you</span>
+<span class="sd">                # want as soon as it has a message.</span>
+
+<span class="sd">                # now let&#39;s subscribe to something. in this case,</span>
+<span class="sd">                # we can just use `send` instead of `request`</span>
+<span class="sd">                # because we don&#39;t really care about the response</span>
+<span class="sd">                # since the listener will also get it.</span>
+<span class="sd">                await client.send(Subscribe(</span>
+<span class="sd">                    streams=[StreamParameter.LEDGER],</span>
+<span class="sd">                ))</span>
+
+<span class="sd">                # in the meantime, you can continue to do whatever</span>
+<span class="sd">                # you want and the python `asyncio` event loop</span>
+<span class="sd">                # will toggle between your code and the listener</span>
+<span class="sd">                # as messages are ready. let&#39;s just sleep. note,</span>
+<span class="sd">                # you need to use `asyncio.sleep` within</span>
+<span class="sd">                # async code instead of `time.sleep`, otherwise</span>
+<span class="sd">                # you will block all the waiting tasks instead of</span>
+<span class="sd">                # just this code path.</span>
+<span class="sd">                await asyncio.sleep(5)</span>
+
+<span class="sd">                # now that we&#39;re done, we can unsubscribe if</span>
+<span class="sd">                # we like</span>
+<span class="sd">                await client.send(Unsubscribe(</span>
+<span class="sd">                    streams=[StreamParameter.LEDGER],</span>
+<span class="sd">                ))</span>
+<span class="sd">            # now, outside of the context, the client is closed.</span>
+<span class="sd">            # the listener task will now never receive a new message.</span>
+
+<span class="sd">        if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">            # remember to run your entire program within a</span>
+<span class="sd">            # `asyncio.run` call.</span>
+<span class="sd">            asyncio.run(main())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AsyncWebsocketClient.open"><a class="viewcode-back" href="../../../../xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.open">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Connects the client to the Web Socket API at the given URL.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_open</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AsyncWebsocketClient.close"><a class="viewcode-back" href="../../../../xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.close">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Closes the connection.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span><span class="p">():</span>
+            <span class="k">return</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_close</span><span class="p">()</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncWebsocketClient</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enters an async context after opening itself.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The opened client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aexit__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">,</span>
+        <span class="n">_exc_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="ne">BaseException</span><span class="p">],</span>
+        <span class="n">_exc_val</span><span class="p">:</span> <span class="ne">BaseException</span><span class="p">,</span>
+        <span class="n">_trace</span><span class="p">:</span> <span class="n">TracebackType</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Exits an async context after closing itself.&quot;&quot;&quot;</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="fm">__aiter__</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Iterate on received messages.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_pop_message</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AsyncWebsocketClient.send"><a class="viewcode-back" href="../../../../xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncWebsocketClient.send">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">AsyncWebsocketClient</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit the request represented by the request to the</span>
+<span class="sd">        rippled node specified by this client&#39;s URL. Unlike ``request``,</span>
+<span class="sd">        ``send`` does not wait for this request&#39;s response. In many cases</span>
+<span class="sd">        it may be more convenient to use ``request``.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            request: A Request object representing information about a rippled request.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            XRPLWebsocketException: If there is already an open request by the</span>
+<span class="sd">                request&#39;s ID, or if this WebsocketBase is not open.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">XRPLWebsocketException</span><span class="p">(</span><span class="s2">&quot;Websocket is not open&quot;</span><span class="p">)</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_send</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">WebsocketBase</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ``request_impl`` implementation for async websocket.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            request: An object representing information about a rippled request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The response from the server, as a Response object.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            XRPLWebsocketException: If there is already an open request by the</span>
+<span class="sd">                request&#39;s ID, or if this WebsocketBase is not open.</span>
+
+<span class="sd">        :meta private:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">XRPLWebsocketException</span><span class="p">(</span><span class="s2">&quot;Websocket is not open&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_request_impl</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../../index.html">XRPL dEX Python SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, AktaryTech.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

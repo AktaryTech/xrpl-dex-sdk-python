@@ -1,5 +1,5 @@
 from typing import Optional
-from ..data import markets_data
+from ..data import MarketsData
 from ..models import CurrencyCode, MarketSymbol, FetchMarketsResponse, Market, Markets
 
 
@@ -14,7 +14,7 @@ async def fetch_markets(self) -> Optional[FetchMarketsResponse]:
 
     markets: Markets = {}
 
-    network_markets = markets_data[self.params.network]
+    network_markets = MarketsData[self.params.network]
 
     if network_markets == None:
         raise Exception(f"No markets list for network {self.params.network}!")

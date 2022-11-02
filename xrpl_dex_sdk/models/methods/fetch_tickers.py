@@ -13,5 +13,3 @@ class FetchTickersParams(BaseModel):
 
 
 FetchTickersResponse = List[Ticker]
-
-__all__ = ["FetchTickersParams", "FetchTickersResponse"]

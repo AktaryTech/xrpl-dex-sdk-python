@@ -34,22 +34,22 @@ def create_order(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         Market symbol for new Order
-    side : OrderSide
+    side : xrpl_dex_sdk.models.OrderSide
         Order direction (buy or sell)
-    type : OrderType
+    type : xrpl_dex_sdk.models.OrderType
         Order type. Only limit orders are supported
     amount : float
         How much currency you want to trade (in units of base currency)
     price : float
         Price at which the order is to be fullfilled (in units of quote currency)
-    params : CreateOrderParams
+    params : xrpl_dex_sdk.models.CreateOrderParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    CreateOrderResponse
+    xrpl_dex_sdk.models.CreateOrderResponse
         ID of created Order
     """
 

@@ -19,12 +19,12 @@ async def fetch_balance(
 
     Parameters
     ----------
-    params : FetchBalanceParams
+    params : xrpl_dex_sdk.models.FetchBalanceParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchBalanceResponse
+    xrpl_dex_sdk.models.FetchBalanceResponse
         Balance information
     """
 
@@ -56,9 +56,7 @@ async def fetch_balance(
         free_xrp = float(drops_to_xrp(account_info["Balance"])) - used_xrp
         total_xrp = used_xrp + free_xrp
 
-        balances[CurrencyCode("XRP")] = Balance(
-            free=free_xrp, used=used_xrp, total=total_xrp
-        )
+        balances[CurrencyCode("XRP")] = Balance(free=free_xrp, used=used_xrp, total=total_xrp)
 
         info["account_info"] = account_info
         info["validated_ledger"] = validated_ledger

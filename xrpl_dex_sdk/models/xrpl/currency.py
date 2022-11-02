@@ -146,5 +146,3 @@ class IssuedCurrencyAmount(IssuedCurrency):
 
 
 Amount = Union[IssuedCurrencyAmount, str]
-
-__all__ = ["Amount", "IssuedCurrency", "IssuedCurrencyAmount", "XRP"]

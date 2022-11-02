@@ -28,6 +28,3 @@ class ExchangeStatus(BaseModel):
     eta: Optional[UnixTimestamp] = None
     # A link to a GitHub issue or to an exchange post on the subject
     url: Optional[str] = None
-
-
-__all__ = ["ExchangeStatusType", "ExchangeStatus"]

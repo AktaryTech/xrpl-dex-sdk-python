@@ -55,14 +55,14 @@ def parse_affected_node(
 
     Parameters
     ----------
-    affected_node : dict
+    affected_node : Dict
         Node object to parse
-    entry_type : LedgerEntryType
+    entry_type : xrpl_dex_sdk.models.LedgerEntryType
         LedgerEntry type to filter by (defaults to Offer)
 
     Returns
     -------
-    Node
+    xrpl_dex_sdk.models.Node
         The parsed Node, or None if unable to parse.
     """
 
@@ -86,15 +86,9 @@ def parse_affected_node(
             type="ModifiedNode",
             LedgerEntryType=node_data["LedgerEntryType"],
             LedgerIndex=node_data["LedgerIndex"],
-            FinalFields=node_data["FinalFields"]
-            if "FinalFields" in node_data
-            else None,
-            PreviousFields=node_data["PreviousFields"]
-            if "PreviousFields" in node_data
-            else None,
-            PreviousTxnID=node_data["PreviousTxnID"]
-            if "PreviousTxnID" in node_data
-            else None,
+            FinalFields=node_data["FinalFields"] if "FinalFields" in node_data else None,
+            PreviousFields=node_data["PreviousFields"] if "PreviousFields" in node_data else None,
+            PreviousTxnID=node_data["PreviousTxnID"] if "PreviousTxnID" in node_data else None,
             PreviousTxnLgrSeq=node_data["PreviousTxnLgrSeq"]
             if "PreviousTxnLgrSeq" in node_data
             else None,
@@ -107,12 +101,8 @@ def parse_affected_node(
             type="DeletedNode",
             LedgerEntryType=node_data["LedgerEntryType"],
             LedgerIndex=node_data["LedgerIndex"],
-            FinalFields=node_data["FinalFields"]
-            if "FinalFields" in node_data
-            else None,
-            PreviousFields=node_data["PreviousFields"]
-            if "PreviousFields" in node_data
-            else None,
+            FinalFields=node_data["FinalFields"] if "FinalFields" in node_data else None,
+            PreviousFields=node_data["PreviousFields"] if "PreviousFields" in node_data else None,
         )
 
 
@@ -120,9 +110,7 @@ def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
     """Parses an Order and returns its time in force."""
 
     order_time_in_force: OrderTimeInForce = OrderTimeInForce.GoodTillCanceled
-    if (
-        input["Flags"] & OfferCreateFlags.TF_PASSIVE.value
-    ) == OfferCreateFlags.TF_PASSIVE.value:
+    if (input["Flags"] & OfferCreateFlags.TF_PASSIVE.value) == OfferCreateFlags.TF_PASSIVE.value:
         order_time_in_force = OrderTimeInForce.PostOnly
     elif (
         input["Flags"] & OfferCreateFlags.TF_FILL_OR_KILL.value
@@ -138,9 +126,7 @@ def get_order_time_in_force(input: Dict[str, Any]) -> OrderTimeInForce:
 def get_taker_or_maker(side: TradeSide) -> TradeTakerOrMaker:
     """Gets whether a Trade was from a taker or maker."""
 
-    return (
-        TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
-    )
+    return TradeTakerOrMaker.Maker if side == TradeSide.Sell else TradeTakerOrMaker.Taker
 
 
 def get_order_side_from_flags(flags: int) -> OrderSide:
@@ -188,14 +174,14 @@ def get_market_symbol_from_amount(base: Amount, quote: Amount) -> MarketSymbol:
 
     Parameters
     ----------
-    base : Amount
+    base : xrpl_dex_sdk.models.Amount
         Base currency as Amount object
-    quote : Amount
+    quote : xrpl_dex_sdk.models.Amount
         Quote currency as Amount object
 
     Returns
     -------
-    MarketSymbol
+    xrpl_dex_sdk.models.MarketSymbol
     """
 
     return MarketSymbol(
@@ -211,17 +197,13 @@ def get_market_symbol_from_amount(base: Amount, quote: Amount) -> MarketSymbol:
 def get_base_amount_key(side: OrderSide or TradeSide) -> str:
     """Gets the Offer object key of the Offer's base currency."""
 
-    return (
-        "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
-    )
+    return "TakerPays" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerGets"
 
 
 def get_quote_amount_key(side: OrderSide or TradeSide) -> str:
     """Gets the Offer object key of the Offer's quote currency."""
 
-    return (
-        "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
-    )
+    return "TakerGets" if (side == OrderSide.Buy or side == TradeSide.Buy) else "TakerPays"
 
 
 def get_amount_currency_code(amount: Amount) -> CurrencyCode:
@@ -264,9 +246,7 @@ def get_book_offer_base_value(book_offer: BookOffer) -> float:
         if book_offer.Flags & OfferFlags.LSF_SELL.value == 0
         else get_book_offer_taker_gets(book_offer)
     )
-    return float(
-        drops_to_xrp(amount) if isinstance(amount, str) else getattr(amount, "value")
-    )
+    return float(drops_to_xrp(amount) if isinstance(amount, str) else getattr(amount, "value"))
 
 
 def get_book_offer_quote_value(book_offer: BookOffer) -> float:
@@ -299,9 +279,7 @@ def get_offer_from_node(node: dict) -> Optional[Offer]:
         if affected_node.PreviousTxnID != None
         else FinalFields["PreviousTxnID"]
     )
-    PreviousFields = (
-        affected_node.PreviousFields if affected_node.PreviousFields != None else None
-    )
+    PreviousFields = affected_node.PreviousFields if affected_node.PreviousFields != None else None
 
     offer_index = LedgerIndex
 
@@ -358,9 +336,7 @@ def get_offer_from_tx(
         else transaction["Account"]
     )
     Flags = (
-        overrides["Flags"]
-        if overrides != None and "Flags" in overrides
-        else transaction["Flags"]
+        overrides["Flags"] if overrides != None and "Flags" in overrides else transaction["Flags"]
     )
     Sequence = (
         overrides["Sequence"]
@@ -380,9 +356,7 @@ def get_offer_from_tx(
         else transaction["TakerPays"]
     )
     PreviousTxnID = (
-        overrides["PreviousTxnID"]
-        if overrides != None and "PreviousTxnID" in overrides
-        else ""
+        overrides["PreviousTxnID"] if overrides != None and "PreviousTxnID" in overrides else ""
     )
 
     if Sequence == None:
@@ -463,13 +437,9 @@ async def get_shared_order_data(sdk, source: Dict[str, Any]):
         return
 
     data["base_currency"] = get_amount_currency_code(data["base_amount"])
-    data["base_issuer"] = (
-        data["base_amount"]["issuer"] if "issuer" in data["base_amount"] else None
-    )
+    data["base_issuer"] = data["base_amount"]["issuer"] if "issuer" in data["base_amount"] else None
     data["base_rate"] = (
-        await sdk.fetch_transfer_rate(data["base_issuer"])
-        if data["base_issuer"] != None
-        else 0
+        await sdk.fetch_transfer_rate(data["base_issuer"]) if data["base_issuer"] != None else 0
     )
 
     data["quote_currency"] = get_amount_currency_code(data["quote_amount"])
@@ -477,22 +447,16 @@ async def get_shared_order_data(sdk, source: Dict[str, Any]):
         data["quote_amount"]["issuer"] if "issuer" in data["quote_amount"] else None
     )
     data["quote_rate"] = (
-        await sdk.fetch_transfer_rate(data["quote_issuer"])
-        if data["quote_issuer"] != None
-        else 0
+        await sdk.fetch_transfer_rate(data["quote_issuer"]) if data["quote_issuer"] != None else 0
     )
 
     data["amount"] = data["base_value"]
     data["price"] = data["quote_value"] / data["base_value"]
 
     data["fee_currency"] = (
-        data["quote_currency"]
-        if data["side"] == OrderSide.Buy
-        else data["base_currency"]
+        data["quote_currency"] if data["side"] == OrderSide.Buy else data["base_currency"]
     )
-    data["fee_rate"] = (
-        data["quote_rate"] if data["side"] == OrderSide.Buy else data["base_rate"]
-    )
+    data["fee_rate"] = data["quote_rate"] if data["side"] == OrderSide.Buy else data["base_rate"]
 
     return data
 
@@ -525,7 +489,7 @@ async def get_order_from_data(sdk, input_data: Dict[str, Any], info: dict = {}):
 
     Returns
     -------
-    Order
+    xrpl_dex_sdk.models.Order
         The parsed Order
     """
 
@@ -584,7 +548,7 @@ async def get_trade_from_data(sdk, input_data: Dict[str, Any], info: dict = {}):
 
     Returns
     -------
-    Trade
+    xrpl_dex_sdk.models.Trade
         The parsed Trade
     """
 
@@ -632,7 +596,7 @@ def parse_transaction(id: OrderId, transaction: Any) -> Optional[Dict[str, Any]]
 
     Parameters
     ----------
-    order_id : OrderId
+    order_id : xrpl_dex_sdk.models.OrderId
         ID to filter with when parsing
     transaction : Dict
         Transaction data to parse
@@ -748,9 +712,9 @@ async def get_most_recent_tx(
 
     Parameters
     ----------
-    client : AsyncJsonRpcClient
+    client : xrpl_dex_sdk.clients.AsyncJsonRpcClient
         Client to use when looking up data
-    order_id : OrderId
+    order_id : xrpl_dex_sdk.models.OrderId
         ID to filter with when parsing
     search_limit : int
         Max total transactions to search through looking for matching ones
@@ -839,25 +803,3 @@ async def get_most_recent_tx(
                 has_next_page = False
             else:
                 page += 1
-
-
-__all__ = [
-    "parse_affected_node",
-    "get_amount_currency_code",
-    "get_amount",
-    "get_market_symbol",
-    "get_market_symbol_from_amount",
-    "get_base_amount_key",
-    "get_order_from_data",
-    "get_trade_from_data",
-    "get_order_time_in_force",
-    "get_book_offer_base_value",
-    "get_book_offer_quote_value",
-    "get_most_recent_tx",
-    "get_offer_from_node",
-    "get_offer_from_tx",
-    "get_order_side_from_flags",
-    "get_quote_amount_key",
-    "get_taker_or_maker",
-    "parse_transaction",
-]

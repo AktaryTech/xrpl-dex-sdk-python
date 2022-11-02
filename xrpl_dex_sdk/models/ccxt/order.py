@@ -56,12 +56,3 @@ class Order(BaseModel):
     trades: List[Trade] = REQUIRED
     fee: Optional[Fee] = None
     info: dict = REQUIRED
-
-
-__all__ = [
-    "OrderStatus",
-    "OrderType",
-    "OrderTimeInForce",
-    "OrderSide",
-    "Order",
-]

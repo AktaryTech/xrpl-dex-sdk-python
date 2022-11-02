@@ -1,4 +1,4 @@
-from ..data import currencies_data
+from ..data import CurrenciesData
 from ..models import Currency, CurrencyCode, Currencies
 
 
@@ -13,7 +13,7 @@ async def fetch_currencies(self) -> Currencies:
 
     currencies: Currencies = {}
 
-    network_currencies = currencies_data[self.params.network]
+    network_currencies = CurrenciesData[self.params.network]
 
     if network_currencies == None:
         raise Exception(f"No currency list for network {self.params.network}!")
@@ -26,9 +26,7 @@ async def fetch_currencies(self) -> Currencies:
             "name": currency_data["name"],
             "issuer_name": currency_data["issuer_name"],
             "logo": currency_data["logo"] if "logo" in currency_data else None,
-            "precision": currency_data["precision"]
-            if "precision" in currency_data
-            else None,
+            "precision": currency_data["precision"] if "precision" in currency_data else None,
         }
 
         fee_rate = await self.fetch_transfer_rate(currency["code"].issuer)

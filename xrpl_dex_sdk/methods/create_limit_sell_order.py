@@ -18,18 +18,18 @@ def create_limit_sell_order(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         Market symbol for new Order
     amount : float
         How much currency you want to trade (in units of base currency)
     price : float
         Price at which the order is to be fullfilled (in units of quote currency)
-    params : CreateLimitSellOrderParams
+    params : xrpl_dex_sdk.models.CreateLimitSellOrderParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    CreateLimitSellOrderResponse
+    xrpl_dex_sdk.models.CreateLimitSellOrderResponse
         ID of created Order
     """
 

@@ -13,5 +13,3 @@ class FetchClosedOrdersParams(BaseModel):
 
 
 FetchClosedOrdersResponse = List[Order]
-
-__all__ = ["FetchClosedOrdersParams", "FetchClosedOrdersResponse"]

@@ -29,5 +29,3 @@ class FetchOrderBookParams(BaseModel):
 # @category Responses
 #
 FetchOrderBookResponse = OrderBook
-
-__all__ = ["FetchOrderBookParams", "FetchOrderBookResponse"]

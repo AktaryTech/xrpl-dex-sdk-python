@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl.wallet.wallet_generation &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl.wallet.wallet_generation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Handles wallet generation from a faucet.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.wallet</span> <span class="kn">import</span> <span class="n">generate_faucet_wallet</span> <span class="k">as</span> <span class="n">async_generate_faucet_wallet</span>
+<span class="kn">from</span> <span class="nn">xrpl.clients.sync_client</span> <span class="kn">import</span> <span class="n">SyncClient</span>
+<span class="kn">from</span> <span class="nn">xrpl.wallet.main</span> <span class="kn">import</span> <span class="n">Wallet</span>
+
+
+<div class="viewcode-block" id="generate_faucet_wallet"><a class="viewcode-back" href="../../../xrpl_dex_sdk.models.html#xrpl_dex_sdk.generate_faucet_wallet">[docs]</a><span class="k">def</span> <span class="nf">generate_faucet_wallet</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">SyncClient</span><span class="p">,</span>
+    <span class="n">wallet</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Wallet</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">faucet_host</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Wallet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a random wallet and funds it using the XRPL Testnet Faucet.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        client: the network client used to make network calls.</span>
+<span class="sd">        wallet: the wallet to fund. If omitted or `None`, a new wallet is created.</span>
+<span class="sd">        debug: Whether to print debug information as it creates the wallet.</span>
+<span class="sd">        faucet_host: A custom host to use for funding a wallet. In environments other</span>
+<span class="sd">            than devnet and testnet, this parameter is required.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A Wallet on the testnet that contains some amount of XRP.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        XRPLFaucetException: if an address could not be funded with the faucet.</span>
+<span class="sd">        XRPLRequestFailureException: if a request to the ledger fails.</span>
+<span class="sd">        requests.exceptions.HTTPError: if the request to the faucet fails.</span>
+
+<span class="sd">    .. # noqa: DAR402 exception raised in private method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">async_generate_faucet_wallet</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">wallet</span><span class="p">,</span> <span class="n">debug</span><span class="p">,</span> <span class="n">faucet_host</span><span class="p">))</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">XRPL dEX Python SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, AktaryTech.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

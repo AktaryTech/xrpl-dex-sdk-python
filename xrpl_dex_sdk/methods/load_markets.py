@@ -13,7 +13,7 @@ async def load_markets(self, reload: Optional[bool] = False) -> Markets:
 
     Returns
     -------
-    LoadMarketsResponse
+    xrpl_dex_sdk.models.LoadMarketsResponse
         The fetched markets
     """
 

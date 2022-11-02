@@ -27,5 +27,3 @@ class Market(BaseModel):
 
 
 Markets = Dict[MarketSymbol, Market]
-
-__all__ = ["Market", "Markets"]

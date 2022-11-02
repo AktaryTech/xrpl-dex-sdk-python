@@ -26,9 +26,9 @@ async def watch_tickers(
 
     Parameters
     ----------
-    symbols : List[MarketSymbol]
+    symbols : List[xrpl_dex_sdk.models.MarketSymbol]
         List of market symbols to get price ticker data for
-    params : WatchTickersParams
+    params : xrpl_dex_sdk.models.WatchTickersParams
         Additional request parameters
     """
 

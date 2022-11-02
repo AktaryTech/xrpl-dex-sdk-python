@@ -27,6 +27,3 @@ def subtract_amounts(amount: Amount, subtractor: Amount) -> Amount:
         new_amount = str(result_value)
 
     return new_amount
-
-
-__all__ = ["parse_amount_value", "subtract_amounts"]

@@ -19,11 +19,11 @@ async def watch_order_book(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         Symbol to watch
     limit : int
         (Optional) Number of entries to return (default is to 20)
-    params : WatchOrderBookParams
+    params : xrpl_dex_sdk.models.WatchOrderBookParams
         Additional request parameters
     """
 

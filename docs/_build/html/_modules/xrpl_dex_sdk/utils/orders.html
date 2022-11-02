@@ -1,0 +1,904 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl_dex_sdk.utils.orders &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css" />
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl_dex_sdk.utils.orders</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">xrpl.asyncio.clients</span> <span class="kn">import</span> <span class="n">AsyncJsonRpcClient</span>
+<span class="kn">from</span> <span class="nn">xrpl.models.requests.ledger_entry</span> <span class="kn">import</span> <span class="n">LedgerEntry</span>
+<span class="kn">from</span> <span class="nn">xrpl.models.requests.tx</span> <span class="kn">import</span> <span class="n">Tx</span>
+
+<span class="kn">from</span> <span class="nn">xrpl.models.requests.account_tx</span> <span class="kn">import</span> <span class="n">AccountTx</span>
+<span class="kn">from</span> <span class="nn">xrpl.utils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">posix_to_ripple_time</span><span class="p">,</span>
+    <span class="n">drops_to_xrp</span><span class="p">,</span>
+    <span class="n">ripple_time_to_datetime</span><span class="p">,</span>
+    <span class="n">ripple_time_to_posix</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="kn">import</span> <span class="n">DEFAULT_LIMIT</span><span class="p">,</span> <span class="n">DEFAULT_SEARCH_LIMIT</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span>
+<span class="kn">from</span> <span class="nn">..models</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Amount</span><span class="p">,</span>
+    <span class="n">IssuedCurrencyAmount</span><span class="p">,</span>
+    <span class="n">LedgerEntryTypes</span><span class="p">,</span>
+    <span class="n">CurrencyCode</span><span class="p">,</span>
+    <span class="n">OrderId</span><span class="p">,</span>
+    <span class="n">OrderSide</span><span class="p">,</span>
+    <span class="n">BookOffer</span><span class="p">,</span>
+    <span class="n">OrderStatus</span><span class="p">,</span>
+    <span class="n">OrderType</span><span class="p">,</span>
+    <span class="n">Fee</span><span class="p">,</span>
+    <span class="n">TradeTakerOrMaker</span><span class="p">,</span>
+    <span class="n">TradeSide</span><span class="p">,</span>
+    <span class="n">Offer</span><span class="p">,</span>
+    <span class="n">TradeType</span><span class="p">,</span>
+    <span class="n">MarketSymbol</span><span class="p">,</span>
+    <span class="n">TradeId</span><span class="p">,</span>
+    <span class="n">Order</span><span class="p">,</span>
+    <span class="n">Trade</span><span class="p">,</span>
+    <span class="n">OrderTimeInForce</span><span class="p">,</span>
+    <span class="n">OfferCreateFlags</span><span class="p">,</span>
+    <span class="n">OfferFlags</span><span class="p">,</span>
+    <span class="n">Node</span><span class="p">,</span>
+    <span class="n">TransactionMetadata</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">.numbers</span> <span class="kn">import</span> <span class="n">subtract_amounts</span><span class="p">,</span> <span class="n">parse_amount_value</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">omit</span><span class="p">,</span> <span class="n">sort_by_date</span>
+<span class="kn">from</span> <span class="nn">.hashes</span> <span class="kn">import</span> <span class="n">hash_offer_id</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">handle_response_error</span>
+
+
+<div class="viewcode-block" id="parse_affected_node"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.parse_affected_node">[docs]</a><span class="k">def</span> <span class="nf">parse_affected_node</span><span class="p">(</span>
+    <span class="n">affected_node</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">entry_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">LedgerEntryTypes</span><span class="p">]</span> <span class="o">=</span> <span class="n">LedgerEntryTypes</span><span class="o">.</span><span class="n">Offer</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Node</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses a Node and returns its data in an agnostic format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    affected_node : Dict</span>
+<span class="sd">        Node object to parse</span>
+<span class="sd">    entry_type : xrpl_dex_sdk.models.LedgerEntryType</span>
+<span class="sd">        LedgerEntry type to filter by (defaults to Offer)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xrpl_dex_sdk.models.Node</span>
+<span class="sd">        The parsed Node, or None if unable to parse.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">entry_type</span> <span class="o">=</span> <span class="n">LedgerEntryTypes</span><span class="o">.</span><span class="n">Offer</span> <span class="k">if</span> <span class="n">entry_type</span> <span class="o">==</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">entry_type</span>
+
+    <span class="k">if</span> <span class="s2">&quot;CreatedNode&quot;</span> <span class="ow">in</span> <span class="n">affected_node</span><span class="p">:</span>
+        <span class="n">node_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">affected_node</span><span class="p">[</span><span class="s2">&quot;CreatedNode&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">entry_type</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;CreatedNode&quot;</span><span class="p">,</span>
+            <span class="n">LedgerEntryType</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">],</span>
+            <span class="n">LedgerIndex</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerIndex&quot;</span><span class="p">],</span>
+            <span class="n">NewFields</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;NewFields&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;ModifiedNode&quot;</span> <span class="ow">in</span> <span class="n">affected_node</span><span class="p">:</span>
+        <span class="n">node_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">affected_node</span><span class="p">[</span><span class="s2">&quot;ModifiedNode&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">entry_type</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;ModifiedNode&quot;</span><span class="p">,</span>
+            <span class="n">LedgerEntryType</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">],</span>
+            <span class="n">LedgerIndex</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerIndex&quot;</span><span class="p">],</span>
+            <span class="n">FinalFields</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;FinalFields&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;FinalFields&quot;</span> <span class="ow">in</span> <span class="n">node_data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">PreviousFields</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;PreviousFields&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;PreviousFields&quot;</span> <span class="ow">in</span> <span class="n">node_data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">PreviousTxnID</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;PreviousTxnID&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;PreviousTxnID&quot;</span> <span class="ow">in</span> <span class="n">node_data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">PreviousTxnLgrSeq</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;PreviousTxnLgrSeq&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;PreviousTxnLgrSeq&quot;</span> <span class="ow">in</span> <span class="n">node_data</span>
+            <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;DeletedNode&quot;</span> <span class="ow">in</span> <span class="n">affected_node</span><span class="p">:</span>
+        <span class="n">node_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">affected_node</span><span class="p">[</span><span class="s2">&quot;DeletedNode&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">entry_type</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">return</span> <span class="n">Node</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;DeletedNode&quot;</span><span class="p">,</span>
+            <span class="n">LedgerEntryType</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerEntryType&quot;</span><span class="p">],</span>
+            <span class="n">LedgerIndex</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;LedgerIndex&quot;</span><span class="p">],</span>
+            <span class="n">FinalFields</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;FinalFields&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;FinalFields&quot;</span> <span class="ow">in</span> <span class="n">node_data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">PreviousFields</span><span class="o">=</span><span class="n">node_data</span><span class="p">[</span><span class="s2">&quot;PreviousFields&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;PreviousFields&quot;</span> <span class="ow">in</span> <span class="n">node_data</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_order_time_in_force"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_order_time_in_force">[docs]</a><span class="k">def</span> <span class="nf">get_order_time_in_force</span><span class="p">(</span><span class="nb">input</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">OrderTimeInForce</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parses an Order and returns its time in force.&quot;&quot;&quot;</span>
+
+    <span class="n">order_time_in_force</span><span class="p">:</span> <span class="n">OrderTimeInForce</span> <span class="o">=</span> <span class="n">OrderTimeInForce</span><span class="o">.</span><span class="n">GoodTillCanceled</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">input</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_PASSIVE</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_PASSIVE</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">order_time_in_force</span> <span class="o">=</span> <span class="n">OrderTimeInForce</span><span class="o">.</span><span class="n">PostOnly</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_FILL_OR_KILL</span><span class="o">.</span><span class="n">value</span>
+    <span class="p">)</span> <span class="o">==</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_FILL_OR_KILL</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">order_time_in_force</span> <span class="o">=</span> <span class="n">OrderTimeInForce</span><span class="o">.</span><span class="n">FillOrKill</span>
+    <span class="k">elif</span> <span class="p">(</span>
+        <span class="nb">input</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_IMMEDIATE_OR_CANCEL</span><span class="o">.</span><span class="n">value</span>
+    <span class="p">)</span> <span class="o">==</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_IMMEDIATE_OR_CANCEL</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="n">order_time_in_force</span> <span class="o">=</span> <span class="n">OrderTimeInForce</span><span class="o">.</span><span class="n">ImmediateOrCancel</span>
+    <span class="k">return</span> <span class="n">order_time_in_force</span></div>
+
+
+<div class="viewcode-block" id="get_taker_or_maker"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_taker_or_maker">[docs]</a><span class="k">def</span> <span class="nf">get_taker_or_maker</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">TradeSide</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TradeTakerOrMaker</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets whether a Trade was from a taker or maker.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">TradeTakerOrMaker</span><span class="o">.</span><span class="n">Maker</span> <span class="k">if</span> <span class="n">side</span> <span class="o">==</span> <span class="n">TradeSide</span><span class="o">.</span><span class="n">Sell</span> <span class="k">else</span> <span class="n">TradeTakerOrMaker</span><span class="o">.</span><span class="n">Taker</span></div>
+
+
+<div class="viewcode-block" id="get_order_side_from_flags"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_order_side_from_flags">[docs]</a><span class="k">def</span> <span class="nf">get_order_side_from_flags</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrderSide</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parses an Offer&#39;s flags and returns its side (buy or sell).&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">OfferFlags</span><span class="o">.</span><span class="n">LSF_SELL</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">OfferFlags</span><span class="o">.</span><span class="n">LSF_SELL</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Sell</span>
+    <span class="k">elif</span> <span class="n">flags</span> <span class="o">&amp;</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_SELL</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">OfferCreateFlags</span><span class="o">.</span><span class="n">TF_SELL</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Sell</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span></div>
+
+
+<div class="viewcode-block" id="get_amount"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_amount">[docs]</a><span class="k">def</span> <span class="nf">get_amount</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Amount</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates an Amount from a `CurrencyCode` and value.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">source</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">IssuedCurrencyAmount</span><span class="p">(</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;currency&quot;</span><span class="p">],</span>
+            <span class="n">issuer</span><span class="o">=</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;issuer&quot;</span><span class="p">],</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_market_symbol"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_market_symbol">[docs]</a><span class="k">def</span> <span class="nf">get_market_symbol</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Gets a MarketSymbol from an Offer or Transaction.&quot;&quot;&quot;</span>
+
+    <span class="n">side</span> <span class="o">=</span> <span class="n">get_order_side_from_flags</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">])</span>
+    <span class="n">base_amount</span> <span class="o">=</span> <span class="n">get_amount</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="n">get_base_amount_key</span><span class="p">(</span><span class="n">side</span><span class="p">)])</span>
+    <span class="n">quote_amount</span> <span class="o">=</span> <span class="n">get_amount</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="n">get_quote_amount_key</span><span class="p">(</span><span class="n">side</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="n">get_market_symbol_from_amount</span><span class="p">(</span><span class="n">base_amount</span><span class="p">,</span> <span class="n">quote_amount</span><span class="p">)</span></div>
+
+
+<span class="c1"># Gets a MarketSymbol from Base and Quote XRPL Amounts.</span>
+<span class="c1"># @param base Base currency as Amount object</span>
+<span class="c1"># @param quote Quote currency as Amount object</span>
+<span class="c1"># @returns MarketSymbol instance</span>
+<span class="c1">#</span>
+<div class="viewcode-block" id="get_market_symbol_from_amount"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_market_symbol_from_amount">[docs]</a><span class="k">def</span> <span class="nf">get_market_symbol_from_amount</span><span class="p">(</span><span class="n">base</span><span class="p">:</span> <span class="n">Amount</span><span class="p">,</span> <span class="n">quote</span><span class="p">:</span> <span class="n">Amount</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MarketSymbol</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gets a MarketSymbol from Base and Quote XRPL Amounts.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base : xrpl_dex_sdk.models.Amount</span>
+<span class="sd">        Base currency as Amount object</span>
+<span class="sd">    quote : xrpl_dex_sdk.models.Amount</span>
+<span class="sd">        Quote currency as Amount object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xrpl_dex_sdk.models.MarketSymbol</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">MarketSymbol</span><span class="p">(</span>
+        <span class="n">CurrencyCode</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;XRP&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">CurrencyCode</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">issuer</span><span class="p">),</span>
+        <span class="n">CurrencyCode</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="s2">&quot;XRP&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">CurrencyCode</span><span class="p">(</span><span class="n">quote</span><span class="o">.</span><span class="n">currency</span><span class="p">,</span> <span class="n">quote</span><span class="o">.</span><span class="n">issuer</span><span class="p">),</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_base_amount_key"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_base_amount_key">[docs]</a><span class="k">def</span> <span class="nf">get_base_amount_key</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">OrderSide</span> <span class="ow">or</span> <span class="n">TradeSide</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the Offer object key of the Offer&#39;s base currency.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="s2">&quot;TakerPays&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">side</span> <span class="o">==</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span> <span class="ow">or</span> <span class="n">side</span> <span class="o">==</span> <span class="n">TradeSide</span><span class="o">.</span><span class="n">Buy</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;TakerGets&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_quote_amount_key"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_quote_amount_key">[docs]</a><span class="k">def</span> <span class="nf">get_quote_amount_key</span><span class="p">(</span><span class="n">side</span><span class="p">:</span> <span class="n">OrderSide</span> <span class="ow">or</span> <span class="n">TradeSide</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the Offer object key of the Offer&#39;s quote currency.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="s2">&quot;TakerGets&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">side</span> <span class="o">==</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span> <span class="ow">or</span> <span class="n">side</span> <span class="o">==</span> <span class="n">TradeSide</span><span class="o">.</span><span class="n">Buy</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;TakerPays&quot;</span></div>
+
+
+<div class="viewcode-block" id="get_amount_currency_code"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_amount_currency_code">[docs]</a><span class="k">def</span> <span class="nf">get_amount_currency_code</span><span class="p">(</span><span class="n">amount</span><span class="p">:</span> <span class="n">Amount</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CurrencyCode</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Parses an Amount object and returns the currency code.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">CurrencyCode</span><span class="p">(</span><span class="s2">&quot;XRP&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">CurrencyCode</span><span class="p">(</span><span class="n">amount</span><span class="p">[</span><span class="s2">&quot;currency&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">CurrencyCode</span><span class="p">(</span><span class="n">amount</span><span class="o">.</span><span class="n">currency</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_book_offer_taker_pays"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_book_offer_taker_pays">[docs]</a><span class="k">def</span> <span class="nf">get_book_offer_taker_pays</span><span class="p">(</span><span class="n">book_offer</span><span class="p">:</span> <span class="n">BookOffer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a TakerPays object for a book_offers request.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">book_offer</span><span class="p">,</span> <span class="s2">&quot;taker_pays_funded&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">book_offer</span><span class="p">,</span> <span class="s2">&quot;taker_pays_funded&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">book_offer</span><span class="o">.</span><span class="n">TakerPays</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_book_offer_taker_gets"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_book_offer_taker_gets">[docs]</a><span class="k">def</span> <span class="nf">get_book_offer_taker_gets</span><span class="p">(</span><span class="n">book_offer</span><span class="p">:</span> <span class="n">BookOffer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a TakerGets object for a book_offers request.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">getattr</span><span class="p">(</span><span class="n">book_offer</span><span class="p">,</span> <span class="s2">&quot;taker_gets_funded&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">book_offer</span><span class="p">,</span> <span class="s2">&quot;taker_gets_funded&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">book_offer</span><span class="o">.</span><span class="n">TakerGets</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_book_offer_base_value"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_book_offer_base_value">[docs]</a><span class="k">def</span> <span class="nf">get_book_offer_base_value</span><span class="p">(</span><span class="n">book_offer</span><span class="p">:</span> <span class="n">BookOffer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the base currency value from a BookOffer instance.&quot;&quot;&quot;</span>
+
+    <span class="n">amount</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">get_book_offer_taker_pays</span><span class="p">(</span><span class="n">book_offer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">book_offer</span><span class="o">.</span><span class="n">Flags</span> <span class="o">&amp;</span> <span class="n">OfferFlags</span><span class="o">.</span><span class="n">LSF_SELL</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">else</span> <span class="n">get_book_offer_taker_gets</span><span class="p">(</span><span class="n">book_offer</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">drops_to_xrp</span><span class="p">(</span><span class="n">amount</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_book_offer_quote_value"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_book_offer_quote_value">[docs]</a><span class="k">def</span> <span class="nf">get_book_offer_quote_value</span><span class="p">(</span><span class="n">book_offer</span><span class="p">:</span> <span class="n">BookOffer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Gets the quote currency value from a BookOffer instance.&quot;&quot;&quot;</span>
+
+    <span class="n">quote_amount</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">get_book_offer_taker_gets</span><span class="p">(</span><span class="n">book_offer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">book_offer</span><span class="o">.</span><span class="n">Flags</span> <span class="o">&amp;</span> <span class="n">OfferFlags</span><span class="o">.</span><span class="n">LSF_SELL</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">else</span> <span class="n">get_book_offer_taker_pays</span><span class="p">(</span><span class="n">book_offer</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">drops_to_xrp</span><span class="p">(</span><span class="n">quote_amount</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote_amount</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">quote_amount</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_offer_from_node"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_offer_from_node">[docs]</a><span class="k">def</span> <span class="nf">get_offer_from_node</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Offer</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns an Offer object from an AffectedNode.&quot;&quot;&quot;</span>
+
+    <span class="n">affected_node</span> <span class="o">=</span> <span class="n">parse_affected_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">LedgerEntryTypes</span><span class="o">.</span><span class="n">Offer</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">affected_node</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">FinalFields</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">LedgerIndex</span> <span class="o">=</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">LedgerIndex</span>
+    <span class="n">FinalFields</span> <span class="o">=</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">FinalFields</span>
+    <span class="n">PreviousTxnID</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">affected_node</span><span class="o">.</span><span class="n">PreviousTxnID</span>
+        <span class="k">if</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">PreviousTxnID</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;PreviousTxnID&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">PreviousFields</span> <span class="o">=</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">PreviousFields</span> <span class="k">if</span> <span class="n">affected_node</span><span class="o">.</span><span class="n">PreviousFields</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">offer_index</span> <span class="o">=</span> <span class="n">LedgerIndex</span>
+
+    <span class="n">taker_gets</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">subtract_amounts</span><span class="p">(</span><span class="n">PreviousFields</span><span class="p">[</span><span class="s2">&quot;TakerGets&quot;</span><span class="p">],</span> <span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;TakerGets&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">PreviousFields</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;TakerGets&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">taker_pays</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">subtract_amounts</span><span class="p">(</span><span class="n">PreviousFields</span><span class="p">[</span><span class="s2">&quot;TakerPays&quot;</span><span class="p">],</span> <span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;TakerPays&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">PreviousFields</span> <span class="o">!=</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;TakerPays&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">offer</span> <span class="o">=</span> <span class="n">Offer</span><span class="p">(</span>
+        <span class="n">Account</span><span class="o">=</span><span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">],</span>
+        <span class="n">BookDirectory</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">BookNode</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">Flags</span><span class="o">=</span><span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">],</span>
+        <span class="n">LedgerEntryType</span><span class="o">=</span><span class="n">LedgerEntryTypes</span><span class="o">.</span><span class="n">Offer</span><span class="p">,</span>
+        <span class="n">OwnerNode</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">PreviousTxnID</span><span class="o">=</span><span class="n">PreviousTxnID</span><span class="p">,</span>
+        <span class="n">PreviousTxnLgrSeq</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">Sequence</span><span class="o">=</span><span class="n">FinalFields</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">],</span>
+        <span class="n">TakerGets</span><span class="o">=</span><span class="n">taker_gets</span><span class="p">,</span>
+        <span class="n">TakerPays</span><span class="o">=</span><span class="n">taker_pays</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">offer_index</span><span class="p">,</span>
+        <span class="n">Expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">offer</span></div>
+
+
+<div class="viewcode-block" id="get_offer_from_tx"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_offer_from_tx">[docs]</a><span class="k">def</span> <span class="nf">get_offer_from_tx</span><span class="p">(</span>
+    <span class="n">transaction</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">overrides</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Offer</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an Offer Ledger object from a Transaction.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    transaction : Dict</span>
+<span class="sd">        Transaction to parse</span>
+<span class="sd">    overrides : Dict</span>
+<span class="sd">        (Optional) Object of values to override transaction defaults with</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;TransactionType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;OfferCreate&quot;</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">Account</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Account&quot;</span> <span class="ow">in</span> <span class="n">overrides</span>
+        <span class="k">else</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">Flags</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Flags&quot;</span> <span class="ow">in</span> <span class="n">overrides</span> <span class="k">else</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">Sequence</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;Sequence&quot;</span> <span class="ow">in</span> <span class="n">overrides</span>
+        <span class="k">else</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Sequence&quot;</span> <span class="ow">in</span> <span class="n">transaction</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="n">TakerGets</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;TakerGets&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;TakerGets&quot;</span> <span class="ow">in</span> <span class="n">overrides</span>
+        <span class="k">else</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;TakerGets&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">TakerPays</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;TakerPays&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;TakerPays&quot;</span> <span class="ow">in</span> <span class="n">overrides</span>
+        <span class="k">else</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;TakerPays&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">PreviousTxnID</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">overrides</span><span class="p">[</span><span class="s2">&quot;PreviousTxnID&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">overrides</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;PreviousTxnID&quot;</span> <span class="ow">in</span> <span class="n">overrides</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">Sequence</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">offer</span> <span class="o">=</span> <span class="n">Offer</span><span class="p">(</span>
+        <span class="n">Account</span><span class="o">=</span><span class="n">Account</span><span class="p">,</span>
+        <span class="n">BookDirectory</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">BookNode</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">Flags</span><span class="o">=</span><span class="n">Flags</span><span class="p">,</span>
+        <span class="n">LedgerEntryType</span><span class="o">=</span><span class="n">LedgerEntryTypes</span><span class="o">.</span><span class="n">Offer</span><span class="p">,</span>
+        <span class="n">OwnerNode</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">PreviousTxnID</span><span class="o">=</span><span class="n">PreviousTxnID</span><span class="p">,</span>
+        <span class="n">PreviousTxnLgrSeq</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">Sequence</span><span class="o">=</span><span class="n">Sequence</span><span class="p">,</span>
+        <span class="n">TakerGets</span><span class="o">=</span><span class="n">TakerGets</span><span class="p">,</span>
+        <span class="n">TakerPays</span><span class="o">=</span><span class="n">TakerPays</span><span class="p">,</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">hash_offer_id</span><span class="p">(</span><span class="n">Account</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">),</span>
+        <span class="n">Expiration</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">offer</span></div>
+
+
+<div class="viewcode-block" id="get_base_and_quote_data"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_base_and_quote_data">[docs]</a><span class="k">def</span> <span class="nf">get_base_and_quote_data</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Get Base and Quote Currency data.&quot;&quot;&quot;</span>
+
+    <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_order_side_from_flags</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;Flags&quot;</span><span class="p">])</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">get_base_amount_key</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">])]</span>
+    <span class="n">base_amount_value</span> <span class="o">=</span> <span class="n">parse_amount_value</span><span class="p">(</span>
+        <span class="n">IssuedCurrencyAmount</span><span class="p">(</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">][</span><span class="s2">&quot;currency&quot;</span><span class="p">],</span>
+            <span class="n">issuer</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">][</span><span class="s2">&quot;issuer&quot;</span><span class="p">],</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">]</span>
+        <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">drops_to_xrp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_amount_value</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base_amount_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">base_amount_value</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">get_quote_amount_key</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">])]</span>
+    <span class="n">quote_amount_value</span> <span class="o">=</span> <span class="n">parse_amount_value</span><span class="p">(</span>
+        <span class="n">IssuedCurrencyAmount</span><span class="p">(</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">][</span><span class="s2">&quot;currency&quot;</span><span class="p">],</span>
+            <span class="n">issuer</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">][</span><span class="s2">&quot;issuer&quot;</span><span class="p">],</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">]</span>
+        <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">drops_to_xrp</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">quote_amount_value</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">quote_amount_value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span> <span class="n">quote_amount_value</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_value&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="nb">float</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;symbol&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_market_symbol</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="get_shared_order_data"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_shared_order_data">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_shared_order_data</span><span class="p">(</span><span class="n">sdk</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Get basic Order data.&quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">get_base_and_quote_data</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_currency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_amount_currency_code</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_issuer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">][</span><span class="s2">&quot;issuer&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_amount&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">fetch_transfer_rate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_issuer&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_issuer&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">)</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_currency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_amount_currency_code</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_issuer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">][</span><span class="s2">&quot;issuer&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;issuer&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_amount&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="k">await</span> <span class="n">sdk</span><span class="o">.</span><span class="n">fetch_transfer_rate</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_issuer&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_issuer&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">)</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_value&quot;</span><span class="p">]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_value&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_value&quot;</span><span class="p">]</span>
+
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fee_currency&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_currency&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span> <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_currency&quot;</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fee_rate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_rate&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span> <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_rate&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="get_order_fee_from_data"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_order_fee_from_data">[docs]</a><span class="k">def</span> <span class="nf">get_order_fee_from_data</span><span class="p">(</span><span class="n">fee_cost</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">source</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Fee</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Get Order fee from source data.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">Fee</span><span class="p">(</span>
+            <span class="n">currency</span><span class="o">=</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;quote_currency&quot;</span><span class="p">],</span>
+            <span class="n">cost</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">fee_cost</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+            <span class="n">rate</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">source</span><span class="p">[</span><span class="s2">&quot;fee_rate&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+            <span class="n">percentage</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">fee_cost</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">else</span> <span class="kc">None</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_order_from_data"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_order_from_data">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_order_from_data</span><span class="p">(</span><span class="n">sdk</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse OrderSourceData into a CCXT Order object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_data : Dict</span>
+<span class="sd">        OrderSourceData to parse</span>
+<span class="sd">    info: Dict</span>
+<span class="sd">        Info object with raw exchange responses</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xrpl_dex_sdk.models.Order</span>
+<span class="sd">        The parsed Order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">source_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_shared_order_data</span><span class="p">(</span><span class="n">sdk</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">source_data</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">input_data</span><span class="p">,</span> <span class="o">**</span><span class="n">source_data</span><span class="p">}</span>
+
+    <span class="n">actual_price</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fill_price&quot;</span><span class="p">]</span>
+    <span class="n">average</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;total_fill_price&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;trades&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;trades&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="p">)</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;filled&quot;</span><span class="p">]</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;filled&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">actual_price</span>
+
+    <span class="n">fee_cost</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;filled&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fee_rate&quot;</span><span class="p">]</span>
+    <span class="n">fee</span> <span class="o">=</span> <span class="n">get_order_fee_from_data</span><span class="p">(</span><span class="n">fee_cost</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">fee_cost</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">last_trade_timestamp</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;trades&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">timestamp</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;trades&quot;</span><span class="p">])</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">OrderId</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">]),</span>
+        <span class="n">client_order_id</span><span class="o">=</span><span class="n">hash_offer_id</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">]),</span>
+        <span class="n">datetime</span><span class="o">=</span><span class="n">ripple_time_to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">ripple_time_to_posix</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]),</span>
+        <span class="n">last_trade_timestamp</span><span class="o">=</span><span class="n">last_trade_timestamp</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">],</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;symbol&quot;</span><span class="p">],</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">OrderType</span><span class="o">.</span><span class="n">Limit</span><span class="p">,</span>
+        <span class="n">time_in_force</span><span class="o">=</span><span class="n">get_order_time_in_force</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="n">side</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">],</span>
+        <span class="n">amount</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">price</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">average</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">average</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">filled</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;filled&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">remaining</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">remaining</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">cost</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">trades</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;trades&quot;</span><span class="p">],</span>
+        <span class="n">fee</span><span class="o">=</span><span class="n">fee</span> <span class="k">if</span> <span class="n">fee</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">order</span></div>
+
+
+<div class="viewcode-block" id="get_trade_from_data"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_trade_from_data">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_trade_from_data</span><span class="p">(</span><span class="n">sdk</span><span class="p">,</span> <span class="n">input_data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">info</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse TradeSourceData into a CCXT Trade object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_data : Dict</span>
+<span class="sd">        TradeSourceData to parse</span>
+<span class="sd">    info: Dict</span>
+<span class="sd">        Info object with raw exchange responses</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    xrpl_dex_sdk.models.Trade</span>
+<span class="sd">        The parsed Trade</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">source_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get_shared_order_data</span><span class="p">(</span><span class="n">sdk</span><span class="p">,</span> <span class="n">input_data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">source_data</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">input_data</span><span class="p">,</span> <span class="o">**</span><span class="n">source_data</span><span class="p">}</span>
+
+    <span class="n">trade_id</span> <span class="o">=</span> <span class="n">TradeId</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">])</span>
+    <span class="n">order_id</span> <span class="o">=</span> <span class="n">OrderId</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;OrderAccount&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;OrderSequence&quot;</span><span class="p">])</span>
+
+    <span class="n">cost</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">]</span>
+
+    <span class="n">fee_cost</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quote_value&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">OrderSide</span><span class="o">.</span><span class="n">Buy</span> <span class="k">else</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;base_value&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">*</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;fee_rate&quot;</span><span class="p">]</span>
+
+    <span class="n">fee</span> <span class="o">=</span> <span class="n">get_order_fee_from_data</span><span class="p">(</span><span class="n">fee_cost</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="n">trade</span> <span class="o">=</span> <span class="n">Trade</span><span class="p">(</span>
+        <span class="nb">id</span><span class="o">=</span><span class="n">trade_id</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order_id</span><span class="p">,</span>
+        <span class="n">datetime</span><span class="o">=</span><span class="n">ripple_time_to_datetime</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="n">timestamp</span><span class="o">=</span><span class="n">ripple_time_to_posix</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="n">symbol</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;symbol&quot;</span><span class="p">],</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">TradeType</span><span class="o">.</span><span class="n">Limit</span><span class="p">,</span>
+        <span class="n">side</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">],</span>
+        <span class="n">amount</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">price</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;price&quot;</span><span class="p">],</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">taker_or_maker</span><span class="o">=</span><span class="n">get_taker_or_maker</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;side&quot;</span><span class="p">]),</span>
+        <span class="n">cost</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">CURRENCY_PRECISION</span><span class="p">),</span>
+        <span class="n">fee</span><span class="o">=</span><span class="n">fee</span> <span class="k">if</span> <span class="n">fee</span> <span class="o">!=</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">info</span><span class="o">=</span><span class="n">info</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">trade</span></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># Parse a Transaction and return the important data</span>
+<span class="c1">#</span>
+<div class="viewcode-block" id="parse_transaction"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.parse_transaction">[docs]</a><span class="k">def</span> <span class="nf">parse_transaction</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="n">OrderId</span><span class="p">,</span> <span class="n">transaction</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parse any Transaction and return data relevant to creating an Order/Trade.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    order_id : xrpl_dex_sdk.models.OrderId</span>
+<span class="sd">        ID to filter with when parsing</span>
+<span class="sd">    transaction : Dict</span>
+<span class="sd">        Transaction data to parse</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">offer_ledger_index</span> <span class="o">=</span> <span class="n">hash_offer_id</span><span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="nb">id</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
+
+    <span class="n">previous_txn_hash</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tx</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">TransactionMetadata</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="s2">&quot;result&quot;</span> <span class="ow">in</span> <span class="n">transaction</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;OfferCreate&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;result&quot;</span><span class="p">]</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">TransactionMetadata</span><span class="p">(</span>
+            <span class="n">AffectedNodes</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;AffectedNodes&quot;</span><span class="p">],</span>
+            <span class="n">TransactionIndex</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionIndex&quot;</span><span class="p">],</span>
+            <span class="n">TransactionResult</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionResult&quot;</span><span class="p">],</span>
+            <span class="n">DeliveredAmount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">delivered_amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;tx&quot;</span> <span class="ow">in</span> <span class="n">transaction</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;tx&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;OfferCreate&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;tx&quot;</span><span class="p">]</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">TransactionMetadata</span><span class="p">(</span>
+            <span class="n">AffectedNodes</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;AffectedNodes&quot;</span><span class="p">],</span>
+            <span class="n">TransactionIndex</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionIndex&quot;</span><span class="p">],</span>
+            <span class="n">TransactionResult</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionResult&quot;</span><span class="p">],</span>
+            <span class="n">DeliveredAmount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">delivered_amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;metaData&quot;</span> <span class="ow">in</span> <span class="n">transaction</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;TransactionType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;OfferCreate&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">omit</span><span class="p">(</span><span class="n">transaction</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;metaData&quot;</span><span class="p">})</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">TransactionMetadata</span><span class="p">(</span>
+            <span class="n">AffectedNodes</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;metaData&quot;</span><span class="p">][</span><span class="s2">&quot;AffectedNodes&quot;</span><span class="p">],</span>
+            <span class="n">TransactionIndex</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;metaData&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionIndex&quot;</span><span class="p">],</span>
+            <span class="n">TransactionResult</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;metaData&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionResult&quot;</span><span class="p">],</span>
+            <span class="n">DeliveredAmount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">delivered_amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="s2">&quot;meta&quot;</span> <span class="ow">in</span> <span class="n">transaction</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;TransactionType&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;OfferCreate&quot;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">omit</span><span class="p">(</span><span class="n">transaction</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;meta&quot;</span><span class="p">})</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">]</span>
+        <span class="n">metadata</span> <span class="o">=</span> <span class="n">TransactionMetadata</span><span class="p">(</span>
+            <span class="n">AffectedNodes</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;AffectedNodes&quot;</span><span class="p">],</span>
+            <span class="n">TransactionIndex</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionIndex&quot;</span><span class="p">],</span>
+            <span class="n">TransactionResult</span><span class="o">=</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">][</span><span class="s2">&quot;TransactionResult&quot;</span><span class="p">],</span>
+            <span class="n">DeliveredAmount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">delivered_amount</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">tx</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not get Transaction data! Skipping...&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="s2">&quot;hash&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tx</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Property &quot;hash&quot; not found on Transaction! Skipping...&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="k">elif</span> <span class="n">metadata</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Metadata not found! Skipping...&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">trade_offers</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Offer</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">id</span> <span class="o">==</span> <span class="n">tx</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">affected_node</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">AffectedNodes</span><span class="p">:</span>
+            <span class="n">offer</span> <span class="o">=</span> <span class="n">get_offer_from_node</span><span class="p">(</span><span class="n">affected_node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">offer</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offer</span><span class="o">.</span><span class="n">Account</span> <span class="o">!=</span> <span class="nb">id</span><span class="o">.</span><span class="n">account</span><span class="p">:</span>
+                <span class="n">trade_offers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">offer</span><span class="p">)</span>
+        <span class="n">previous_txn_hash</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">elif</span> <span class="n">tx</span><span class="p">[</span><span class="s2">&quot;Account&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">id</span><span class="o">.</span><span class="n">account</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">affected_node</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">AffectedNodes</span><span class="p">:</span>
+            <span class="n">offer</span> <span class="o">=</span> <span class="n">get_offer_from_node</span><span class="p">(</span><span class="n">affected_node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">offer</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">offer</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">offer_ledger_index</span><span class="p">:</span>
+                <span class="n">previous_txn_hash</span> <span class="o">=</span> <span class="n">offer</span><span class="o">.</span><span class="n">PreviousTxnID</span>
+
+                <span class="n">trade_offer</span> <span class="o">=</span> <span class="n">get_offer_from_tx</span><span class="p">(</span>
+                    <span class="n">tx</span><span class="p">,</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;PreviousTxnID&quot;</span><span class="p">:</span> <span class="n">offer</span><span class="o">.</span><span class="n">PreviousTxnID</span><span class="p">,</span>
+                        <span class="s2">&quot;TakerGets&quot;</span><span class="p">:</span> <span class="n">offer</span><span class="o">.</span><span class="n">TakerGets</span><span class="p">,</span>
+                        <span class="s2">&quot;TakerPays&quot;</span><span class="p">:</span> <span class="n">offer</span><span class="o">.</span><span class="n">TakerPays</span><span class="p">,</span>
+                    <span class="p">},</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">trade_offer</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">trade_offers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trade_offer</span><span class="p">)</span>
+
+    <span class="n">parsed_transaction</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;transaction&quot;</span><span class="p">:</span> <span class="n">tx</span><span class="p">,</span>
+        <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="n">metadata</span><span class="p">,</span>
+        <span class="s2">&quot;offers&quot;</span><span class="p">:</span> <span class="n">trade_offers</span><span class="p">,</span>
+        <span class="s2">&quot;previous_txn_id&quot;</span><span class="p">:</span> <span class="n">previous_txn_hash</span><span class="p">,</span>
+        <span class="s2">&quot;date&quot;</span><span class="p">:</span> <span class="n">tx</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;date&quot;</span> <span class="ow">in</span> <span class="n">tx</span> <span class="k">else</span> <span class="n">posix_to_ripple_time</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">parsed_transaction</span></div>
+
+
+<div class="viewcode-block" id="get_most_recent_tx"><a class="viewcode-back" href="../../../xrpl_dex_sdk.utils.html#xrpl_dex_sdk.get_most_recent_tx">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_most_recent_tx</span><span class="p">(</span>
+    <span class="n">client</span><span class="p">:</span> <span class="n">AsyncJsonRpcClient</span><span class="p">,</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="n">OrderId</span><span class="p">,</span>
+    <span class="n">search_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">DEFAULT_SEARCH_LIMIT</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get data for the most recent Transaction to affect an Order.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    client : xrpl_dex_sdk.clients.AsyncJsonRpcClient</span>
+<span class="sd">        Client to use when looking up data</span>
+<span class="sd">    order_id : xrpl_dex_sdk.models.OrderId</span>
+<span class="sd">        ID to filter with when parsing</span>
+<span class="sd">    search_limit : int</span>
+<span class="sd">        Max total transactions to search through looking for matching ones</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">order_status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Open</span>
+
+    <span class="n">ledger_offer_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+        <span class="n">LedgerEntry</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;offer&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;account&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="o">.</span><span class="n">account</span><span class="p">,</span> <span class="s2">&quot;seq&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="o">.</span><span class="n">sequence</span><span class="p">},</span>
+                <span class="s2">&quot;ledger_index&quot;</span><span class="p">:</span> <span class="s2">&quot;validated&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">ledger_offer</span> <span class="o">=</span> <span class="n">ledger_offer_response</span><span class="o">.</span><span class="n">result</span>
+
+    <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ledger_offer</span><span class="p">:</span>
+        <span class="n">tx_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span><span class="p">(</span>
+            <span class="n">Tx</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">&quot;transaction&quot;</span><span class="p">:</span> <span class="n">ledger_offer</span><span class="p">[</span><span class="s2">&quot;node&quot;</span><span class="p">][</span><span class="s2">&quot;PreviousTxnID&quot;</span><span class="p">]})</span>
+        <span class="p">)</span>
+        <span class="n">tx</span> <span class="o">=</span> <span class="n">tx_response</span><span class="o">.</span><span class="n">result</span>
+        <span class="n">handle_response_error</span><span class="p">(</span><span class="n">tx</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tx</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No Transaction data!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">previous_txn_data</span> <span class="o">=</span> <span class="n">parse_transaction</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">tx</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">previous_txn_data</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span>
+                <span class="s2">&quot;previous_txn_data&quot;</span><span class="p">:</span> <span class="n">previous_txn_data</span><span class="p">,</span>
+                <span class="s2">&quot;previous_txn_id&quot;</span><span class="p">:</span> <span class="n">previous_txn_data</span><span class="p">[</span><span class="s2">&quot;previous_txn_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;order_status&quot;</span><span class="p">:</span> <span class="n">order_status</span><span class="p">,</span>
+            <span class="p">}</span>
+    <span class="k">elif</span> <span class="n">ledger_offer</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;entryNotFound&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">ledger_offer</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">ledger_offer</span><span class="p">[</span><span class="s2">&quot;error_message&quot;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">order_status</span> <span class="o">=</span> <span class="n">OrderStatus</span><span class="o">.</span><span class="n">Closed</span>
+
+        <span class="n">limit</span> <span class="o">=</span> <span class="n">DEFAULT_LIMIT</span>
+        <span class="n">marker</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">has_next_page</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">has_next_page</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">account_tx_request</span> <span class="o">=</span> <span class="n">AccountTx</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;account&quot;</span><span class="p">:</span> <span class="nb">id</span><span class="o">.</span><span class="n">account</span><span class="p">,</span>
+                    <span class="s2">&quot;ledger_index_min&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;ledger_index_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+                    <span class="s2">&quot;ledger_index&quot;</span><span class="p">:</span> <span class="s2">&quot;validated&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+                    <span class="s2">&quot;marker&quot;</span><span class="p">:</span> <span class="n">marker</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">account_tx_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="n">account_tx_request</span><span class="p">)</span>
+            <span class="n">account_tx</span> <span class="o">=</span> <span class="n">account_tx_response</span><span class="o">.</span><span class="n">result</span>
+            <span class="n">handle_response_error</span><span class="p">(</span><span class="n">account_tx</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">account_tx</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;order_status&quot;</span><span class="p">:</span> <span class="n">order_status</span><span class="p">}</span>
+
+            <span class="n">marker</span> <span class="o">=</span> <span class="n">account_tx</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;marker&quot;</span> <span class="ow">in</span> <span class="n">account_tx</span> <span class="k">else</span> <span class="kc">None</span>
+
+            <span class="n">transactions</span> <span class="o">=</span> <span class="n">account_tx</span><span class="p">[</span><span class="s2">&quot;transactions&quot;</span><span class="p">]</span>
+
+            <span class="n">transactions</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">sort_by_date</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">transaction</span> <span class="ow">in</span> <span class="n">transactions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transaction</span><span class="p">[</span><span class="s2">&quot;meta&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Check for canceled offers</span>
+
+                <span class="c1"># previous_txn_data = parse_transaction(id, transaction)</span>
+                <span class="c1"># if previous_txn_data != None:</span>
+                <span class="c1">#     return {</span>
+                <span class="c1">#         &quot;previous_txn_data&quot;: previous_txn_data,</span>
+                <span class="c1">#         &quot;previous_txn_id&quot;: previous_txn_data[&quot;previous_txn_id&quot;],</span>
+                <span class="c1">#         &quot;order_status&quot;: order_status,</span>
+                <span class="c1">#     }</span>
+
+            <span class="k">if</span> <span class="n">marker</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">limit</span> <span class="o">*</span> <span class="n">page</span> <span class="o">&gt;=</span> <span class="n">search_limit</span><span class="p">:</span>
+                <span class="n">has_next_page</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">page</span> <span class="o">+=</span> <span class="mi">1</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">XRPL dEX Python SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, AktaryTech.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

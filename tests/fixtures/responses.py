@@ -296,9 +296,7 @@ fetch_order_responses[
         "timestamp": 1664567751000,
         "last_trade_timestamp": 1664568213000,
         "status": OrderStatus.Closed,
-        "symbol": MarketSymbol.from_string(
-            "AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"
-        ),
+        "symbol": MarketSymbol.from_string("AKT+rMZoAqwRn3BLbmFYL3exNVNVKrceYcNy6B/XRP"),
         "type": OrderType.Limit,
         "time_in_force": OrderTimeInForce.GoodTillCanceled,
         "side": OrderSide.Sell,
@@ -311,12 +309,8 @@ fetch_order_responses[
         "trades": [
             Trade.from_dict(
                 {
-                    "id": TradeId.from_string(
-                        "rLg33RykRFBxoJsTknkE5ekmoVDPmAPJwU:31617724"
-                    ),
-                    "order": OrderId.from_string(
-                        "r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z:31617670"
-                    ),
+                    "id": TradeId.from_string("rLg33RykRFBxoJsTknkE5ekmoVDPmAPJwU:31617724"),
+                    "order": OrderId.from_string("r3xYuG3dNF4oHBLXwEdFmFKGm9TWzqGT7z:31617670"),
                     "datetime": "2022-09-30T20:03:33.000Z",
                     "timestamp": 1664568213000,
                     "symbol": MarketSymbol.from_string(

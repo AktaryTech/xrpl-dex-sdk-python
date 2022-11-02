@@ -61,6 +61,3 @@ class Trade(BaseModel):
 
 
 Trades = List[Trade]
-
-
-__all__ = ["TradeType", "TradeSide", "TradeTakerOrMaker", "Trade", "Trades"]

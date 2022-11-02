@@ -12,7 +12,7 @@ def load_issuers(self, reload: Optional[bool] = False) -> LoadIssuersResponse:
 
     Returns
     -------
-    LoadIssuersResponse
+    xrpl_dex_sdk.models.LoadIssuersResponse
         The fetched issuers
     """
 

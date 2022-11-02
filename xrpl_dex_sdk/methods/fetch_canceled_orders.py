@@ -22,18 +22,18 @@ async def fetch_canceled_orders(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Market symbol to filter Orders by
     since : int
         (Optional) Only return Orders since this date
     limit : int
         (Optional) Total number of Orders to return (default is 20)
-    params : FetchCanceledOrdersParams
+    params : xrpl_dex_sdk.models.FetchCanceledOrdersParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchCanceledOrdersResponse
+    xrpl_dex_sdk.models.FetchCanceledOrdersResponse
         List of retrieved Orders
     """
 

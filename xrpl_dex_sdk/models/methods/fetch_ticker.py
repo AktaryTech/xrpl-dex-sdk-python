@@ -13,5 +13,3 @@ class FetchTickerParams(BaseModel):
 
 
 FetchTickerResponse = Ticker
-
-__all__ = ["FetchTickerParams", "FetchTickerResponse"]

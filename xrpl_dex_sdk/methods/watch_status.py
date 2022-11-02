@@ -12,7 +12,7 @@ async def watch_status(self, params: WatchStatusParams) -> None:
 
     Parameters
     ----------
-    params : WatchStatusParams
+    params : xrpl_dex_sdk.models.WatchStatusParams
         Additional request parameters
     """
 

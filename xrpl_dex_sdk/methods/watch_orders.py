@@ -26,9 +26,9 @@ async def watch_orders(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Symbol to filter Orders by
-    params : WatchOrdersParams
+    params : xrpl_dex_sdk.models.WatchOrdersParams
         Additional request parameters
     """
 
@@ -44,9 +44,7 @@ async def watch_orders(
                 sequence=tx_message["transaction"]["Sequence"],
             )
 
-            txn_data = parse_transaction(
-                id=order_id, transaction=tx_message["transaction"]
-            )
+            txn_data = parse_transaction(id=order_id, transaction=tx_message["transaction"])
 
             if txn_data == None or (symbol and symbol != order_id):
                 return

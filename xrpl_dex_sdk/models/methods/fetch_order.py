@@ -15,5 +15,3 @@ class FetchOrderParams(BaseModel):
 
 
 FetchOrderResponse = Order
-
-__all__ = ["FetchOrderParams", "FetchOrderResponse"]

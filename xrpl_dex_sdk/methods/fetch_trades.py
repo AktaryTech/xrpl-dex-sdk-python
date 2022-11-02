@@ -37,25 +37,23 @@ async def fetch_trades(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Market symbol to filter Trades by
     since : int
         (Optional) Only return Trades since this date
     limit : int
         (Optional) Total number of Trades to return (default is 20)
-    params : FetchTradesParams
+    params : xrpl_dex_sdk.models.FetchTradesParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchTradesResponse
+    xrpl_dex_sdk.models.FetchTradesResponse
         List of retrieved Trades
     """
 
     limit = limit if limit != None else DEFAULT_LIMIT
-    search_limit = (
-        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
 
     trades: Trades = []
 

@@ -12,6 +12,3 @@ class WatchBalanceParams(BaseModel):
     listener: Callable = REQUIRED
     # Currency to fetch balances for
     code: Optional[CurrencyCode] = None
-
-
-__all__ = ["WatchBalanceParams"]

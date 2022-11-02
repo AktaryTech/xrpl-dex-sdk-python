@@ -13,12 +13,12 @@ async def fetch_transaction_fee(
 
     Parameters
     ----------
-    code : CurrencyCode
+    code : xrpl_dex_sdk.models.CurrencyCode
         Currency code to get fees for
 
     Returns
     -------
-    FetchTransactionFeeResponse
+    xrpl_dex_sdk.models.FetchTransactionFeeResponse
         Transaction fee data
     """
 
@@ -28,9 +28,7 @@ async def fetch_transaction_fee(
     fee_result = fee_response.result
     handle_response_error(fee_result)
 
-    currencies = (
-        self.currencies if self.currencies != None else await self.fetch_currencies()
-    )
+    currencies = self.currencies if self.currencies != None else await self.fetch_currencies()
 
     print(await self.fetch_currencies())
 

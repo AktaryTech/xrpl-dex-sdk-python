@@ -35,16 +35,16 @@ async def fetch_order(
 
     Parameters
     ----------
-    id : OrderId
+    id : xrpl_dex_sdk.models.OrderId
         ID of the Order to fetch
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) The symbol of the Order to fetch
-    params : FetchOrderParams
+    params : xrpl_dex_sdk.models.FetchOrderParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchOrderResponse
+    xrpl_dex_sdk.models.FetchOrderResponse
         The matching Order
     """
 
@@ -67,9 +67,7 @@ async def fetch_order(
     # Build a Transaction history for this Order
     #
     while previous_txn_id != None:
-        tx_response = await self.client.request(
-            Tx.from_dict({"transaction": previous_txn_id})
-        )
+        tx_response = await self.client.request(Tx.from_dict({"transaction": previous_txn_id}))
         previous_txn_response = tx_response.result
         handle_response_error(previous_txn_response)
 

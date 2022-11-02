@@ -17,16 +17,16 @@ async def fetch_l2_order_book(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         Market symbol to get order book for
     limit : int
         (Optional) Total number of entries to return (default is 20)
-    params : FetchL2OrderBookParams
+    params : xrpl_dex_sdk.models.FetchL2OrderBookParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchL2OrderBookResponse
+    xrpl_dex_sdk.models.FetchL2OrderBookResponse
         Order book
     """
 

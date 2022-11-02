@@ -1,0 +1,1004 @@
+
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>xrpl_dex_sdk.utils package &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk.utils package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="xrpl-dex-sdk-utils-package">
+<h1>xrpl_dex_sdk.utils package<a class="headerlink" href="#xrpl-dex-sdk-utils-package" title="Permalink to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+</section>
+<section id="module-xrpl_dex_sdk.utils.conversions">
+<span id="xrpl-dex-sdk-utils-conversions-module"></span><h2>xrpl_dex_sdk.utils.conversions module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.conversions" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.conversions.decimal_to_transfer_rate">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.conversions.</span></span><span class="sig-name descname"><span class="pre">decimal_to_transfer_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#decimal_to_transfer_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.conversions.decimal_to_transfer_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a decimal to an XRPL transfer rate percentage.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.conversions.server_time_to_posix">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.conversions.</span></span><span class="sig-name descname"><span class="pre">server_time_to_posix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#server_time_to_posix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.conversions.server_time_to_posix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses XRPL server_status response and returns as POSIX timestamp.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.conversions.transfer_rate_to_decimal">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.conversions.</span></span><span class="sig-name descname"><span class="pre">transfer_rate_to_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#transfer_rate_to_decimal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.conversions.transfer_rate_to_decimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an XRPL transfer rate from percentage to decimal.</p>
+</dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils.data">
+<span id="xrpl-dex-sdk-utils-data-module"></span><h2>xrpl_dex_sdk.utils.data module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.data" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.data.has_offer_create_flag">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.data.</span></span><span class="sig-name descname"><span class="pre">has_offer_create_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.OfferCreateFlags" title="xrpl_dex_sdk.models.xrpl.offers.OfferCreateFlags"><span class="pre">OfferCreateFlags</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#has_offer_create_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.data.has_offer_create_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if a given OfferCreate flag is present on an Offer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.data.has_offer_flag">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.data.</span></span><span class="sig-name descname"><span class="pre">has_offer_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.OfferFlags" title="xrpl_dex_sdk.models.xrpl.offers.OfferFlags"><span class="pre">OfferFlags</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#has_offer_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.data.has_offer_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if a given Offer flag is present on an Offer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.data.omit">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.data.</span></span><span class="sig-name descname"><span class="pre">omit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#omit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.data.omit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omits the contents of the <cite>keys</cite> set from the dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.data.sort_by_date">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.data.</span></span><span class="sig-name descname"><span class="pre">sort_by_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#sort_by_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.data.sort_by_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorts Transactions by their dates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.data.sort_by_previous_txn_lgr_seq">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.data.</span></span><span class="sig-name descname"><span class="pre">sort_by_previous_txn_lgr_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#sort_by_previous_txn_lgr_seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.data.sort_by_previous_txn_lgr_seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorts Offers by their PreviousTxnLgrSeq values.</p>
+</dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils.errors">
+<span id="xrpl-dex-sdk-utils-errors-module"></span><h2>xrpl_dex_sdk.utils.errors module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.errors" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.errors.handle_response_error">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.errors.</span></span><span class="sig-name descname"><span class="pre">handle_response_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/errors.html#handle_response_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.errors.handle_response_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates a response object and throws any errors found.</p>
+</dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils.hashes">
+<span id="xrpl-dex-sdk-utils-hashes-module"></span><h2>xrpl_dex_sdk.utils.hashes module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.hashes" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.hashes.</span></span><span class="sig-name descname"><span class="pre">LedgerNameSpaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#LedgerNameSpaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.account">
+<span class="sig-name descname"><span class="pre">account</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'a'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.amendment">
+<span class="sig-name descname"><span class="pre">amendment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'f'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.amendment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.bookDir">
+<span class="sig-name descname"><span class="pre">bookDir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'B'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.bookDir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.check">
+<span class="sig-name descname"><span class="pre">check</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'C'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.contract">
+<span class="sig-name descname"><span class="pre">contract</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'c'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.contract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.depositPreauth">
+<span class="sig-name descname"><span class="pre">depositPreauth</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'p'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.depositPreauth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.dirNode">
+<span class="sig-name descname"><span class="pre">dirNode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'d'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.dirNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.escrow">
+<span class="sig-name descname"><span class="pre">escrow</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'u'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.escrow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.feeSettings">
+<span class="sig-name descname"><span class="pre">feeSettings</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'e'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.feeSettings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.generatorMap">
+<span class="sig-name descname"><span class="pre">generatorMap</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'g'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.generatorMap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.offer">
+<span class="sig-name descname"><span class="pre">offer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'o'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.offer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ownerDir">
+<span class="sig-name descname"><span class="pre">ownerDir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'O'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ownerDir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.paychan">
+<span class="sig-name descname"><span class="pre">paychan</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'x'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.paychan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.rippleState">
+<span class="sig-name descname"><span class="pre">rippleState</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'r'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.rippleState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.signerList">
+<span class="sig-name descname"><span class="pre">signerList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'S'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.signerList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.skipList">
+<span class="sig-name descname"><span class="pre">skipList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'s'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.skipList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ticket">
+<span class="sig-name descname"><span class="pre">ticket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'T'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ticket" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.hash_offer_id">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.hashes.</span></span><span class="sig-name descname"><span class="pre">hash_offer_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#hash_offer_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.hash_offer_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hashes.sha_512_half">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.hashes.</span></span><span class="sig-name descname"><span class="pre">sha_512_half</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#sha_512_half"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.hashes.sha_512_half" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils.numbers">
+<span id="xrpl-dex-sdk-utils-numbers-module"></span><h2>xrpl_dex_sdk.utils.numbers module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.numbers" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.numbers.parse_amount_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.numbers.</span></span><span class="sig-name descname"><span class="pre">parse_amount_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/numbers.html#parse_amount_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.numbers.parse_amount_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Amount object and returns the value as a number.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.numbers.subtract_amounts">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.numbers.</span></span><span class="sig-name descname"><span class="pre">subtract_amounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtractor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/numbers.html#subtract_amounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.numbers.subtract_amounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts one Amount from another, and returns the difference as an Amount.</p>
+</dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils.orders">
+<span id="xrpl-dex-sdk-utils-orders-module"></span><h2>xrpl_dex_sdk.utils.orders module<a class="headerlink" href="#module-xrpl_dex_sdk.utils.orders" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_amount">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an Amount from a <cite>CurrencyCode</cite> and value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_amount_currency_code">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_amount_currency_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.CurrencyCode" title="xrpl_dex_sdk.models.common.CurrencyCode"><span class="pre">CurrencyCode</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_amount_currency_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_amount_currency_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Amount object and returns the currency code.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_base_amount_key">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_base_amount_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_base_amount_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_base_amount_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Offer object key of the Offer’s base currency.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_base_and_quote_data">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_base_and_quote_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_base_and_quote_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_base_and_quote_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Base and Quote Currency data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_book_offer_base_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_base_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_base_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_book_offer_base_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the base currency value from a BookOffer instance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_book_offer_quote_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_quote_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_quote_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_book_offer_quote_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the quote currency value from a BookOffer instance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_book_offer_taker_gets">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_taker_gets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_taker_gets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_book_offer_taker_gets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a TakerGets object for a book_offers request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_book_offer_taker_pays">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_taker_pays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_taker_pays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_book_offer_taker_pays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a TakerPays object for a book_offers request.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_market_symbol">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_market_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_market_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_market_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a MarketSymbol from an Offer or Transaction.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_market_symbol_from_amount">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_market_symbol_from_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.MarketSymbol" title="xrpl_dex_sdk.models.common.MarketSymbol"><span class="pre">MarketSymbol</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_market_symbol_from_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_market_symbol_from_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a MarketSymbol from Base and Quote XRPL Amounts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> (<em>xrpl_dex_sdk.models.Amount</em>) – Base currency as Amount object</p></li>
+<li><p><strong>quote</strong> (<em>xrpl_dex_sdk.models.Amount</em>) – Quote currency as Amount object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.MarketSymbol" title="xrpl_dex_sdk.models.MarketSymbol">xrpl_dex_sdk.models.MarketSymbol</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_most_recent_tx">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_most_recent_tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncJsonRpcClient" title="xrpl.asyncio.clients.async_json_rpc_client.AsyncJsonRpcClient"><span class="pre">AsyncJsonRpcClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.OrderId" title="xrpl_dex_sdk.models.common.OrderId"><span class="pre">OrderId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_most_recent_tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_most_recent_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data for the most recent Transaction to affect an Order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncJsonRpcClient" title="xrpl_dex_sdk.clients.AsyncJsonRpcClient"><em>xrpl_dex_sdk.clients.AsyncJsonRpcClient</em></a>) – Client to use when looking up data</p></li>
+<li><p><strong>order_id</strong> (<a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.OrderId" title="xrpl_dex_sdk.models.OrderId"><em>xrpl_dex_sdk.models.OrderId</em></a>) – ID to filter with when parsing</p></li>
+<li><p><strong>search_limit</strong> (<em>int</em>) – Max total transactions to search through looking for matching ones</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_offer_from_node">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_offer_from_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.Offer" title="xrpl_dex_sdk.models.xrpl.offers.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_offer_from_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_offer_from_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Offer object from an AffectedNode.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_offer_from_tx">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_offer_from_tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overrides</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.Offer" title="xrpl_dex_sdk.models.xrpl.offers.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_offer_from_tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_offer_from_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Offer Ledger object from a Transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction</strong> (<em>Dict</em>) – Transaction to parse</p></li>
+<li><p><strong>overrides</strong> (<em>Dict</em>) – (Optional) Object of values to override transaction defaults with</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_order_fee_from_data">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_order_fee_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fee_cost</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.fees.Fee" title="xrpl_dex_sdk.models.ccxt.fees.Fee"><span class="pre">Fee</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_fee_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_order_fee_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Order fee from source data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_order_from_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_order_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_order_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse OrderSourceData into a CCXT Order object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data</strong> (<em>Dict</em>) – OrderSourceData to parse</p></li>
+<li><p><strong>info</strong> (<em>Dict</em>) – Info object with raw exchange responses</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Order</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Order" title="xrpl_dex_sdk.models.Order">xrpl_dex_sdk.models.Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_order_side_from_flags">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_order_side_from_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_side_from_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_order_side_from_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Offer’s flags and returns its side (buy or sell).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_order_time_in_force">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_order_time_in_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderTimeInForce" title="xrpl_dex_sdk.models.ccxt.order.OrderTimeInForce"><span class="pre">OrderTimeInForce</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_time_in_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_order_time_in_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Order and returns its time in force.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_quote_amount_key">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_quote_amount_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_quote_amount_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_quote_amount_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Offer object key of the Offer’s quote currency.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_shared_order_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_shared_order_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_shared_order_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_shared_order_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get basic Order data.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_taker_or_maker">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_taker_or_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.trades.TradeSide" title="xrpl_dex_sdk.models.ccxt.trades.TradeSide"><span class="pre">TradeSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.trades.TradeTakerOrMaker" title="xrpl_dex_sdk.models.ccxt.trades.TradeTakerOrMaker"><span class="pre">TradeTakerOrMaker</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_taker_or_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_taker_or_maker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets whether a Trade was from a taker or maker.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.get_trade_from_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">get_trade_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_trade_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.get_trade_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse TradeSourceData into a CCXT Trade object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data</strong> (<em>Dict</em>) – TradeSourceData to parse</p></li>
+<li><p><strong>info</strong> (<em>Dict</em>) – Info object with raw exchange responses</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Trade</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Trade" title="xrpl_dex_sdk.models.Trade">xrpl_dex_sdk.models.Trade</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.parse_affected_node">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">parse_affected_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">affected_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.ledger.LedgerEntryTypes" title="xrpl_dex_sdk.models.xrpl.ledger.LedgerEntryTypes"><span class="pre">LedgerEntryTypes</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">LedgerEntryTypes.Offer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.metadata.Node" title="xrpl_dex_sdk.models.xrpl.metadata.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#parse_affected_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.parse_affected_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a Node and returns its data in an agnostic format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>affected_node</strong> (<em>Dict</em>) – Node object to parse</p></li>
+<li><p><strong>entry_type</strong> (<em>xrpl_dex_sdk.models.LedgerEntryType</em>) – LedgerEntry type to filter by (defaults to Offer)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Node, or None if unable to parse.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Node" title="xrpl_dex_sdk.models.Node">xrpl_dex_sdk.models.Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.orders.parse_transaction">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.orders.</span></span><span class="sig-name descname"><span class="pre">parse_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.OrderId" title="xrpl_dex_sdk.models.common.OrderId"><span class="pre">OrderId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#parse_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.orders.parse_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse any Transaction and return data relevant to creating an Order/Trade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_id</strong> (<a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.OrderId" title="xrpl_dex_sdk.models.OrderId"><em>xrpl_dex_sdk.models.OrderId</em></a>) – ID to filter with when parsing</p></li>
+<li><p><strong>transaction</strong> (<em>Dict</em>) – Transaction data to parse</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-xrpl_dex_sdk.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-xrpl_dex_sdk.utils" title="Permalink to this heading">¶</a></h2>
+<p>Top-level exports for the utils package.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">LedgerNameSpaces</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#LedgerNameSpaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.account">
+<span class="sig-name descname"><span class="pre">account</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'a'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.account" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.amendment">
+<span class="sig-name descname"><span class="pre">amendment</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'f'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.amendment" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.bookDir">
+<span class="sig-name descname"><span class="pre">bookDir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'B'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.bookDir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.check">
+<span class="sig-name descname"><span class="pre">check</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'C'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.contract">
+<span class="sig-name descname"><span class="pre">contract</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'c'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.contract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.depositPreauth">
+<span class="sig-name descname"><span class="pre">depositPreauth</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'p'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.depositPreauth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.dirNode">
+<span class="sig-name descname"><span class="pre">dirNode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'d'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.dirNode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.escrow">
+<span class="sig-name descname"><span class="pre">escrow</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'u'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.escrow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.feeSettings">
+<span class="sig-name descname"><span class="pre">feeSettings</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'e'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.feeSettings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.generatorMap">
+<span class="sig-name descname"><span class="pre">generatorMap</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'g'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.generatorMap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.offer">
+<span class="sig-name descname"><span class="pre">offer</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'o'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.offer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.ownerDir">
+<span class="sig-name descname"><span class="pre">ownerDir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'O'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.ownerDir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.paychan">
+<span class="sig-name descname"><span class="pre">paychan</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'x'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.paychan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.rippleState">
+<span class="sig-name descname"><span class="pre">rippleState</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'r'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.rippleState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.signerList">
+<span class="sig-name descname"><span class="pre">signerList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'S'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.signerList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.skipList">
+<span class="sig-name descname"><span class="pre">skipList</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'s'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.skipList" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.LedgerNameSpaces.ticket">
+<span class="sig-name descname"><span class="pre">ticket</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'T'</span></em><a class="headerlink" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.ticket" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.decimal_to_transfer_rate">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">decimal_to_transfer_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimal</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#decimal_to_transfer_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.decimal_to_transfer_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a decimal to an XRPL transfer rate percentage.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_amount">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an Amount from a <cite>CurrencyCode</cite> and value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_amount_currency_code">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_amount_currency_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.CurrencyCode" title="xrpl_dex_sdk.models.common.CurrencyCode"><span class="pre">CurrencyCode</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_amount_currency_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_amount_currency_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Amount object and returns the currency code.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_base_amount_key">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_base_amount_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_base_amount_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_base_amount_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Offer object key of the Offer’s base currency.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_book_offer_base_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_base_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_base_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_book_offer_base_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the base currency value from a BookOffer instance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_book_offer_quote_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_book_offer_quote_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">book_offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.BookOffer" title="xrpl_dex_sdk.models.xrpl.offers.BookOffer"><span class="pre">BookOffer</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_book_offer_quote_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_book_offer_quote_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the quote currency value from a BookOffer instance.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_market_symbol">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_market_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_market_symbol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_market_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a MarketSymbol from an Offer or Transaction.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_market_symbol_from_amount">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_market_symbol_from_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quote</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.MarketSymbol" title="xrpl_dex_sdk.models.common.MarketSymbol"><span class="pre">MarketSymbol</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_market_symbol_from_amount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_market_symbol_from_amount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a MarketSymbol from Base and Quote XRPL Amounts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> (<em>xrpl_dex_sdk.models.Amount</em>) – Base currency as Amount object</p></li>
+<li><p><strong>quote</strong> (<em>xrpl_dex_sdk.models.Amount</em>) – Quote currency as Amount object</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.MarketSymbol" title="xrpl_dex_sdk.models.MarketSymbol">xrpl_dex_sdk.models.MarketSymbol</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_most_recent_tx">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_most_recent_tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.AsyncJsonRpcClient" title="xrpl.asyncio.clients.async_json_rpc_client.AsyncJsonRpcClient"><span class="pre">AsyncJsonRpcClient</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.OrderId" title="xrpl_dex_sdk.models.common.OrderId"><span class="pre">OrderId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_most_recent_tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_most_recent_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data for the most recent Transaction to affect an Order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<a class="reference internal" href="xrpl_dex_sdk.html#xrpl_dex_sdk.clients.AsyncJsonRpcClient" title="xrpl_dex_sdk.clients.AsyncJsonRpcClient"><em>xrpl_dex_sdk.clients.AsyncJsonRpcClient</em></a>) – Client to use when looking up data</p></li>
+<li><p><strong>order_id</strong> (<a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.OrderId" title="xrpl_dex_sdk.models.OrderId"><em>xrpl_dex_sdk.models.OrderId</em></a>) – ID to filter with when parsing</p></li>
+<li><p><strong>search_limit</strong> (<em>int</em>) – Max total transactions to search through looking for matching ones</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_offer_from_node">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_offer_from_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.Offer" title="xrpl_dex_sdk.models.xrpl.offers.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_offer_from_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_offer_from_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Offer object from an AffectedNode.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_offer_from_tx">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_offer_from_tx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overrides</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.Offer" title="xrpl_dex_sdk.models.xrpl.offers.Offer"><span class="pre">Offer</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_offer_from_tx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_offer_from_tx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an Offer Ledger object from a Transaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transaction</strong> (<em>Dict</em>) – Transaction to parse</p></li>
+<li><p><strong>overrides</strong> (<em>Dict</em>) – (Optional) Object of values to override transaction defaults with</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_order_from_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_order_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_order_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse OrderSourceData into a CCXT Order object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data</strong> (<em>Dict</em>) – OrderSourceData to parse</p></li>
+<li><p><strong>info</strong> (<em>Dict</em>) – Info object with raw exchange responses</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Order</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Order" title="xrpl_dex_sdk.models.Order">xrpl_dex_sdk.models.Order</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_order_side_from_flags">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_order_side_from_flags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_side_from_flags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_order_side_from_flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Offer’s flags and returns its side (buy or sell).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_order_time_in_force">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_order_time_in_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderTimeInForce" title="xrpl_dex_sdk.models.ccxt.order.OrderTimeInForce"><span class="pre">OrderTimeInForce</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_order_time_in_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_order_time_in_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Order and returns its time in force.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_quote_amount_key">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_quote_amount_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.order.OrderSide" title="xrpl_dex_sdk.models.ccxt.order.OrderSide"><span class="pre">OrderSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_quote_amount_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_quote_amount_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the Offer object key of the Offer’s quote currency.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_taker_or_maker">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_taker_or_maker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.trades.TradeSide" title="xrpl_dex_sdk.models.ccxt.trades.TradeSide"><span class="pre">TradeSide</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="xrpl_dex_sdk.models.ccxt.html#xrpl_dex_sdk.models.ccxt.trades.TradeTakerOrMaker" title="xrpl_dex_sdk.models.ccxt.trades.TradeTakerOrMaker"><span class="pre">TradeTakerOrMaker</span></a></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_taker_or_maker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_taker_or_maker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets whether a Trade was from a taker or maker.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.get_trade_from_data">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">get_trade_from_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sdk</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#get_trade_from_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.get_trade_from_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse TradeSourceData into a CCXT Trade object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data</strong> (<em>Dict</em>) – TradeSourceData to parse</p></li>
+<li><p><strong>info</strong> (<em>Dict</em>) – Info object with raw exchange responses</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Trade</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Trade" title="xrpl_dex_sdk.models.Trade">xrpl_dex_sdk.models.Trade</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.handle_response_error">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">handle_response_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/errors.html#handle_response_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.handle_response_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluates a response object and throws any errors found.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.has_offer_create_flag">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">has_offer_create_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.OfferCreateFlags" title="xrpl_dex_sdk.models.xrpl.offers.OfferCreateFlags"><span class="pre">OfferCreateFlags</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#has_offer_create_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.has_offer_create_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if a given OfferCreate flag is present on an Offer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.has_offer_flag">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">has_offer_flag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_flag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.offers.OfferFlags" title="xrpl_dex_sdk.models.xrpl.offers.OfferFlags"><span class="pre">OfferFlags</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#has_offer_flag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.has_offer_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if a given Offer flag is present on an Offer.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.hash_offer_id">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">hash_offer_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#hash_offer_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.hash_offer_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.omit">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">omit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#omit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.omit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Omits the contents of the <cite>keys</cite> set from the dictionary.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.parse_affected_node">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">parse_affected_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">affected_node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.ledger.LedgerEntryTypes" title="xrpl_dex_sdk.models.xrpl.ledger.LedgerEntryTypes"><span class="pre">LedgerEntryTypes</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">LedgerEntryTypes.Offer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.metadata.Node" title="xrpl_dex_sdk.models.xrpl.metadata.Node"><span class="pre">Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#parse_affected_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.parse_affected_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a Node and returns its data in an agnostic format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>affected_node</strong> (<em>Dict</em>) – Node object to parse</p></li>
+<li><p><strong>entry_type</strong> (<em>xrpl_dex_sdk.models.LedgerEntryType</em>) – LedgerEntry type to filter by (defaults to Offer)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The parsed Node, or None if unable to parse.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.Node" title="xrpl_dex_sdk.models.Node">xrpl_dex_sdk.models.Node</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.parse_amount_value">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">parse_amount_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/numbers.html#parse_amount_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.parse_amount_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an Amount object and returns the value as a number.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.parse_transaction">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">parse_transaction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.common.OrderId" title="xrpl_dex_sdk.models.common.OrderId"><span class="pre">OrderId</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/orders.html#parse_transaction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.parse_transaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse any Transaction and return data relevant to creating an Order/Trade.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order_id</strong> (<a class="reference internal" href="xrpl_dex_sdk.models.html#xrpl_dex_sdk.models.OrderId" title="xrpl_dex_sdk.models.OrderId"><em>xrpl_dex_sdk.models.OrderId</em></a>) – ID to filter with when parsing</p></li>
+<li><p><strong>transaction</strong> (<em>Dict</em>) – Transaction data to parse</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.server_time_to_posix">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">server_time_to_posix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#server_time_to_posix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.server_time_to_posix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses XRPL server_status response and returns as POSIX timestamp.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.sha_512_half">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">sha_512_half</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/hashes.html#sha_512_half"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.sha_512_half" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.sort_by_date">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">sort_by_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transaction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#sort_by_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.sort_by_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorts Transactions by their dates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.sort_by_previous_txn_lgr_seq">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">sort_by_previous_txn_lgr_seq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/data.html#sort_by_previous_txn_lgr_seq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.sort_by_previous_txn_lgr_seq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sorts Offers by their PreviousTxnLgrSeq values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.subtract_amounts">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">subtract_amounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subtractor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="xrpl_dex_sdk.models.xrpl.html#xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount" title="xrpl_dex_sdk.models.xrpl.currency.IssuedCurrencyAmount"><span class="pre">IssuedCurrencyAmount</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/numbers.html#subtract_amounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.subtract_amounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subtracts one Amount from another, and returns the difference as an Amount.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xrpl_dex_sdk.utils.transfer_rate_to_decimal">
+<span class="sig-prename descclassname"><span class="pre">xrpl_dex_sdk.utils.</span></span><span class="sig-name descname"><span class="pre">transfer_rate_to_decimal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/xrpl_dex_sdk/utils/conversions.html#transfer_rate_to_decimal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xrpl_dex_sdk.utils.transfer_rate_to_decimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an XRPL transfer rate from percentage to decimal.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">xrpl_dex_sdk.utils package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.conversions">xrpl_dex_sdk.utils.conversions module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.conversions.decimal_to_transfer_rate"><code class="docutils literal notranslate"><span class="pre">decimal_to_transfer_rate()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.conversions.server_time_to_posix"><code class="docutils literal notranslate"><span class="pre">server_time_to_posix()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.conversions.transfer_rate_to_decimal"><code class="docutils literal notranslate"><span class="pre">transfer_rate_to_decimal()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.data">xrpl_dex_sdk.utils.data module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.data.has_offer_create_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_create_flag()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.data.has_offer_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_flag()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.data.omit"><code class="docutils literal notranslate"><span class="pre">omit()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.data.sort_by_date"><code class="docutils literal notranslate"><span class="pre">sort_by_date()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.data.sort_by_previous_txn_lgr_seq"><code class="docutils literal notranslate"><span class="pre">sort_by_previous_txn_lgr_seq()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.errors">xrpl_dex_sdk.utils.errors module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.errors.handle_response_error"><code class="docutils literal notranslate"><span class="pre">handle_response_error()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.hashes">xrpl_dex_sdk.utils.hashes module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces</span></code></a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.account"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.account</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.amendment"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.amendment</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.bookDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.bookDir</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.check"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.check</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.contract"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.contract</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.depositPreauth"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.depositPreauth</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.dirNode"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.dirNode</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.escrow"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.escrow</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.feeSettings"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.feeSettings</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.generatorMap"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.generatorMap</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.offer"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.offer</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ownerDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ownerDir</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.paychan"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.paychan</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.rippleState"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.rippleState</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.signerList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.signerList</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.skipList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.skipList</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.LedgerNameSpaces.ticket"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ticket</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.hash_offer_id"><code class="docutils literal notranslate"><span class="pre">hash_offer_id()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hashes.sha_512_half"><code class="docutils literal notranslate"><span class="pre">sha_512_half()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.numbers">xrpl_dex_sdk.utils.numbers module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.numbers.parse_amount_value"><code class="docutils literal notranslate"><span class="pre">parse_amount_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.numbers.subtract_amounts"><code class="docutils literal notranslate"><span class="pre">subtract_amounts()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils.orders">xrpl_dex_sdk.utils.orders module</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_amount"><code class="docutils literal notranslate"><span class="pre">get_amount()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_amount_currency_code"><code class="docutils literal notranslate"><span class="pre">get_amount_currency_code()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_base_amount_key"><code class="docutils literal notranslate"><span class="pre">get_base_amount_key()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_base_and_quote_data"><code class="docutils literal notranslate"><span class="pre">get_base_and_quote_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_book_offer_base_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_base_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_book_offer_quote_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_quote_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_book_offer_taker_gets"><code class="docutils literal notranslate"><span class="pre">get_book_offer_taker_gets()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_book_offer_taker_pays"><code class="docutils literal notranslate"><span class="pre">get_book_offer_taker_pays()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_market_symbol"><code class="docutils literal notranslate"><span class="pre">get_market_symbol()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_market_symbol_from_amount"><code class="docutils literal notranslate"><span class="pre">get_market_symbol_from_amount()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_most_recent_tx"><code class="docutils literal notranslate"><span class="pre">get_most_recent_tx()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_offer_from_node"><code class="docutils literal notranslate"><span class="pre">get_offer_from_node()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_offer_from_tx"><code class="docutils literal notranslate"><span class="pre">get_offer_from_tx()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_order_fee_from_data"><code class="docutils literal notranslate"><span class="pre">get_order_fee_from_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_order_from_data"><code class="docutils literal notranslate"><span class="pre">get_order_from_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_order_side_from_flags"><code class="docutils literal notranslate"><span class="pre">get_order_side_from_flags()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_order_time_in_force"><code class="docutils literal notranslate"><span class="pre">get_order_time_in_force()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_quote_amount_key"><code class="docutils literal notranslate"><span class="pre">get_quote_amount_key()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_shared_order_data"><code class="docutils literal notranslate"><span class="pre">get_shared_order_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_taker_or_maker"><code class="docutils literal notranslate"><span class="pre">get_taker_or_maker()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.get_trade_from_data"><code class="docutils literal notranslate"><span class="pre">get_trade_from_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.parse_affected_node"><code class="docutils literal notranslate"><span class="pre">parse_affected_node()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.orders.parse_transaction"><code class="docutils literal notranslate"><span class="pre">parse_transaction()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-xrpl_dex_sdk.utils">Module contents</a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces</span></code></a><ul>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.account"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.account</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.amendment"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.amendment</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.bookDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.bookDir</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.check"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.check</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.contract"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.contract</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.depositPreauth"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.depositPreauth</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.dirNode"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.dirNode</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.escrow"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.escrow</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.feeSettings"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.feeSettings</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.generatorMap"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.generatorMap</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.offer"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.offer</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.ownerDir"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ownerDir</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.paychan"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.paychan</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.rippleState"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.rippleState</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.signerList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.signerList</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.skipList"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.skipList</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.LedgerNameSpaces.ticket"><code class="docutils literal notranslate"><span class="pre">LedgerNameSpaces.ticket</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.decimal_to_transfer_rate"><code class="docutils literal notranslate"><span class="pre">decimal_to_transfer_rate()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_amount"><code class="docutils literal notranslate"><span class="pre">get_amount()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_amount_currency_code"><code class="docutils literal notranslate"><span class="pre">get_amount_currency_code()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_base_amount_key"><code class="docutils literal notranslate"><span class="pre">get_base_amount_key()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_book_offer_base_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_base_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_book_offer_quote_value"><code class="docutils literal notranslate"><span class="pre">get_book_offer_quote_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_market_symbol"><code class="docutils literal notranslate"><span class="pre">get_market_symbol()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_market_symbol_from_amount"><code class="docutils literal notranslate"><span class="pre">get_market_symbol_from_amount()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_most_recent_tx"><code class="docutils literal notranslate"><span class="pre">get_most_recent_tx()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_offer_from_node"><code class="docutils literal notranslate"><span class="pre">get_offer_from_node()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_offer_from_tx"><code class="docutils literal notranslate"><span class="pre">get_offer_from_tx()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_order_from_data"><code class="docutils literal notranslate"><span class="pre">get_order_from_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_order_side_from_flags"><code class="docutils literal notranslate"><span class="pre">get_order_side_from_flags()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_order_time_in_force"><code class="docutils literal notranslate"><span class="pre">get_order_time_in_force()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_quote_amount_key"><code class="docutils literal notranslate"><span class="pre">get_quote_amount_key()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_taker_or_maker"><code class="docutils literal notranslate"><span class="pre">get_taker_or_maker()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.get_trade_from_data"><code class="docutils literal notranslate"><span class="pre">get_trade_from_data()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.handle_response_error"><code class="docutils literal notranslate"><span class="pre">handle_response_error()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.has_offer_create_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_create_flag()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.has_offer_flag"><code class="docutils literal notranslate"><span class="pre">has_offer_flag()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.hash_offer_id"><code class="docutils literal notranslate"><span class="pre">hash_offer_id()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.omit"><code class="docutils literal notranslate"><span class="pre">omit()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.parse_affected_node"><code class="docutils literal notranslate"><span class="pre">parse_affected_node()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.parse_amount_value"><code class="docutils literal notranslate"><span class="pre">parse_amount_value()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.parse_transaction"><code class="docutils literal notranslate"><span class="pre">parse_transaction()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.server_time_to_posix"><code class="docutils literal notranslate"><span class="pre">server_time_to_posix()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.sha_512_half"><code class="docutils literal notranslate"><span class="pre">sha_512_half()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.sort_by_date"><code class="docutils literal notranslate"><span class="pre">sort_by_date()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.sort_by_previous_txn_lgr_seq"><code class="docutils literal notranslate"><span class="pre">sort_by_previous_txn_lgr_seq()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.subtract_amounts"><code class="docutils literal notranslate"><span class="pre">subtract_amounts()</span></code></a></li>
+<li><a class="reference internal" href="#xrpl_dex_sdk.utils.transfer_rate_to_decimal"><code class="docutils literal notranslate"><span class="pre">transfer_rate_to_decimal()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/xrpl_dex_sdk.utils.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">XRPL dEX Python SDK  documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">xrpl_dex_sdk.utils package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Ripple Labs, Inc..
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    </div>
+  </body>
+</html>

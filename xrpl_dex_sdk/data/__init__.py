@@ -1,14 +1,6 @@
-"""_top-level exports for the data package."""
 import json
 import os
 from typing import Any, Dict
-
-# from ..models.ccxt.currencies import Currencies
-# from ..models.xrpl.issuers import Issuers
-# from ..models.ccxt.markets import Markets
-# from .currencies import CurrenciesData
-# from .issuers import IssuersData
-# from .markets import MarketsData
 
 
 def load_data(name: str) -> Dict:
@@ -19,15 +11,12 @@ def load_data(name: str) -> Dict:
     return json.loads(data)
 
 
-currencies_data: Dict[str, Dict[str, Any]] = load_data("currencies.json")
-issuers_data: Dict[str, Dict[str, Any]] = load_data("issuers.json")
-markets_data: Dict[str, Dict[str, Any]] = load_data("markets.json")
+CurrenciesData: Dict[str, Dict[str, Any]] = load_data("currencies.json")
+IssuersData: Dict[str, Dict[str, Any]] = load_data("issuers.json")
+MarketsData: Dict[str, Dict[str, Any]] = load_data("markets.json")
 
 __all__ = [
-    # "CurrenciesData",
-    # "IssuersData",
-    # "MarketsData",
-    "currencies_data",
-    "issuers_data",
-    "markets_data",
+    "CurrenciesData",
+    "IssuersData",
+    "MarketsData",
 ]

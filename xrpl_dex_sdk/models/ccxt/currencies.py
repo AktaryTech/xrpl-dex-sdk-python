@@ -20,5 +20,3 @@ class Currency(BaseModel):
 
 
 Currencies = Dict[CurrencyCode, Currency]
-
-__all__ = ["Currency", "Currencies"]

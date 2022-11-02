@@ -8,6 +8,3 @@ from ..required import REQUIRED
 class WatchStatusParams(BaseModel):
     # Listener to send balance updates to
     listener: Callable = REQUIRED
-
-
-__all__ = ["WatchStatusParams"]

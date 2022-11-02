@@ -22,18 +22,18 @@ async def fetch_open_orders(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Market symbol to filter Orders by
     since : int
         (Optional) Only return Orders since this date
     limit : int
         (Optional) Total number of Orders to return (default is 20)
-    params : FetchOpenOrdersParams
+    params : xrpl_dex_sdk.models.FetchOpenOrdersParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchOpenOrdersResponse
+    xrpl_dex_sdk.models.FetchOpenOrdersResponse
         List of retrieved Orders
     """
 
@@ -41,9 +41,7 @@ async def fetch_open_orders(
         symbol,
         since,
         limit,
-        FetchOrdersParams(
-            search_limit=params.search_limit, show_closed=False, show_canceled=False
-        ),
+        FetchOrdersParams(search_limit=params.search_limit, show_closed=False, show_canceled=False),
     )
 
     return orders

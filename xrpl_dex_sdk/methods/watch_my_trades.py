@@ -25,9 +25,9 @@ async def watch_my_trades(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         Symbol to watch
-    params : WatchMyTradesParams
+    params : xrpl_dex_sdk.models.WatchMyTradesParams
         Additional request parameters
     """
 

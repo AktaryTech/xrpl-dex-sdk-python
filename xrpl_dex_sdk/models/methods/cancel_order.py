@@ -22,6 +22,3 @@ class CancelOrderParams(BaseModel):
 class CancelOrderResponse(BaseModel):
     id: OrderId = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CancelOrderParams", "CancelOrderResponse"]

@@ -15,12 +15,12 @@ def cancel_order(
 
     Parameters
     ----------
-    id : OrderId
+    id : xrpl_dex_sdk.models.OrderId
         ID of the Order to cancel
 
     Returns
     -------
-    CancelOrderResponse
+    xrpl_dex_sdk.models.CancelOrderResponse
         ID of canceled Order
     """
 

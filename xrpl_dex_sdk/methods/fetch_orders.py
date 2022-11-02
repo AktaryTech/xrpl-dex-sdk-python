@@ -31,24 +31,22 @@ async def fetch_orders(
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Symbol to filter Orders by
     since : int
         (Optional) Only return Orders since this date
     limit : int
         (Optional) Total number of Orders to return (default is 20)
-    params : FetchOrdersParams
+    params : xrpl_dex_sdk.models.FetchOrdersParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchOrdersResponse
+    xrpl_dex_sdk.models.FetchOrdersResponse
         The matching Orders
     """
 
-    search_limit = (
-        params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
-    )
+    search_limit = params.search_limit if params.search_limit != None else DEFAULT_SEARCH_LIMIT
     orders: List[Order] = []
 
     has_next_page = True
@@ -60,9 +58,7 @@ async def fetch_orders(
             {
                 "transactions": True,
                 "expand": True,
-                "ledger_hash": previous_ledger_hash
-                if previous_ledger_hash != None
-                else None,
+                "ledger_hash": previous_ledger_hash if previous_ledger_hash != None else None,
                 "ledger_index": "validated" if previous_ledger_hash == None else None,
             }
         )
@@ -109,8 +105,7 @@ async def fetch_orders(
                                 continue
                             if (
                                 node["FinalFields"]["Account"] == transaction["Account"]
-                                and node["FinalFields"]["Sequence"]
-                                == transaction["OfferSequence"]
+                                and node["FinalFields"]["Sequence"] == transaction["OfferSequence"]
                             ):
                                 tx_symbol = get_market_symbol(node["FinalFields"])
                                 break

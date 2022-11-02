@@ -2,20 +2,18 @@ from typing import Optional
 from ..models import FetchTradingFeeResponse, MarketSymbol, Market, TradingFee
 
 
-async def fetch_trading_fee(
-    self, symbol: MarketSymbol
-) -> Optional[FetchTradingFeeResponse]:
+async def fetch_trading_fee(self, symbol: MarketSymbol) -> Optional[FetchTradingFeeResponse]:
     """
     Returns information about the fees incurred while trading on given market.
 
     Parameters
     ----------
-    symbol : MarketSymbol
+    symbol : xrpl_dex_sdk.models.MarketSymbol
         (Optional) Market symbol to get trading fees for
 
     Returns
     -------
-    FetchTradingFeeResponse
+    xrpl_dex_sdk.models.FetchTradingFeeResponse
         Trading fee data
     """
 

@@ -28,6 +28,3 @@ class CreateOrderParams(BaseModel):
 class CreateOrderResponse(BaseModel):
     id: OrderId = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CreateOrderParams", "CreateOrderResponse"]

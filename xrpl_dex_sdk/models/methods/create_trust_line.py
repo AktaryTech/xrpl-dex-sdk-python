@@ -15,6 +15,3 @@ class CreateTrustLineResponse(BaseModel):
     code: CurrencyCode = REQUIRED
     amount: str = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CreateTrustLineResponse"]

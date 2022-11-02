@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>xrpl_dex_sdk.constants &#8212; XRPL dEX Python SDK  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/alabaster.css" />
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for xrpl_dex_sdk.constants</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Final</span><span class="p">,</span> <span class="n">Pattern</span>
+
+
+<span class="n">DEFAULT_LIMIT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_DEFAULT_LIMIT&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="n">DEFAULT_SEARCH_LIMIT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_DEFAULT_SEARCH_LIMIT&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="n">DEFAULT_TICKER_SEARCH_LIMIT</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_DEFAULT_TICKER_SEARCH_LIMIT&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="NetworkNames"><a class="viewcode-back" href="../../xrpl_dex_sdk.html#xrpl_dex_sdk.constants.NetworkNames">[docs]</a><span class="k">class</span> <span class="nc">NetworkNames</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">TESTNET</span> <span class="o">=</span> <span class="s2">&quot;TESTNET&quot;</span>
+    <span class="n">DEVNET</span> <span class="o">=</span> <span class="s2">&quot;DEVNET&quot;</span>
+    <span class="n">MAINNET</span> <span class="o">=</span> <span class="s2">&quot;MAINNET&quot;</span>
+    <span class="n">LOCAL</span> <span class="o">=</span> <span class="s2">&quot;LOCAL&quot;</span></div>
+
+
+<span class="n">TESTNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TESTNET&quot;</span>
+<span class="n">DEVNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;DEVNET&quot;</span>
+<span class="n">MAINNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MAINNET&quot;</span>
+<span class="n">LOCAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;LOCAL&quot;</span>
+
+<span class="n">MAINNET_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_MAINNET_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;s1.ripple.com&quot;</span><span class="p">)</span>
+<span class="n">MAINNET_FULL_HISTORY_1_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_MAINNET_FULL_HISTORY_1_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;xrplcluster.com&quot;</span><span class="p">)</span>
+<span class="n">MAINNET_FULL_HISTORY_2_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_MAINNET_FULL_HISTORY_2_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;s2.ripple.com&quot;</span><span class="p">)</span>
+<span class="n">TESTNET_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_TESTNET_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;s.altnet.rippletest.net&quot;</span><span class="p">)</span>
+<span class="n">DEVNET_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_DEVNET_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;s.devnet.rippletest.net&quot;</span><span class="p">)</span>
+<span class="n">NFT_DEVNET_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_NFT_DEVNET_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;xls20-sandbox.rippletest.net&quot;</span><span class="p">)</span>
+<span class="n">LOCAL_URL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_LOCAL_URL&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost:6006&quot;</span><span class="p">)</span>
+
+<span class="n">RPC_TESTNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">TESTNET_URL</span> <span class="o">+</span> <span class="s2">&quot;:51234/&quot;</span>
+<span class="n">RPC_DEVNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">DEVNET_URL</span> <span class="o">+</span> <span class="s2">&quot;:51234/&quot;</span>
+<span class="n">RPC_MAINNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">MAINNET_URL</span> <span class="o">+</span> <span class="s2">&quot;:51234/&quot;</span>
+<span class="n">RPC_LOCAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">LOCAL_URL</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+
+<span class="n">WS_TESTNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wss://&quot;</span> <span class="o">+</span> <span class="n">TESTNET_URL</span> <span class="o">+</span> <span class="s2">&quot;:51233/&quot;</span>
+<span class="n">WS_DEVNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wss://&quot;</span> <span class="o">+</span> <span class="n">DEVNET_URL</span> <span class="o">+</span> <span class="s2">&quot;:51233/&quot;</span>
+<span class="n">WS_MAINNET</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wss://&quot;</span> <span class="o">+</span> <span class="n">MAINNET_URL</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+<span class="n">WS_LOCAL</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;wss://&quot;</span> <span class="o">+</span> <span class="n">LOCAL_URL</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span>
+
+<span class="n">CURRENCY_PRECISION</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;XRPL_CURRENCY_PRECISION&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="n">DROPS_PER_XRP</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">FEE_CURRENCY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;XRP&quot;</span>
+<span class="n">REFERENCE_TX_COST</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">ACCOUNT_DELETE_TX_COST</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000000</span>
+<span class="n">BILLION</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000000000</span>
+
+<span class="n">Networks</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">MAINNET</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;json_rpc&quot;</span><span class="p">:</span> <span class="n">RPC_MAINNET</span><span class="p">,</span>
+        <span class="s2">&quot;ws&quot;</span><span class="p">:</span> <span class="n">WS_MAINNET</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">TESTNET</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;json_rpc&quot;</span><span class="p">:</span> <span class="n">RPC_TESTNET</span><span class="p">,</span>
+        <span class="s2">&quot;ws&quot;</span><span class="p">:</span> <span class="n">WS_TESTNET</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">DEVNET</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;json_rpc&quot;</span><span class="p">:</span> <span class="n">RPC_DEVNET</span><span class="p">,</span>
+        <span class="s2">&quot;ws&quot;</span><span class="p">:</span> <span class="n">WS_DEVNET</span><span class="p">,</span>
+    <span class="p">},</span>
+    <span class="n">LOCAL</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;json_rpc&quot;</span><span class="p">:</span> <span class="n">RPC_LOCAL</span><span class="p">,</span> <span class="s2">&quot;ws&quot;</span><span class="p">:</span> <span class="n">WS_LOCAL</span><span class="p">},</span>
+<span class="p">}</span>
+
+<span class="n">SERVER_STATE_TIME_FORMAT</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;%Y-%b-</span><span class="si">%d</span><span class="s2"> %H:%M:%S.</span><span class="si">%f</span><span class="s2"> %Z&quot;</span>
+
+<span class="n">ISO_CURRENCY_REGEX</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[A-Za-z0-9]</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Matches ISO currencies like &quot;USD&quot; or &quot;EUR&quot; in the format allowed by XRPL.</span>
+
+<span class="sd">:meta private:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">HEX_CURRENCY_REGEX</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="n">Pattern</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;[A-F0-9]</span><span class="si">{40}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Matches hex-encoded currencies in the format allowed by XRPL.</span>
+
+<span class="sd">:meta private:</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;DEFAULT_LIMIT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NetworkNames&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TESTNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DEVNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MAINNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LOCAL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MAINNET_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MAINNET_FULL_HISTORY_1_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MAINNET_FULL_HISTORY_2_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TESTNET_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DEVNET_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NFT_DEVNET_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LOCAL_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RPC_TESTNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RPC_DEVNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RPC_MAINNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;RPC_LOCAL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WS_TESTNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WS_DEVNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WS_MAINNET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;WS_LOCAL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CURRENCY_PRECISION&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DROPS_PER_XRP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FEE_CURRENCY&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;REFERENCE_TX_COST&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ACCOUNT_DELETE_TX_COST&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BILLION&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Networks&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SERVER_STATE_TIME_FORMAT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ISO_CURRENCY_REGEX&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HEX_CURRENCY_REGEX&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">XRPL dEX Python SDK</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, AktaryTech.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

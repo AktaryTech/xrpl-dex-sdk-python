@@ -17,25 +17,21 @@ async def fetch_tickers(
 
     Parameters
     ----------
-    FetchOrderBooksResponse
-        Order books
-    symbols : List[MarketSymbol]
+    symbols : List[xrpl_dex_sdk.models.MarketSymbol]
         List of market symbols to get price ticker data for
-    params : FetchTickersParams
+    params : xrpl_dex_sdk.models.FetchTickersParams
         (Optional) Additional request parameters
 
     Returns
     -------
-    FetchTickersResponse
+    xrpl_dex_sdk.models.FetchTickersResponse
         Price ticker data
     """
 
     tickers: List[Ticker] = []
 
     for symbol in symbols:
-        ticker = await self.fetch_ticker(
-            symbol, FetchTickerParams.from_dict(params.to_dict())
-        )
+        ticker = await self.fetch_ticker(symbol, FetchTickerParams.from_dict(params.to_dict()))
         if ticker != None:
             tickers.append(ticker)
 

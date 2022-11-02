@@ -1,5 +1,5 @@
 from typing import Union
-from ..data import issuers_data
+from ..data import IssuersData
 from ..models import Issuers
 
 
@@ -12,6 +12,6 @@ def fetch_issuers(self) -> Union[Issuers, None]:
     if self.params.network == None:
         return
 
-    issuers: Issuers = issuers_data[self.params.network]
+    issuers: Issuers = IssuersData[self.params.network]
 
     return issuers

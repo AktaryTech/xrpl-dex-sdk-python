@@ -63,6 +63,3 @@ class FeeSchedule(BaseModel):
 
     transactions: List[TransactionFee] = REQUIRED
     trading: List[TradingFee] = REQUIRED
-
-
-__all__ = ["Fee", "TransactionFee", "TradingFee", "FeeSchedule"]

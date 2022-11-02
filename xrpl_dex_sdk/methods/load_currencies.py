@@ -2,9 +2,7 @@ from typing import Optional
 from ..models import LoadCurrenciesResponse
 
 
-async def load_currencies(
-    self, reload: Optional[bool] = False
-) -> LoadCurrenciesResponse:
+async def load_currencies(self, reload: Optional[bool] = False) -> LoadCurrenciesResponse:
     """
     Retrieves and caches a list of currencies being traded on the dEX.
 
@@ -15,7 +13,7 @@ async def load_currencies(
 
     Returns
     -------
-    LoadCurrenciesResponse
+    xrpl_dex_sdk.models.LoadCurrenciesResponse
         The fetched currencies
     """
 

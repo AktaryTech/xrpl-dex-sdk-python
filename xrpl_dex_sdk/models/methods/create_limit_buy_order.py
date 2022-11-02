@@ -20,6 +20,3 @@ class CreateLimitBuyOrderParams(BaseModel):
 class CreateLimitBuyOrderResponse(BaseModel):
     id: OrderId = REQUIRED
     info: dict = REQUIRED
-
-
-__all__ = ["CreateLimitBuyOrderParams", "CreateLimitBuyOrderResponse"]
